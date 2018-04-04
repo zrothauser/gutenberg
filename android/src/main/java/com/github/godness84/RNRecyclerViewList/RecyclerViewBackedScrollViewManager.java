@@ -26,8 +26,7 @@ import com.github.godness84.RNRecyclerViewList.R;
 /**
  * View manager for {@link RecyclerViewBackedScrollView}.
  */
-public class RecyclerViewBackedScrollViewManager extends
-        ViewGroupManager<RecyclerViewBackedScrollView> {
+public class RecyclerViewBackedScrollViewManager extends ViewGroupManager<RecyclerViewBackedScrollView> {
 
     public static final String REACT_CLASS = "AndroidRecyclerViewBackedScrollView";
     public static final int COMMAND_NOTIFY_ITEM_RANGE_INSERTED = 1;
@@ -49,7 +48,8 @@ public class RecyclerViewBackedScrollViewManager extends
 
     @Override
     public void addView(RecyclerViewBackedScrollView parent, View child, int index) {
-        Assertions.assertCondition(child instanceof RecyclerViewItemView, "Views attached to RecyclerViewBackedScrollView must be RecyclerViewItemView views.");
+        Assertions.assertCondition(child instanceof RecyclerViewItemView,
+                "Views attached to RecyclerViewBackedScrollView must be RecyclerViewItemView views.");
         RecyclerViewItemView item = (RecyclerViewItemView) child;
         parent.addViewToAdapter(item, index);
     }
@@ -82,92 +82,83 @@ public class RecyclerViewBackedScrollViewManager extends
 
     @Override
     public Map<String, Integer> getCommandsMap() {
-        return MapBuilder.of(
-            "notifyItemRangeInserted", COMMAND_NOTIFY_ITEM_RANGE_INSERTED,
-            "notifyItemRangeRemoved", COMMAND_NOTIFY_ITEM_RANGE_REMOVED,
-            "notifyItemMoved", COMMAND_NOTIFY_ITEM_MOVED,
-            "notifyDataSetChanged", COMMAND_NOTIFY_DATASET_CHANGED,
-            "scrollToIndex", COMMAND_SCROLL_TO_INDEX
-        );
+        return MapBuilder.of("notifyItemRangeInserted", COMMAND_NOTIFY_ITEM_RANGE_INSERTED, "notifyItemRangeRemoved",
+                COMMAND_NOTIFY_ITEM_RANGE_REMOVED, "notifyItemMoved", COMMAND_NOTIFY_ITEM_MOVED, "notifyDataSetChanged",
+                COMMAND_NOTIFY_DATASET_CHANGED, "scrollToIndex", COMMAND_SCROLL_TO_INDEX);
     }
 
     @Override
-    public void receiveCommand(
-            final RecyclerViewBackedScrollView parent,
-            int commandType,
+    public void receiveCommand(final RecyclerViewBackedScrollView parent, int commandType,
             @Nullable ReadableArray args) {
         Assertions.assertNotNull(parent);
         Assertions.assertNotNull(args);
         switch (commandType) {
-            case COMMAND_NOTIFY_ITEM_RANGE_INSERTED: {
-                final int position = args.getInt(0);
-                final int count = args.getInt(1);
-                //Log.d(TAG, String.format("notify item range inserted: position %d, count %d", position, count));
+        case COMMAND_NOTIFY_ITEM_RANGE_INSERTED: {
+            final int position = args.getInt(0);
+            final int count = args.getInt(1);
+            //Log.d(TAG, String.format("notify item range inserted: position %d, count %d", position, count));
 
-                RecyclerViewBackedScrollView.ReactListAdapter adapter = (RecyclerViewBackedScrollView.ReactListAdapter) parent.getAdapter();
-                adapter.setItemCount(adapter.getItemCount() + count);
-                adapter.notifyItemRangeInserted(position, count);
-                return;
+            RecyclerViewBackedScrollView.ReactListAdapter adapter = (RecyclerViewBackedScrollView.ReactListAdapter) parent
+                    .getAdapter();
+            adapter.setItemCount(adapter.getItemCount() + count);
+            adapter.notifyItemRangeInserted(position, count);
+            return;
+        }
+
+        case COMMAND_NOTIFY_ITEM_RANGE_REMOVED: {
+            final int position = args.getInt(0);
+            final int count = args.getInt(1);
+            //Log.d(TAG, String.format("notify item range removed: position %d, count %d", position, count));
+
+            RecyclerViewBackedScrollView.ReactListAdapter adapter = (RecyclerViewBackedScrollView.ReactListAdapter) parent
+                    .getAdapter();
+            adapter.setItemCount(adapter.getItemCount() - count);
+            adapter.notifyItemRangeRemoved(position, count);
+            return;
+        }
+
+        case COMMAND_NOTIFY_ITEM_MOVED: {
+            final int currentPosition = args.getInt(0);
+            final int nextPosition = args.getInt(1);
+            RecyclerViewBackedScrollView.ReactListAdapter adapter = (RecyclerViewBackedScrollView.ReactListAdapter) parent
+                    .getAdapter();
+            adapter.notifyItemMoved(currentPosition, nextPosition);
+            return;
+        }
+
+        case COMMAND_NOTIFY_DATASET_CHANGED: {
+            final int itemCount = args.getInt(0);
+            RecyclerViewBackedScrollView.ReactListAdapter adapter = (RecyclerViewBackedScrollView.ReactListAdapter) parent
+                    .getAdapter();
+            adapter.setItemCount(itemCount);
+            parent.getAdapter().notifyDataSetChanged();
+            return;
+        }
+
+        case COMMAND_SCROLL_TO_INDEX: {
+            boolean animated = args.getBoolean(0);
+            int index = args.getInt(1);
+            RecyclerViewBackedScrollView.ScrollOptions options = new RecyclerViewBackedScrollView.ScrollOptions();
+            options.millisecondsPerInch = args.isNull(2) ? null : (float) args.getDouble(2);
+            options.viewPosition = args.isNull(3) ? null : (float) args.getDouble(3);
+            options.viewOffset = args.isNull(4) ? null : (float) args.getDouble(4);
+
+            if (animated) {
+                parent.smoothScrollToPosition(index, options);
+            } else {
+                parent.scrollToPosition(index, options);
             }
+            return;
+        }
 
-            case COMMAND_NOTIFY_ITEM_RANGE_REMOVED: {
-                final int position = args.getInt(0);
-                final int count = args.getInt(1);
-                //Log.d(TAG, String.format("notify item range removed: position %d, count %d", position, count));
-
-                RecyclerViewBackedScrollView.ReactListAdapter adapter = (RecyclerViewBackedScrollView.ReactListAdapter) parent.getAdapter();
-                adapter.setItemCount(adapter.getItemCount() - count);
-                adapter.notifyItemRangeRemoved(position, count);
-                return;
-            }
-
-
-            case COMMAND_NOTIFY_ITEM_MOVED: {
-                final int currentPosition = args.getInt(0);
-                final int nextPosition = args.getInt(1);
-                Log.d(TAG, String.format("notify item moved: currentPosition %d, nextPosition %d", currentPosition, nextPosition));// FIXME
-
-                RecyclerViewBackedScrollView.ReactListAdapter adapter = (RecyclerViewBackedScrollView.ReactListAdapter) parent.getAdapter();
-                adapter.notifyItemMoved(currentPosition, nextPosition);
-                return;
-            }
-
-            case COMMAND_NOTIFY_DATASET_CHANGED: {
-                final int itemCount = args.getInt(0);
-                RecyclerViewBackedScrollView.ReactListAdapter adapter = (RecyclerViewBackedScrollView.ReactListAdapter) parent.getAdapter();
-                adapter.setItemCount(itemCount);
-                parent.getAdapter().notifyDataSetChanged();
-                return;
-            }
-
-            case COMMAND_SCROLL_TO_INDEX: {
-                boolean animated = args.getBoolean(0);
-                int index = args.getInt(1);
-                RecyclerViewBackedScrollView.ScrollOptions options = new RecyclerViewBackedScrollView.ScrollOptions();
-                options.millisecondsPerInch = args.isNull(2) ? null : (float) args.getDouble(2);
-                options.viewPosition = args.isNull(3) ? null : (float) args.getDouble(3);
-                options.viewOffset = args.isNull(4) ? null : (float) args.getDouble(4);
-
-                if (animated) {
-                    parent.smoothScrollToPosition(index, options);
-                } else {
-                    parent.scrollToPosition(index, options);
-                }
-                return;
-            }
-
-            default:
-                throw new IllegalArgumentException(String.format(
-                        "Unsupported command %d received by %s.",
-                        commandType,
-                        getClass().getSimpleName()));
+        default:
+            throw new IllegalArgumentException(
+                    String.format("Unsupported command %d received by %s.", commandType, getClass().getSimpleName()));
         }
     }
 
     @Override
-    public
-    @Nullable
-    Map getExportedCustomDirectEventTypeConstants() {
+    public @Nullable Map getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.builder()
                 .put(ScrollEventType.SCROLL.getJSEventName(), MapBuilder.of("registrationName", "onScroll"))
                 .put(ContentSizeChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onContentSizeChange"))
