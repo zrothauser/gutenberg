@@ -9,23 +9,87 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Image,
+  Button,
+  TouchableNativeFeedback
 } from 'react-native';
 
-export default class example extends Component {
+import RecyclerViewList, { DataSource } from 'react-native-recyclerview-list';
+
+var _gCounter = 1;
+function newItem() {
+  return {
+    id: _gCounter++,
+    counter: 0
+  };
+}
+
+export default class example extends Component { 
+
+  constructor(props) {
+    super(props);
+    var data = Array(10).fill().map((e,i) => newItem());
+
+    this.state = {
+      dataSource: new DataSource(data, (item, index) => item.id)
+    };
+  }
+
   render() {
+    const { dataSource } = this.state;
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+      <View style={{flex:1}}>
+        { this.renderTopControlPanel() }
+        <RecyclerViewList 
+          ref={(component) => this._recycler = component}
+          style={{flex:1}}
+          dataSource={dataSource}
+        />
+        { this.renderBottomControlPanel() }
+      </View>
+    );
+  }
+
+  renderTopControlPanel() {
+    return (
+      <View style={{ flexDirection: 'row', padding: 5, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e7e7e7' }}>
+        <Button
+          title={"\u002B40 \u25B2"}
+          onPress={() => this.addToTop(40)} />
+        <View style={{ width: 5 }} />
+        <Button
+          title={"\u002B40 \u25BC"}
+          onPress={() => this.addToBottom(40)} />
+        <View style={{ width: 15 }} />
+        <Text>Scroll:</Text>
+        <View style={{ width: 5 }} />
+        <Button
+          title={"\u25B2"}
+          onPress={() => this._recycler && this._recycler.scrollToIndex({index: 0, animated: true})} />
+        <View style={{ width: 5 }} />
+        <Button
+          title={"\u25BC"}
+          onPress={() => this._recycler && this._recycler.scrollToEnd()} />
+        <View style={{ width: 5 }} />
+        <Button
+          title={"rand"}
+          onPress={() => {
+            var index = Math.floor((Math.random() * this.state.dataSource.size()));
+            var item = this.state.dataSource.get(index);
+            this._recycler && this._recycler.scrollToIndex({ index, animated: true });            
+          }} />
+      </View>
+    );
+  }
+
+  renderBottomControlPanel() {
+    return (
+      <View style={{ flexDirection: 'row', padding: 5, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e7e7e7' }}>
+        <Button
+          title={"Reset"}
+          onPress={() => this.reset()} />
       </View>
     );
   }
