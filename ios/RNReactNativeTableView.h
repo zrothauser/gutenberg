@@ -2,4 +2,6 @@
 
 @interface RNReactNativeTableView : UITableView
 
+- (void)setDataSize:(NSInteger)size;
+
 @end

@@ -42,11 +42,16 @@
 
 - (void)commonInit {
     self.dataSource = self;
-    NSMutableArray *generatedData = [[NSMutableArray alloc] init];
-    for (int i = 0; i < 100; i++) {
-        [generatedData addObject:[NSString stringWithFormat:@"Item #%i", i]];
-    }
-    self.data = [NSArray arrayWithArray:generatedData];
+    [self setDataSize:0];
+}
+
+- (void)setDataSize:(NSInteger)size {
+  NSMutableArray *generatedData = [[NSMutableArray alloc] init];
+  for (int i = 0; i < size; i++) {
+    [generatedData addObject:[NSString stringWithFormat:@"Item #%i", i]];
+  }
+  self.data = [NSArray arrayWithArray:generatedData];
+  [self reloadData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
