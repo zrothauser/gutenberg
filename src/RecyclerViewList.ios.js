@@ -153,12 +153,21 @@ class RecyclerViewList extends React.Component {
     );
   }
 
+  _notifyItemMoved(currentPosition, nextPosition) {
+    UIManager.dispatchViewManagerCommand(
+                                         ReactNative.findNodeHandle(this),
+                                         UIManager.RNReactNativeRecyclerviewList.Commands.notifyItemMoved,
+                                         [currentPosition, nextPosition],
+                                         );
+    this.forceUpdate();
+  }
+
   _notifyItemRangeInserted(position, count) {
     UIManager.dispatchViewManagerCommand(
-      ReactNative.findNodeHandle(this),
-      UIManager.RNReactNativeRecyclerviewList.Commands.notifyItemRangeInserted,
-      [position, count],
-    );
+                                         ReactNative.findNodeHandle(this),
+                                         UIManager.RNReactNativeRecyclerviewList.Commands.notifyItemRangeInserted,
+                                         [position, count],
+                                         );
 
     const { firstVisibleIndex, lastVisibleIndex, itemCount } = this.state;
 
@@ -178,6 +187,15 @@ class RecyclerViewList extends React.Component {
         this.forceUpdate();
       }
     }
+  }
+
+  _notifyItemRangeRemoved(position, count) {
+    UIManager.dispatchViewManagerCommand(
+                                         ReactNative.findNodeHandle(this),
+                                         UIManager.RNReactNativeRecyclerviewList.Commands.notifyItemRangeRemoved,
+                                         [position, count],
+                                         );
+    this.forceUpdate();
   }
 
   _notifyDataSetChanged = (itemCount) => {

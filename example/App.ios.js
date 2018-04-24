@@ -93,6 +93,61 @@ export default class example extends Component {
       </View>
     );
   }
+
+  reset() {
+    //_gCounter = 1;
+    var data = Array(10).fill().map((e,i) => newItem());
+    this.setState({
+                  dataSource: new DataSource(data, (item, index) => item.id)
+                  });
+  }
+
+  remove(index) {
+    this.state.dataSource.splice(index, 1);
+  }
+
+  addAbove(index) {
+    this.state.dataSource.splice(index, 0, newItem());
+  }
+
+  addBelow(index) {
+    const { dataSource } = this.state;
+    if (index == dataSource.size() - 1 && this._recycler) {
+      this._recycler.scrollToIndex({
+                                   animated: true,
+                                   index: dataSource.size(),
+                                   velocity: 120
+                                   });
+    }
+
+    this.state.dataSource.splice(index+1, 0, newItem());
+  }
+
+  incrementCounter(index) {
+    var item = this.state.dataSource.get(index);
+    item.counter++;
+    this.state.dataSource.set(index, item);
+  }
+
+  moveUp(index) {
+    this.state.dataSource.moveUp(index);
+  }
+
+  moveDown(index) {
+    this.state.dataSource.moveDown(index);
+  }
+
+  addToTop(size) {
+    var currCount = this.state.dataSource.size();
+    var newItems = Array(size).fill().map((e,i)=>newItem());
+    this.state.dataSource.splice(0, 0, ...newItems);
+  }
+
+  addToBottom(size) {
+    var currCount = this.state.dataSource.size();
+    var newItems = Array(size).fill().map((e,i)=>newItem());
+    this.state.dataSource.splice(currCount, 0, ...newItems);
+  }
 }
 
 const styles = StyleSheet.create({
