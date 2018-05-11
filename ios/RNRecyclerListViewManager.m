@@ -1,12 +1,12 @@
 
-#import "RNReactNativeRecyclerviewList.h"
+#import "RNRecyclerListViewManager.h"
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTConvert.h>
 
 typedef void (^ListViewBlock)(RecyclerListView *listView);
 
-@implementation RNReactNativeRecyclerviewList
+@implementation RNRecyclerListViewManager
 
 - (dispatch_queue_t)methodQueue
 {

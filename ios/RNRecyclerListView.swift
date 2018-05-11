@@ -3,7 +3,7 @@ import UIKit
 
 @objc class RecyclerListView: UIView {
 
-    fileprivate var data = [String]()
+    fileprivate var data = [RecyclerListItemView]()
 
     let cellIdentifier = "RecycleCell"
     
@@ -31,6 +31,15 @@ import UIKit
         super.layoutSubviews()
         tableView.frame = bounds
     }
+
+    override func addSubview(_ view: UIView) {
+        // if we are adding another thing let's ignore it
+        guard let listItem = view as? RecyclerListItemView else {
+            super.addSubview(view)
+            return
+        }
+        data.append(listItem)
+    }
 }
 
 extension RecyclerListView: UITableViewDataSource {
@@ -45,7 +54,7 @@ extension RecyclerListView: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-        cell.textLabel?.text = data[indexPath.row]
+        cell.contentView.addSubview(data[indexPath.row])
         return cell
     }
 }
@@ -54,11 +63,11 @@ extension RecyclerListView {
 
     @objc var dataSize: Int {
         set {
-            data.removeAll()
-            for i in 0..<newValue {
-                data.append("Item \(i)")
-            }
-            tableView.reloadData()
+//            data.removeAll()
+//            for i in 0..<newValue {
+//                data.append("Item \(i)")
+//            }
+//            tableView.reloadData()
         }
 
         get {
