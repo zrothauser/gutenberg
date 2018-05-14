@@ -49,6 +49,22 @@ import UIKit
 
 extension RecyclerListView: UITableViewDataSource {
 
+    func update(cell: UITableViewCell, with listItem: RecyclerListItemView) {
+        listItem.removeFromSuperview()
+        //search in cell for another list item
+        if let oldListItem = cell.contentView.subviews.first(where: {$0 is RecyclerListItemView}) {
+            oldListItem.removeFromSuperview()
+            oldListItem.removeConstraints(oldListItem.constraints)
+        }
+        cell.contentView.addSubview(listItem)
+        NSLayoutConstraint.activate([
+            listItem.leftAnchor.constraint(equalTo: cell.contentView.leftAnchor),
+            listItem.rightAnchor.constraint(equalTo: cell.contentView.rightAnchor),
+            listItem.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
+            listItem.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor)
+            ])
+    }
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -60,13 +76,7 @@ extension RecyclerListView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
         let view = data[indexPath.row]
-        cell.contentView.addSubview(view)
-        NSLayoutConstraint.activate([
-            view.leftAnchor.constraint(equalTo: cell.contentView.leftAnchor),
-            view.rightAnchor.constraint(equalTo: cell.contentView.rightAnchor),
-            view.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
-            view.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor)
-            ])
+        update(cell: cell, with: view)
         return cell
     }
 }
