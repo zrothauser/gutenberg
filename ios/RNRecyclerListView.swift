@@ -121,8 +121,9 @@ extension RecyclerListView {
             }
             return indeces
         }()
+
         tableView.deleteRows(at: indeces, with: .automatic)
-        dataSize = dataSize - amount
+        data.removeSubrange(at..<at+amount)
         tableView.endUpdates()
     }
 }
