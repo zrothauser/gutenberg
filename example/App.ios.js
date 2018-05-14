@@ -13,7 +13,8 @@ import {
   Image,
   Button,
   TouchableNativeFeedback,
-  TouchableHighlight
+  TouchableHighlight,
+  SafeAreaView
 } from 'react-native';
 
 import RecyclerViewList, { DataSource } from 'react-native-recyclerview-list';
@@ -41,7 +42,7 @@ export default class example extends Component {
     const { dataSource } = this.state;
 
     return (
-      <View style={{flex:1}}>
+      <SafeAreaView style={{flex:1, backgroundColor: '#e7e7e7'}}>
         { this.renderTopControlPanel() }
         <RecyclerViewList 
           ref={(component) => this._recycler = component}
@@ -52,7 +53,7 @@ export default class example extends Component {
           initialScrollIndex={0}
         />
         { this.renderBottomControlPanel() }
-      </View>
+      </SafeAreaView>
     );
   }
 
