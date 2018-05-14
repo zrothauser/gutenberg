@@ -38,7 +38,12 @@ import UIKit
             super.addSubview(view)
             return
         }
-        data.append(listItem)
+        // only add it if we don't have an item already
+        if !data.contains(where: { (item) -> Bool in
+            item.itemIndex == listItem.itemIndex
+        }) {
+            data.append(listItem)
+        }
     }
 }
 
