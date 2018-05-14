@@ -1,12 +1,12 @@
 
-#import "RNRecyclerViewItemManager.h"
+#import "RNRecyclerListItemViewManager.h"
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTConvert.h>
 
 typedef void (^ListItemViewBlock)(RecyclerListItemView *listItemView);
 
-@implementation RNRecyclerViewItemManager
+@implementation RNRecyclerListItemViewManager
 
 RCT_EXPORT_MODULE()
 
@@ -37,7 +37,7 @@ RCT_EXPORT_MODULE()
 
 RCT_CUSTOM_VIEW_PROPERTY(itemIndex, NSInteger, RecyclerListItemView)
 {
-    //view.dataSize = [RCTConvert NSInteger:json];
+    view.itemIndex = [RCTConvert NSInteger:json];
 }
 
 @end

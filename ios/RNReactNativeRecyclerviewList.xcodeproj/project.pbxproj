@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B3E7B58A1CC2AC0600A0062D /* RNRecyclerListViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNRecyclerListViewManager.m */; };
-		FF239D712099CC5200D0DA1A /* RNRecyclerViewItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF239D702099CC5200D0DA1A /* RNRecyclerViewItemManager.m */; };
+		FF239D712099CC5200D0DA1A /* RNRecyclerListItemViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF239D702099CC5200D0DA1A /* RNRecyclerListItemViewManager.m */; };
 		FF239D732099CCC900D0DA1A /* RecyclerListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF239D722099CCC900D0DA1A /* RecyclerListItemView.swift */; };
 		FF658114208F49580034D916 /* RNRecyclerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF658113208F49580034D916 /* RNRecyclerListView.swift */; };
 /* End PBXBuildFile section */
@@ -29,8 +29,8 @@
 		134814201AA4EA6300B7C361 /* libRNReactNativeRecyclerviewList.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNReactNativeRecyclerviewList.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5881CC2AC0600A0062D /* RNRecyclerListViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNRecyclerListViewManager.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNRecyclerListViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNRecyclerListViewManager.m; sourceTree = "<group>"; };
-		FF239D6F2099CC0900D0DA1A /* RNRecyclerViewItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNRecyclerViewItemManager.h; sourceTree = "<group>"; };
-		FF239D702099CC5200D0DA1A /* RNRecyclerViewItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNRecyclerViewItemManager.m; sourceTree = "<group>"; };
+		FF239D6F2099CC0900D0DA1A /* RNRecyclerListItemViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNRecyclerListItemViewManager.h; sourceTree = "<group>"; };
+		FF239D702099CC5200D0DA1A /* RNRecyclerListItemViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNRecyclerListItemViewManager.m; sourceTree = "<group>"; };
 		FF239D722099CCC900D0DA1A /* RecyclerListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclerListItemView.swift; sourceTree = "<group>"; };
 		FF658112208F49570034D916 /* RNReactNativeRecyclerviewList-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNReactNativeRecyclerviewList-Bridging-Header.h"; sourceTree = "<group>"; };
 		FF658113208F49580034D916 /* RNRecyclerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNRecyclerListView.swift; sourceTree = "<group>"; };
@@ -58,8 +58,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				FF239D6F2099CC0900D0DA1A /* RNRecyclerViewItemManager.h */,
-				FF239D702099CC5200D0DA1A /* RNRecyclerViewItemManager.m */,
+				FF239D6F2099CC0900D0DA1A /* RNRecyclerListItemViewManager.h */,
+				FF239D702099CC5200D0DA1A /* RNRecyclerListItemViewManager.m */,
 				FF239D722099CCC900D0DA1A /* RecyclerListItemView.swift */,
 				B3E7B5881CC2AC0600A0062D /* RNRecyclerListViewManager.h */,
 				B3E7B5891CC2AC0600A0062D /* RNRecyclerListViewManager.m */,
@@ -128,7 +128,7 @@
 			files = (
 				FF239D732099CCC900D0DA1A /* RecyclerListItemView.swift in Sources */,
 				FF658114208F49580034D916 /* RNRecyclerListView.swift in Sources */,
-				FF239D712099CC5200D0DA1A /* RNRecyclerViewItemManager.m in Sources */,
+				FF239D712099CC5200D0DA1A /* RNRecyclerListItemViewManager.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNRecyclerListViewManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

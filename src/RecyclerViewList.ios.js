@@ -45,7 +45,7 @@ class RecyclerViewItem extends Component {
     );
   }
 }
-const NativeRecyclerViewItem = requireNativeComponent('RNRecyclerViewItem', RecyclerViewItem);
+const NativeRecyclerViewItem = requireNativeComponent('RNRecyclerListItemView', RecyclerViewItem);
 
 const NativeRecyclerView = requireNativeComponent('RNRecyclerListView', RecyclerViewList);
 
