@@ -75,11 +75,8 @@ extension RecyclerListView {
 
     @objc var dataSize: Int {
         set {
-//            data.removeAll()
-//            for i in 0..<newValue {
-//                data.append("Item \(i)")
-//            }
-//            tableView.reloadData()
+            data.removeAll()
+            tableView.reloadData()
         }
 
         get {

@@ -49,7 +49,7 @@ const NativeRecyclerViewItem = requireNativeComponent('RNRecyclerListItemView', 
 
 const NativeRecyclerView = requireNativeComponent('RNRecyclerListView', RecyclerViewList);
 
-class RecyclerViewList extends React.Component {
+class RecyclerViewList extends React.PureComponent {
   static propTypes = {
     ...View.propTypes,
     renderItem: PropTypes.func,// A funtion that defines how an item is rendered
@@ -174,6 +174,11 @@ class RecyclerViewList extends React.Component {
       nextProps.dataSource._addListener(this._dataSourceListener);
       this._notifyDataSetChanged(nextProps.dataSource.size());
     }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this._shouldUpdateAll = false;
+    this._shouldUpdateKeys = [];
   }
 
   render() {
@@ -336,6 +341,7 @@ class RecyclerViewList extends React.Component {
     this.setState({
                   itemCount
                   });
+    this.forceUpdate();
   }
 
   _calcItemRangeToRender(firstVisibleIndex, lastVisibleIndex) {
