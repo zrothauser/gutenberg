@@ -23,7 +23,7 @@ import UIKit
     
     func commonInit() {
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.register(WrapperCell.self, forCellReuseIdentifier: cellIdentifier)
         addSubview(tableView)        
     }
 
@@ -54,7 +54,14 @@ extension RecyclerListView: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-        cell.contentView.addSubview(data[indexPath.row])
+        let view = data[indexPath.row]
+        cell.contentView.addSubview(view)
+        NSLayoutConstraint.activate([
+            view.leftAnchor.constraint(equalTo: cell.contentView.leftAnchor),
+            view.rightAnchor.constraint(equalTo: cell.contentView.rightAnchor),
+            view.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
+            view.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor)
+            ])
         return cell
     }
 }
@@ -112,5 +119,16 @@ extension RecyclerListView {
         tableView.deleteRows(at: indeces, with: .automatic)
         dataSize = dataSize - amount
         tableView.endUpdates()
+    }
+}
+
+class WrapperCell: UITableViewCell {
+
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .default, reuseIdentifier: reuseIdentifier)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 }
