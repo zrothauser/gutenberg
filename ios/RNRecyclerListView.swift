@@ -98,31 +98,26 @@ extension RecyclerListView {
         tableView.endUpdates()
     }
 
+    func makeIndexPaths(from: Int, count: Int) -> [IndexPath] {
+        var indices = [IndexPath]()
+        for i in 0..<count {
+            indices.append(IndexPath(row: from + i, section:0))
+        }
+        return indices
+    }
     @objc func insertItems(at: Int, amount:Int) {
         tableView.beginUpdates()
-        let indeces: [IndexPath] = {
-            var indeces = [IndexPath]()
-            for i in 0..<amount {
-                indeces.append(IndexPath(row: at+i, section:0))
-            }
-            return indeces
-        }()
-        tableView.insertRows(at: indeces, with: .automatic)
+        let indices: [IndexPath] = makeIndexPaths(from: at, count: amount)
+        tableView.insertRows(at: indices, with: .automatic)
         dataSize = dataSize + amount
         tableView.endUpdates()
     }
 
     @objc func removeItems(at: Int, amount:Int) {
         tableView.beginUpdates()
-        let indeces: [IndexPath] = {
-            var indeces = [IndexPath]()
-            for i in 0..<amount {
-                indeces.append(IndexPath(row: at+i, section:0))
-            }
-            return indeces
-        }()
+        let indices: [IndexPath] = makeIndexPaths(from: at, count: amount)
 
-        tableView.deleteRows(at: indeces, with: .automatic)
+        tableView.deleteRows(at: indices, with: .automatic)
         data.removeSubrange(at..<at+amount)
         tableView.endUpdates()
     }
