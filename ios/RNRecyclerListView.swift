@@ -51,14 +51,15 @@ import UIKit
             }
         } else {
             print("Add cell with index: \(listItem.itemIndex) and key: \(listItem.itemKey)")
-            //tableView.beginUpdates()
+
             data.insert(listItem, at: listItem.itemIndex)
             let newIndexPaths = [IndexPath(row:listItem.itemIndex, section: 0)]
             tableView.insertRows(at: newIndexPaths , with: .automatic)
-            //tableView.endUpdates()
-            //view.setNeedsDisplay()
-            //tableView.reloadRows(at: newIndexPaths, with: .none)
-
+            let deadlineTime: DispatchTime = DispatchTime.now() + 0.5
+            DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
+            }
         }
     }
 }
