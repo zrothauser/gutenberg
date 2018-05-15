@@ -42,12 +42,11 @@ import UIKit
         }
         // only add it if we don't have an item already
         if let item = data.first(where: { $0.itemKey == listItem.itemKey}) {
-            if let cell = tableView.cellForRow(at: IndexPath(row: item.itemIndex, section: 0)) as? WrapperCell {
-                if (cell.listItemView != listItem) {
+            print("Found cell with index: \(listItem.itemIndex) and key: \(listItem.itemKey)")
+            if let cell = tableView.cellForRow(at: IndexPath(row: item.itemIndex, section: 0)) as? WrapperCell {                
                     cell.listItemView = listItem
                     data[item.itemIndex] = listItem
                     print("Update cell with index: \(listItem.itemIndex)")
-                }
             }
         } else {
             print("Add cell with index: \(listItem.itemIndex) and key: \(listItem.itemKey)")
@@ -55,7 +54,7 @@ import UIKit
             data.insert(listItem, at: listItem.itemIndex)
             let newIndexPaths = [IndexPath(row:listItem.itemIndex, section: 0)]
             tableView.insertRows(at: newIndexPaths , with: .automatic)
-            let deadlineTime: DispatchTime = DispatchTime.now() + 0.5
+            let deadlineTime: DispatchTime = DispatchTime.now() + .milliseconds(250)
             DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
                 self.tableView.beginUpdates()
                 self.tableView.endUpdates()
@@ -100,7 +99,8 @@ extension RecyclerListView {
         tableView.scrollToRow(at: IndexPath(row: position, section: 0), at: .top, animated: animated)
     }
 
-    @objc func moveCell(from: Int, to: Int) {        
+    @objc func moveCell(from: Int, to: Int) {
+        data.swapAt(from, to)
         tableView.moveRow(at: IndexPath(row: from, section: 0), to: IndexPath(row: to, section: 0))
     }
 
@@ -113,7 +113,7 @@ extension RecyclerListView {
     }
 
     @objc func insertItems(at: Int, amount:Int) {
-
+        
     }
 
     @objc func removeItems(at: Int, amount:Int) {

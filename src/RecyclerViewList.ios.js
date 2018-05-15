@@ -315,13 +315,14 @@ class RecyclerViewList extends React.PureComponent {
                     lastVisibleIndex: this.props.initialListSize
                     });
     } else {
+      this.forceUpdate();
       if (position <= firstVisibleIndex) {
         this.setState({
                       firstVisibleIndex: this.state.firstVisibleIndex + count,
                       lastVisibleIndex: this.state.lastVisibleIndex + count,
                       });
       } else {
-        this.forceUpdate();
+
       }
     }
   }
@@ -352,7 +353,7 @@ class RecyclerViewList extends React.PureComponent {
     var count = dataSource.size();
     var from = Math.min(count, Math.max(0, firstVisibleIndex - windowSize));
     var to = Math.min(count, lastVisibleIndex + windowSize);
-    return [from, to];
+    return [0, count];
   }
 
 
