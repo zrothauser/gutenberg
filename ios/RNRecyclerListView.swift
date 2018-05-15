@@ -100,11 +100,8 @@ extension RecyclerListView {
         tableView.scrollToRow(at: IndexPath(row: position, section: 0), at: .top, animated: animated)
     }
 
-    @objc func moveCell(from: Int, to: Int) {
-        tableView.beginUpdates()
+    @objc func moveCell(from: Int, to: Int) {        
         tableView.moveRow(at: IndexPath(row: from, section: 0), to: IndexPath(row: to, section: 0))
-        data.swapAt(from, to)
-        tableView.endUpdates()
     }
 
     func makeIndexPaths(from: Int, count: Int) -> [IndexPath] {
