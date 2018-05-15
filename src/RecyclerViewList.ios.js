@@ -7,6 +7,7 @@ class RecyclerViewItem extends Component {
   static propTypes = {
     style: View.propTypes.style,
     itemIndex: PropTypes.number,
+    itemKey: PropTypes.number,
     shouldUpdate: PropTypes.bool,
     dataSource: PropTypes.object,
     renderItem: PropTypes.func,
@@ -27,7 +28,7 @@ class RecyclerViewItem extends Component {
   }
 
   render() {
-    const { style, itemIndex, dataSource, renderItem, header, separator, footer } = this.props;
+    const { style, itemIndex, itemKey, dataSource, renderItem, header, separator, footer } = this.props;
     const element = renderItem({
       item: dataSource.get(itemIndex),
       index: itemIndex
@@ -36,7 +37,8 @@ class RecyclerViewItem extends Component {
     return (
       <NativeRecyclerViewItem
         style={style}
-        itemIndex={itemIndex}>
+        itemIndex={itemIndex}
+        itemKey={itemKey}>
         {header}
         {element}
         {separator}
@@ -227,6 +229,7 @@ class RecyclerViewList extends React.PureComponent {
             key={itemKey}
             style={styles.absolute}
             itemIndex={i}
+            itemKey={itemKey}
             shouldUpdate={shouldUpdate}
             dataSource={dataSource}
             renderItem={renderItem}

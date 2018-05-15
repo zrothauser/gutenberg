@@ -24,6 +24,8 @@ import UIKit
     func commonInit() {
         tableView.dataSource = self
         tableView.register(WrapperCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 80
         addSubview(tableView)        
     }
 
@@ -39,31 +41,29 @@ import UIKit
             return
         }
         // only add it if we don't have an item already
-        if !data.contains(where: { (item) -> Bool in
-            item.itemIndex == listItem.itemIndex
-        }) {
-            data.append(listItem)
+        if let item = data.first(where: { $0.itemKey == listItem.itemKey}) {
+            if let cell = tableView.cellForRow(at: IndexPath(row: item.itemIndex, section: 0)) as? WrapperCell {
+                if (cell.listItemView != listItem) {
+                    cell.listItemView = listItem
+                    data[item.itemIndex] = listItem
+                    print("Update cell with index: \(listItem.itemIndex)")
+                }
+            }
+        } else {
+            print("Add cell with index: \(listItem.itemIndex) and key: \(listItem.itemKey)")
+            //tableView.beginUpdates()
+            data.insert(listItem, at: listItem.itemIndex)
+            let newIndexPaths = [IndexPath(row:listItem.itemIndex, section: 0)]
+            tableView.insertRows(at: newIndexPaths , with: .automatic)
+            //tableView.endUpdates()
+            //view.setNeedsDisplay()
+            //tableView.reloadRows(at: newIndexPaths, with: .none)
+
         }
     }
 }
 
 extension RecyclerListView: UITableViewDataSource {
-
-    func update(cell: UITableViewCell, with listItem: RecyclerListItemView) {
-        listItem.removeFromSuperview()
-        //search in cell for another list item
-        if let oldListItem = cell.contentView.subviews.first(where: {$0 is RecyclerListItemView}) {
-            oldListItem.removeFromSuperview()
-            oldListItem.removeConstraints(oldListItem.constraints)
-        }
-        cell.contentView.addSubview(listItem)
-        NSLayoutConstraint.activate([
-            listItem.leftAnchor.constraint(equalTo: cell.contentView.leftAnchor),
-            listItem.rightAnchor.constraint(equalTo: cell.contentView.rightAnchor),
-            listItem.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
-            listItem.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor)
-            ])
-    }
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -74,9 +74,9 @@ extension RecyclerListView: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WrapperCell
         let view = data[indexPath.row]
-        update(cell: cell, with: view)
+        cell.listItemView = view
         return cell
     }
 }
@@ -95,7 +95,8 @@ extension RecyclerListView {
     }
 
     @objc func scroll(to: Int, animated: Bool) {
-        tableView.scrollToRow(at: IndexPath(row: to, section: 0), at: .top, animated: animated)
+        let position = max(min(to, data.count-1),0)
+        tableView.scrollToRow(at: IndexPath(row: position, section: 0), at: .top, animated: animated)
     }
 
     @objc func moveCell(from: Int, to: Int) {
@@ -112,12 +113,9 @@ extension RecyclerListView {
         }
         return indices
     }
+
     @objc func insertItems(at: Int, amount:Int) {
-        tableView.beginUpdates()
-        let indices: [IndexPath] = makeIndexPaths(from: at, count: amount)
-        tableView.insertRows(at: indices, with: .automatic)
-        dataSize = dataSize + amount
-        tableView.endUpdates()
+
     }
 
     @objc func removeItems(at: Int, amount:Int) {
@@ -132,11 +130,39 @@ extension RecyclerListView {
 
 class WrapperCell: UITableViewCell {
 
+    var listItemView: RecyclerListItemView? {
+        didSet {
+            if let item = listItemView {
+                update(with: item)
+            }
+        }
+    }
+
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+
+
+    override var intrinsicContentSize: CGSize {
+        return listItemView!.intrinsicContentSize
+    }
+
+    func update(with listItem: RecyclerListItemView) {
+        //search in cell for another list item
+        while !contentView.subviews.isEmpty {
+            contentView.subviews[0].removeFromSuperview()
+        }
+
+        contentView.addSubview(listItem)
+        NSLayoutConstraint.activate([
+            listItem.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            listItem.rightAnchor.constraint(lessThanOrEqualTo: contentView.rightAnchor),
+            listItem.topAnchor.constraint(equalTo: contentView.topAnchor),
+            listItem.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            ])
     }
 }

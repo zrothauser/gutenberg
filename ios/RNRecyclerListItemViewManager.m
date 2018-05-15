@@ -40,5 +40,11 @@ RCT_CUSTOM_VIEW_PROPERTY(itemIndex, NSInteger, RecyclerListItemView)
     view.itemIndex = [RCTConvert NSInteger:json];
 }
 
+RCT_CUSTOM_VIEW_PROPERTY(itemKey, NSInteger, RecyclerListItemView)
+{
+    view.itemKey = [RCTConvert NSInteger:json];
+}
+
+
 @end
 

@@ -224,6 +224,7 @@ class RecyclerView extends React.PureComponent {
             key={itemKey}
             style={styles.absolute}
             itemIndex={i}
+            itemKey={itemKey}
             shouldUpdate={shouldUpdate}
             dataSource={dataSource}
             renderItem={renderItem}
