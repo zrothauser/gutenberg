@@ -49,7 +49,7 @@ RCT_EXPORT_METHOD(notifyDataSetChanged:(nonnull NSNumber *)node size:(NSInteger)
     } onNode:node];
 }
 
-RCT_EXPORT_METHOD(notifyDataSetMoved:(nonnull NSNumber *)node indexFromPosition:(NSInteger)from toPosition:(NSInteger)to)
+RCT_EXPORT_METHOD(notifyItemMoved:(nonnull NSNumber *)node indexFromPosition:(NSInteger)from toPosition:(NSInteger)to)
 {
     RCTLogInfo(@"Dataset moved item from %i to %i", (int)from, (int)to);
     [self executeBlock:^(RecyclerListView *listView) {
