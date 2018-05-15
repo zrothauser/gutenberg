@@ -43,7 +43,7 @@ import UIKit
         // only add it if we don't have an item already
         if let item = data.first(where: { $0.itemKey == listItem.itemKey}) {
             print("Found cell with index: \(listItem.itemIndex) and key: \(listItem.itemKey)")
-            if let cell = tableView.cellForRow(at: IndexPath(row: item.itemIndex, section: 0)) as? WrapperCell {                
+            if let cell = tableView.cellForRow(at: IndexPath(row: item.itemIndex, section: 0)) as? WrapperCell {
                     cell.listItemView = listItem
                     data[item.itemIndex] = listItem
                     print("Update cell with index: \(listItem.itemIndex)")
@@ -113,7 +113,7 @@ extension RecyclerListView {
     }
 
     @objc func insertItems(at: Int, amount:Int) {
-        
+        // we don't need to do anything here, the addition of subviews to the react tree to the view will trigger the inserts automattically
     }
 
     @objc func removeItems(at: Int, amount:Int) {
