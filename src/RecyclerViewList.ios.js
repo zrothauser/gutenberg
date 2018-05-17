@@ -154,8 +154,7 @@ class RecyclerViewList extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { dataSource, initialScrollIndex, initialScrollOffset } = this.props;
-    this._notifyDataSetChanged(dataSource.size());
+    const { dataSource, initialScrollIndex, initialScrollOffset } = this.props;    
     if (initialScrollIndex) {
         this.scrollToIndex({
         animated: false,
@@ -315,14 +314,13 @@ class RecyclerViewList extends React.PureComponent {
                     lastVisibleIndex: this.props.initialListSize
                     });
     } else {
-      this.forceUpdate();
       if (position <= firstVisibleIndex) {
         this.setState({
                       firstVisibleIndex: this.state.firstVisibleIndex + count,
                       lastVisibleIndex: this.state.lastVisibleIndex + count,
                       });
       } else {
-
+        this.forceUpdate();
       }
     }
   }
