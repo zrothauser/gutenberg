@@ -138,6 +138,7 @@ class WrapperCell: UITableViewCell {
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
     }
 
     required init?(coder aDecoder: NSCoder) {
