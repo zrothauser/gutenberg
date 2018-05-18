@@ -1,12 +1,12 @@
 
-#import "RNReactNativeRecyclerviewList.h"
+#import "RNRecyclerListViewManager.h"
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTConvert.h>
 
 typedef void (^ListViewBlock)(RecyclerListView *listView);
 
-@implementation RNReactNativeRecyclerviewList
+@implementation RNRecyclerListViewManager
 
 - (dispatch_queue_t)methodQueue
 {
@@ -49,7 +49,7 @@ RCT_EXPORT_METHOD(notifyDataSetChanged:(nonnull NSNumber *)node size:(NSInteger)
     } onNode:node];
 }
 
-RCT_EXPORT_METHOD(notifyDataSetMoved:(nonnull NSNumber *)node indexFromPosition:(NSInteger)from toPosition:(NSInteger)to)
+RCT_EXPORT_METHOD(notifyItemMoved:(nonnull NSNumber *)node indexFromPosition:(NSInteger)from toPosition:(NSInteger)to)
 {
     RCTLogInfo(@"Dataset moved item from %i to %i", (int)from, (int)to);
     [self executeBlock:^(RecyclerListView *listView) {
@@ -78,6 +78,8 @@ RCT_CUSTOM_VIEW_PROPERTY(itemCount, NSInteger, RecyclerListView)
 {
     view.dataSize = [RCTConvert NSInteger:json];
 }
+
+RCT_EXPORT_VIEW_PROPERTY(onVisibleItemsChange, RCTBubblingEventBlock)
 
 RCT_EXPORT_MODULE()
 

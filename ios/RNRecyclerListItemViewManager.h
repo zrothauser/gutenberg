@@ -7,7 +7,7 @@
 
 #import "RNReactNativeRecyclerviewList-Swift.h"
 
-@interface RNReactNativeRecyclerviewList : RCTViewManager
+@interface RNRecyclerListItemViewManager : RCTViewManager
 
 @end
   

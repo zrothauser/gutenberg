@@ -12,7 +12,9 @@ import {
   View,
   Image,
   Button,
-  TouchableNativeFeedback
+  TouchableNativeFeedback,
+  TouchableHighlight,
+  SafeAreaView
 } from 'react-native';
 
 import RecyclerViewList, { DataSource } from 'react-native-recyclerview-list';
@@ -40,15 +42,32 @@ export default class example extends Component {
     const { dataSource } = this.state;
 
     return (
-      <View style={{flex:1}}>
+      <SafeAreaView style={{flex:1, backgroundColor: '#e7e7e7'}}>
         { this.renderTopControlPanel() }
         <RecyclerViewList 
           ref={(component) => this._recycler = component}
           style={{flex:1}}
           dataSource={dataSource}
+          renderItem={this.renderItem}
+          windowSize={20}
+          initialScrollIndex={0}
         />
         { this.renderBottomControlPanel() }
-      </View>
+      </SafeAreaView>
+    );
+  }
+
+  renderItem = ({item, index}) => {
+    return (
+      <Item
+        item={item}
+        index={index}
+        onRemove={() => this.remove(index)}
+        onAddAbove={() => this.addAbove(index)}
+        onMoveUp={() => this.moveUp(index)}
+        onMoveDown={() => this.moveDown(index)}
+        onAddBelow={() => this.addBelow(index)}
+        onIncrementCounter={() => this.incrementCounter(index)} />
     );
   }
 
@@ -147,6 +166,63 @@ export default class example extends Component {
     var currCount = this.state.dataSource.size();
     var newItems = Array(size).fill().map((e,i)=>newItem());
     this.state.dataSource.splice(currCount, 0, ...newItems);
+  }
+}
+
+class Item extends Component {
+  render() {
+    const { item, index, onRemove, onAddAbove, onAddBelow, onMoveUp, onMoveDown, onIncrementCounter } = this.props;
+    const { id, counter } = item;
+    const imageSize = 70;
+
+    return (
+      <TouchableHighlight
+        onPress={onIncrementCounter}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5 }}>
+          <Image
+            source={{ uri: 'http://loremflickr.com/320/240?t=' + (id % 9) }}
+            style={{
+              width: imageSize,
+              height: imageSize,
+              marginRight: 10
+            }} />
+          <View style={{ flex: 1 }}>
+            <Text style={{
+              fontSize: 16,
+              color: 'black'
+            }}>Item #{id}</Text>
+            <Text style={{
+              fontSize: 13,
+              color: '#888'
+            }}>Touch to count { counter ?
+              <Text style={{ fontWeight: 'bold', color: 'black' }}>{counter}</Text>
+              : null }</Text>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Button
+              title={"\u25B2"}
+              onPress={onMoveUp} />
+            <View style={{ width: 5 }} />
+            <Button
+              title={"\u25BC"}
+              onPress={onMoveDown} />
+            <View style={{ width: 5 }} />
+            <Button
+              title={"\u002B\u25B2"}
+              onPress={onAddAbove} />
+            <View style={{ width: 5 }} />
+            <Button
+              title={"\u002B\u25BC"}
+              onPress={onAddBelow} />
+            <View style={{ width: 5 }} />
+            <Button
+              color="red"
+              title={" X "}
+              onPress={onRemove} />
+          </View>
+        </View>
+      </TouchableHighlight>
+    );
   }
 }
 

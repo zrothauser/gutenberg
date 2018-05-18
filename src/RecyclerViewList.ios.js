@@ -1,15 +1,57 @@
+import React, { Component } from 'react';
+import ReactNative, { View, requireNativeComponent, DeviceEventEmitter, StyleSheet, UIManager } from 'react-native';
 import PropTypes from 'prop-types';
-import React from 'react';
-import ReactNative, {
-  View,
-  requireNativeComponent,
-  UIManager
-} from 'react-native';
 import DataSource from './DataSource';
 
-var RNReactNativeRecyclerviewList = requireNativeComponent('RNReactNativeRecyclerviewList', RecyclerViewList);
+class RecyclerViewItem extends Component {
+  static propTypes = {
+    style: View.propTypes.style,
+    itemIndex: PropTypes.number,
+    itemKey: PropTypes.number,
+    shouldUpdate: PropTypes.bool,
+    dataSource: PropTypes.object,
+    renderItem: PropTypes.func,
+    header: PropTypes.any,
+    separator: PropTypes.any,
+    footer: PropTypes.any
+  }
 
-class RecyclerViewList extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    if (
+      (nextProps.itemIndex !== this.props.itemIndex) ||
+      (nextProps.shouldUpdate)
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  render() {
+    const { style, itemIndex, itemKey, dataSource, renderItem, header, separator, footer } = this.props;
+    const element = renderItem({
+      item: dataSource.get(itemIndex),
+      index: itemIndex
+    });
+
+    return (
+      <NativeRecyclerViewItem
+        style={style}
+        itemIndex={itemIndex}
+        itemKey={itemKey}>
+        {header}
+        {element}
+        {separator}
+        {footer}
+      </NativeRecyclerViewItem>
+    );
+  }
+}
+const NativeRecyclerViewItem = requireNativeComponent('RNRecyclerListItemView', RecyclerViewItem);
+
+const NativeRecyclerView = requireNativeComponent('RNRecyclerListView', RecyclerViewList);
+
+class RecyclerViewList extends React.PureComponent {
   static propTypes = {
     ...View.propTypes,
     renderItem: PropTypes.func,// A funtion that defines how an item is rendered
@@ -18,7 +60,12 @@ class RecyclerViewList extends React.Component {
     initialListSize: PropTypes.number,
     initialScrollIndex: PropTypes.number,
     initialScrollOffset: PropTypes.number,
-    itemAnimatorEnabled: PropTypes.bool
+    itemAnimatorEnabled: PropTypes.bool,
+    ListHeaderComponent: PropTypes.element,
+    ListFooterComponent: PropTypes.element,
+    ListEmptyComponent: PropTypes.element,
+    ItemSeparatorComponent: PropTypes.element,
+    onVisibleItemsChange: PropTypes.func
   };
 
   static defaultProps = {
@@ -107,8 +154,7 @@ class RecyclerViewList extends React.Component {
   }
 
   componentDidMount() {
-    const { dataSource, initialScrollIndex, initialScrollOffset } = this.props;
-    this._notifyDataSetChanged(dataSource.size());
+    const { dataSource, initialScrollIndex, initialScrollOffset } = this.props;    
     if (initialScrollIndex) {
         this.scrollToIndex({
         animated: false,
@@ -131,10 +177,96 @@ class RecyclerViewList extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    this._shouldUpdateAll = false;
+    this._shouldUpdateKeys = [];
+  }
+
   render() {
-    return <RNReactNativeRecyclerviewList {...this.props} 
-      ref={(component) => this._nativeInstance = component }
-    />;
+    const {
+      dataSource,
+      renderItem,
+      ListHeaderComponent,
+      ListFooterComponent,
+      ListEmptyComponent,
+      ItemSeparatorComponent,
+      ...rest
+    } = this.props;
+
+    const itemCount = dataSource.size();
+    const end = itemCount-1;
+    var stateItemCount = this.state.itemCount;
+
+    var body = [];
+    var itemRangeToRender = this._calcItemRangeToRender(this.state.firstVisibleIndex, this.state.lastVisibleIndex);
+
+    if (ListHeaderComponent) {
+      var headerElement = React.isValidElement(ListHeaderComponent)
+        ? ListHeaderComponent
+        : <ListHeaderComponent />;
+    }
+
+    if (ListFooterComponent) {
+      var footerElement = React.isValidElement(ListFooterComponent)
+        ? ListFooterComponent
+        : <ListFooterComponent />;
+    }
+
+    if (ItemSeparatorComponent) {
+      var separatorElement = React.isValidElement(ItemSeparatorComponent)
+        ? ItemSeparatorComponent
+        : <ItemSeparatorComponent />;
+    }
+
+    if (itemCount > 0) {
+      for (var i=itemRangeToRender[0]; i<itemRangeToRender[1]; i++) {
+        let item = dataSource.get(i);
+        let itemKey = dataSource.getKey(item, i);
+        let shouldUpdate = this._needsItemUpdate(itemKey);
+        body.push(
+          <RecyclerViewItem
+            key={itemKey}
+            style={styles.absolute}
+            itemIndex={i}
+            itemKey={itemKey}
+            shouldUpdate={shouldUpdate}
+            dataSource={dataSource}
+            renderItem={renderItem}
+            header={i == 0 && headerElement}
+            separator={i != end && separatorElement}
+            footer={i == end && footerElement} />
+        );
+      }
+    } else if (ListEmptyComponent) {
+      var emptyElement = React.isValidElement(ListEmptyComponent)
+        ? ListEmptyComponent
+        : <ListEmptyComponent />;
+
+      body.push(
+        <RecyclerViewItem
+          style={styles.absolute}
+          key="$empty"
+          itemIndex={0}
+          shouldUpdate={true}
+          dataSource={dataSource}
+          renderItem={() => emptyElement}
+          header={headerElement}
+          footer={footerElement} />
+      );
+
+      stateItemCount = 1;
+    }
+
+    return (
+      <NativeRecyclerView
+        {...rest}
+        itemCount={stateItemCount}
+        onVisibleItemsChange={this._handleVisibleItemsChange}
+        ref={(component) => this._nativeInstance = component }>
+        {body}
+      </NativeRecyclerView>
+    );
+
   }
 
   scrollToEnd({ animated = true, velocity } = {}) {
@@ -148,15 +280,33 @@ class RecyclerViewList extends React.Component {
   scrollToIndex = ({ animated = true, index, velocity, viewPosition, viewOffset }) => {    
     UIManager.dispatchViewManagerCommand(
       ReactNative.findNodeHandle(this._nativeInstance),
-      UIManager.RNReactNativeRecyclerviewList.Commands.scrollToIndex,
+      UIManager.RNRecyclerListView.Commands.scrollToIndex,
       [index, animated]
     );
+  }
+
+  _needsItemUpdate(itemKey) {
+    return this._shouldUpdateAll || this._shouldUpdateKeys.includes(itemKey);
+  }
+
+  _handleVisibleItemsChange = ({nativeEvent}) => {
+    var firstIndex = nativeEvent.firstIndex;
+    var lastIndex = nativeEvent.lastIndex;    
+    this.setState({
+                  firstVisibleIndex: firstIndex,
+                  lastVisibleIndex: lastIndex,
+                  });
+
+    const { onVisibleItemsChange } = this.props;
+    if (onVisibleItemsChange) {
+      onVisibleItemsChange(nativeEvent);
+    }
   }
 
   _notifyItemMoved(currentPosition, nextPosition) {
     UIManager.dispatchViewManagerCommand(
                                          ReactNative.findNodeHandle(this),
-                                         UIManager.RNReactNativeRecyclerviewList.Commands.notifyItemMoved,
+                                         UIManager.RNRecyclerListView.Commands.notifyItemMoved,
                                          [currentPosition, nextPosition],
                                          );
     this.forceUpdate();
@@ -165,7 +315,7 @@ class RecyclerViewList extends React.Component {
   _notifyItemRangeInserted(position, count) {
     UIManager.dispatchViewManagerCommand(
                                          ReactNative.findNodeHandle(this),
-                                         UIManager.RNReactNativeRecyclerviewList.Commands.notifyItemRangeInserted,
+                                         UIManager.RNRecyclerListView.Commands.notifyItemRangeInserted,
                                          [position, count],
                                          );
 
@@ -192,7 +342,7 @@ class RecyclerViewList extends React.Component {
   _notifyItemRangeRemoved(position, count) {
     UIManager.dispatchViewManagerCommand(
                                          ReactNative.findNodeHandle(this),
-                                         UIManager.RNReactNativeRecyclerviewList.Commands.notifyItemRangeRemoved,
+                                         UIManager.RNRecyclerListView.Commands.notifyItemRangeRemoved,
                                          [position, count],
                                          );
     this.forceUpdate();
@@ -201,15 +351,33 @@ class RecyclerViewList extends React.Component {
   _notifyDataSetChanged = (itemCount) => {
     UIManager.dispatchViewManagerCommand(
        ReactNative.findNodeHandle(this._nativeInstance),
-       UIManager.RNReactNativeRecyclerviewList.Commands.notifyDataSetChanged,
+       UIManager.RNRecyclerListView.Commands.notifyDataSetChanged,
        [itemCount]
     );
     this.setState({
                   itemCount
                   });
+    this.forceUpdate();
+  }
+
+  _calcItemRangeToRender(firstVisibleIndex, lastVisibleIndex) {
+    const { dataSource, windowSize } = this.props;
+    var count = dataSource.size();
+    var from = Math.min(count, Math.max(0, firstVisibleIndex - windowSize));
+    var to = Math.min(count, lastVisibleIndex + windowSize);
+    return [0, count];
   }
 
 
 }
+
+var styles = StyleSheet.create({
+  absolute: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0
+  },
+});
 
 module.exports = RecyclerViewList;
