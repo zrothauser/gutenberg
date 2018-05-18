@@ -6,14 +6,16 @@
 
 import React, { Component } from 'react';
 import {
+  Platform,
   AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
   Button,
-  TouchableNativeFeedback,
-  ToastAndroid
+  TouchableHighlight,
+  ToastAndroid,
+  SafeAreaView
 } from 'react-native';
 
 import RecyclerViewList, { DataSource } from 'react-native-recyclerview-list';
@@ -29,19 +31,19 @@ function newItem() {
 export default class example extends Component {
   constructor(props) {
     super(props);
-    var data = Array(10).fill().map((e,i) => newItem());
+    var data = Array(10).fill().map((e, i) => newItem());
 
     this.state = {
       dataSource: new DataSource(data, (item, index) => item.id)
     };
   }
 
-  render() {
+  renderMainContent() {
     const { dataSource } = this.state;
 
     return (
-      <View style={styles.container}>
-        { this.renderTopControlPanel() }
+        <View style={styles.container}>
+        {this.renderTopControlPanel()}
         <RecyclerViewList
           ref={(component) => this._recycler = component}
           style={{ flex: 1 }}
@@ -53,7 +55,7 @@ export default class example extends Component {
             <View style={{ paddingTop: 15, backgroundColor: '#eee' }} />
           )}
           ListFooterComponent={(
-            <View style={{ paddingTop: 15, backgroundColor: '#eee'}} />
+            <View style={{ paddingTop: 15, backgroundColor: '#eee' }} />
           )}
           ListEmptyComponent={(
             <View style={{ borderColor: '#e7e7e7', borderWidth: 1, margin: 10, padding: 20, }}>
@@ -63,12 +65,28 @@ export default class example extends Component {
           ItemSeparatorComponent={(
             <View style={{ borderBottomWidth: 1, borderColor: '#e7e7e7', marginHorizontal: 5, marginVertical: 10 }} />
           )} />
-        { this.renderBottomControlPanel() }
-      </View>
+        {this.renderBottomControlPanel()}
+        </View>
     );
   }
 
-  renderItem = ({item, index}) => {
+  render() {
+    if (Platform.OS === 'ios') {
+      return (
+              <SafeAreaView style={styles.container}>
+              {this.renderMainContent()}
+              </SafeAreaView>
+              );
+    } else {
+        return (
+                <View style={styles.container}>
+                {this.renderMainContent()}
+                </View>
+                );
+    }
+  }
+
+  renderItem = ({ item, index }) => {
     return (
       <Item
         item={item}
@@ -97,7 +115,7 @@ export default class example extends Component {
         <View style={{ width: 5 }} />
         <Button
           title={"\u25B2"}
-          onPress={() => this._recycler && this._recycler.scrollToIndex({index: 0, animated: true})} />
+          onPress={() => this._recycler && this._recycler.scrollToIndex({ index: 0, animated: true })} />
         <View style={{ width: 5 }} />
         <Button
           title={"\u25BC"}
@@ -127,7 +145,7 @@ export default class example extends Component {
 
   reset() {
     //_gCounter = 1;
-    var data = Array(10).fill().map((e,i) => newItem());
+    var data = Array(10).fill().map((e, i) => newItem());
     this.setState({
       dataSource: new DataSource(data, (item, index) => item.id)
     });
@@ -151,7 +169,7 @@ export default class example extends Component {
       });
     }
 
-    this.state.dataSource.splice(index+1, 0, newItem());
+    this.state.dataSource.splice(index + 1, 0, newItem());
   }
 
   incrementCounter(index) {
@@ -170,13 +188,13 @@ export default class example extends Component {
 
   addToTop(size) {
     var currCount = this.state.dataSource.size();
-    var newItems = Array(size).fill().map((e,i)=>newItem());
+    var newItems = Array(size).fill().map((e, i) => newItem());
     this.state.dataSource.splice(0, 0, ...newItems);
   }
 
   addToBottom(size) {
     var currCount = this.state.dataSource.size();
-    var newItems = Array(size).fill().map((e,i)=>newItem());
+    var newItems = Array(size).fill().map((e, i) => newItem());
     this.state.dataSource.splice(currCount, 0, ...newItems);
   }
 }
@@ -185,10 +203,10 @@ class Item extends Component {
   render() {
     const { item, index, onRemove, onAddAbove, onAddBelow, onMoveUp, onMoveDown, onIncrementCounter } = this.props;
     const { id, counter } = item;
-    const imageSize = 70 + id % 70;
+    const imageSize = 70;
 
     return (
-      <TouchableNativeFeedback
+      <TouchableHighlight
         onPress={onIncrementCounter}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5 }}>
           <Image
@@ -206,9 +224,9 @@ class Item extends Component {
             <Text style={{
               fontSize: 13,
               color: '#888'
-            }}>Touch to count { counter ?
+            }}>Touch to count {counter ?
               <Text style={{ fontWeight: 'bold', color: 'black' }}>{counter}</Text>
-              : null }</Text>
+              : null}</Text>
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Button
@@ -233,7 +251,7 @@ class Item extends Component {
               onPress={onRemove} />
           </View>
         </View>
-      </TouchableNativeFeedback>
+      </TouchableHighlight>
     );
   }
 }
