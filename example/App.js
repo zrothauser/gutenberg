@@ -203,7 +203,7 @@ class Item extends Component {
   render() {
     const { item, index, onRemove, onAddAbove, onAddBelow, onMoveUp, onMoveDown, onIncrementCounter } = this.props;
     const { id, counter } = item;
-    const imageSize = 70 + id % 70;
+    const imageSize = 70;
 
     return (
       <TouchableHighlight
