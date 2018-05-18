@@ -356,8 +356,6 @@
 		FF658115208F4C5B0034D916 /* example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "example-Bridging-Header.h"; sourceTree = "<group>"; };
 		FF658116208F4C5B0034D916 /* empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = empty.swift; path = example/empty.swift; sourceTree = "<group>"; };
 		FFEECFF82084A480009B8CDB /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../../src; sourceTree = "<group>"; };
-		FFEECFFF2088CDE8009B8CDB /* App.android.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = App.android.js; path = ../App.android.js; sourceTree = "<group>"; };
-		FFEED0002088CDE8009B8CDB /* App.ios.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = App.ios.js; path = ../App.ios.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -599,8 +597,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				FFEECFFF2088CDE8009B8CDB /* App.android.js */,
-				FFEED0002088CDE8009B8CDB /* App.ios.js */,
 				FFEECFF82084A480009B8CDB /* src */,
 				13B07FAE1A68108700A75B9A /* example */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
