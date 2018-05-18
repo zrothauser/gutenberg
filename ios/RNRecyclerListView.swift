@@ -3,6 +3,10 @@ import UIKit
 
 @objc class RecyclerListView: UIView {
 
+    public var onVisibleItemsChange: RCTBubblingEventBlock?
+    public var firstVisibleIndex = -1
+    public var lastVisibleIndex = -1
+
     fileprivate var data = [RecyclerListItemView]()
 
     let cellIdentifier = "RecycleCell"
@@ -23,6 +27,7 @@ import UIKit
     
     func commonInit() {
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(WrapperCell.self, forCellReuseIdentifier: cellIdentifier)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
@@ -78,6 +83,23 @@ extension RecyclerListView: UITableViewDataSource {
         let view = data[indexPath.row]
         cell.listItemView = view
         return cell
+    }
+}
+
+extension RecyclerListView: UITableViewDelegate {
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+
+        guard let visibleRows = tableView.indexPathsForVisibleRows,
+            let firstIndex = visibleRows.first?.row,
+            let lastIndex = visibleRows.last?.row else {
+            return
+        }
+        if firstVisibleIndex != firstIndex || lastVisibleIndex != lastIndex {
+            firstVisibleIndex = firstIndex
+            lastVisibleIndex = lastIndex
+            onVisibleItemsChange?(["firstIndex": firstIndex, "lastIndex": lastIndex])
+        }
     }
 }
 
@@ -138,6 +160,7 @@ class WrapperCell: UITableViewCell {
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
     }
 
     required init?(coder aDecoder: NSCoder) {

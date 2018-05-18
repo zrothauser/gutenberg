@@ -79,6 +79,8 @@ RCT_CUSTOM_VIEW_PROPERTY(itemCount, NSInteger, RecyclerListView)
     view.dataSize = [RCTConvert NSInteger:json];
 }
 
+RCT_EXPORT_VIEW_PROPERTY(onVisibleItemsChange, RCTBubblingEventBlock)
+
 RCT_EXPORT_MODULE()
 
 @end
