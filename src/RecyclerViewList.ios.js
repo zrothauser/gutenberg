@@ -289,6 +289,20 @@ class RecyclerViewList extends React.PureComponent {
     return this._shouldUpdateAll || this._shouldUpdateKeys.includes(itemKey);
   }
 
+  _handleVisibleItemsChange = ({nativeEvent}) => {
+    var firstIndex = nativeEvent.firstIndex;
+    var lastIndex = nativeEvent.lastIndex;    
+    this.setState({
+                  firstVisibleIndex: firstIndex,
+                  lastVisibleIndex: lastIndex,
+                  });
+
+    const { onVisibleItemsChange } = this.props;
+    if (onVisibleItemsChange) {
+      onVisibleItemsChange(nativeEvent);
+    }
+  }
+
   _notifyItemMoved(currentPosition, nextPosition) {
     UIManager.dispatchViewManagerCommand(
                                          ReactNative.findNodeHandle(this),
