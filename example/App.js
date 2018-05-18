@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react';
 import {
+  Platform,
   AppRegistry,
   StyleSheet,
   Text,
@@ -37,11 +38,11 @@ export default class example extends Component {
     };
   }
 
-  render() {
+  renderMainContent() {
     const { dataSource } = this.state;
 
     return (
-      <View style={styles.container}>
+        <View style={styles.container}>
         {this.renderTopControlPanel()}
         <RecyclerViewList
           ref={(component) => this._recycler = component}
@@ -65,8 +66,24 @@ export default class example extends Component {
             <View style={{ borderBottomWidth: 1, borderColor: '#e7e7e7', marginHorizontal: 5, marginVertical: 10 }} />
           )} />
         {this.renderBottomControlPanel()}
-      </View>
+        </View>
     );
+  }
+
+  render() {
+    if (Platform.OS === 'ios') {
+      return (
+              <SafeAreaView style={styles.container}>
+              {this.renderMainContent()}
+              </SafeAreaView>
+              );
+    } else {
+        return (
+                <View style={styles.container}>
+                {this.renderMainContent()}
+                </View>
+                );
+    }
   }
 
   renderItem = ({ item, index }) => {
