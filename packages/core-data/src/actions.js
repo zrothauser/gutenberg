@@ -119,3 +119,17 @@ export function receiveEmbedPreview( url, preview ) {
 		preview,
 	};
 }
+
+/**
+ * Returns an action object used in signalling that Upload permissions have been received.
+ *
+ * @param  {boolean} uploadFiles Upload permissions.
+ *
+ * @return {Object} Action object.
+ */
+export function receiveUdploadPermissions( uploadFiles ) {
+	return {
+		type: 'RECEIVE_UPLOAD_PERMISSIONS',
+		hasUploadPermissions: uploadFiles,
+	};
+}

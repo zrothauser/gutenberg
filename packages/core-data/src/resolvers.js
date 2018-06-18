@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { find } from 'lodash';
+import { find, includes } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -19,6 +19,7 @@ import {
 	receiveEntityRecords,
 	receiveThemeSupportsFromIndex,
 	receiveEmbedPreview,
+	receiveUdploadPermissions,
 } from './actions';
 import { getKindEntities } from './entities';
 
@@ -106,4 +107,16 @@ export async function* getEmbedPreview( state, url ) {
 		// Embed API 404s if the URL cannot be embedded, so we have to catch the error from the apiRequest here.
 		yield receiveEmbedPreview( url, false );
 	}
+}
+
+/**
+ * Requests Upload Permissions from the REST API.
+ */
+export async function* hasUploadPermissions() {
+	const header = await wp.apiRequest( { path: '/wp/v2/media', method: 'OPTIONS' } )
+		.then( ( body, status, xhr ) => {
+			return xhr.getResponseHeader( 'allow' );
+		} );
+
+	yield receiveUdploadPermissions( includes( header.split( ',' ).map( ( verb ) => verb.trim() ), 'POST' ) );
 }

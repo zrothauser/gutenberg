@@ -63,12 +63,14 @@ class ImageEdit extends Component {
 		this.onFocusCaption = this.onFocusCaption.bind( this );
 		this.onImageClick = this.onImageClick.bind( this );
 		this.onSelectImage = this.onSelectImage.bind( this );
+		this.onSelectUrl = this.onSelectUrl.bind( this );
 		this.updateImageURL = this.updateImageURL.bind( this );
 		this.updateWidth = this.updateWidth.bind( this );
 		this.updateHeight = this.updateHeight.bind( this );
 		this.updateDimensions = this.updateDimensions.bind( this );
 		this.onSetCustomHref = this.onSetCustomHref.bind( this );
 		this.onSetLinkDestination = this.onSetLinkDestination.bind( this );
+		this.switchToEditing = this.switchToEditing.bind( this );
 
 		this.state = {
 			captionFocused: false,
@@ -145,6 +147,22 @@ class ImageEdit extends Component {
 		} );
 	}
 
+
+	onSelectUrl( newUrl ) {
+		const { url } = this.props.attributes;
+
+		if ( newUrl === url ) {
+			return;
+		}
+
+		this.props.setAttributes( {
+			url: newUrl,
+			alt: undefined,
+			id: undefined,
+			caption: undefined,
+		} );
+	}
+
 	onSetCustomHref( value ) {
 		this.props.setAttributes( { href: value } );
 	}
@@ -207,9 +225,23 @@ class ImageEdit extends Component {
 		];
 	}
 
+	switchToEditing() {
+		const { url } = this.props.attributes;
+
+		this.props.setAttributes( {
+			url: undefined,
+			alt: undefined,
+			id: undefined,
+			caption: undefined,
+			src: url,
+		} );
+	}
+
 	render() {
-		const { attributes, setAttributes, isLargeViewport, isSelected, className, maxWidth, noticeOperations, noticeUI, toggleSelection, isRTL } = this.props;
-		const { url, alt, caption, align, id, href, linkDestination, width, height } = attributes;
+		const { attributes, setAttributes, isLargeViewport, isSelected, className, maxWidth, noticeOperations, noticeUI, toggleSelection, isRTL, hasUploadPermissions } = this.props;
+
+		const { url, src, alt, caption, align, id, href, linkDestination, width, height } = attributes;
+		const isLocal = ( url || src ) && ( url || src ).indexOf( window.location.origin ) === 0;
 
 		const controls = (
 			<BlockControls>
@@ -217,21 +249,31 @@ class ImageEdit extends Component {
 					value={ align }
 					onChange={ this.updateAlignment }
 				/>
-
 				<Toolbar>
-					<MediaUpload
-						onSelect={ this.onSelectImage }
-						type="image"
-						value={ id }
-						render={ ( { open } ) => (
-							<IconButton
-								className="components-toolbar__control"
-								label={ __( 'Edit image' ) }
-								icon="edit"
-								onClick={ open }
-							/>
-						) }
-					/>
+					{ hasUploadPermissions && isLocal ? (
+						<MediaUpload
+							onSelect={ this.onSelectImage }
+							type="image"
+							value={ id }
+							render={ ( { open } ) => (
+								<IconButton
+									className="components-toolbar__control"
+									label={ __( 'Edit image' ) }
+									icon="edit"
+									onClick={ open }
+								/>
+							) }
+						/>
+					) : (
+						<IconButton
+							className="components-icon-button components-toolbar__control"
+							label={ __( 'Edit image' ) }
+							onClick={ this.switchToEditing }
+							icon="edit"
+						/>
+					) }
+
+					<UrlInputButton onChange={ this.onSetHref } url={ href } />
 				</Toolbar>
 			</BlockControls>
 		);
@@ -248,10 +290,12 @@ class ImageEdit extends Component {
 						} }
 						className={ className }
 						onSelect={ this.onSelectImage }
+						onSelectUrl={ this.onSelectUrl }
 						notices={ noticeUI }
 						onError={ noticeOperations.createErrorNotice }
 						accept="image/*"
 						type="image"
+						value={ this.props.attributes }
 					/>
 				</Fragment>
 			);
@@ -500,6 +544,7 @@ export default compose( [
 			image: id ? getMedia( id ) : null,
 			maxWidth,
 			isRTL,
+			hasUploadPermissions: select( 'core' ).hasUploadPermissions(),
 		};
 	} ),
 	withViewportMatch( { isLargeViewport: 'medium' } ),

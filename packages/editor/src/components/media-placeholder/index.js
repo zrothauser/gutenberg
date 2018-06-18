@@ -14,7 +14,8 @@ import {
 	DropZone,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
+import { Component, compose } from '@wordpress/element';
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -85,22 +86,50 @@ class MediaPlaceholder extends Component {
 			onHTMLDrop = noop,
 			multiple = false,
 			notices,
+			hasUploadPermissions,
 		} = this.props;
+		const defaultInstruction = onSelectUrl ? '' : __( 'To edit this block, you need a higher role.' );
+		const instructions = hasUploadPermissions ? sprintf( __( 'Drag %s, upload a new one or select a file from your library.' ), labels.name ) : defaultInstruction;
 
 		return (
 			<Placeholder
 				icon={ icon }
 				label={ labels.title }
 				// translators: %s: media name label e.g: "an audio","an image", "a video"
-				instructions={ sprintf( __( 'Drag %s, upload a new one or select a file from your library.' ), labels.name ) }
+				instructions={ instructions }
 				className={ classnames( 'editor-media-placeholder', className ) }
 				notices={ notices }
 			>
-				<DropZone
-					onFilesDrop={ this.onFilesUpload }
-					onHTMLDrop={ onHTMLDrop }
-				/>
-				{ onSelectURL && (
+				{ hasUploadPermissions && (
+					<div className="editor-media-placeholder__upload-controls">
+						<DropZone
+							onFilesDrop={ this.onFilesUpload }
+							onHTMLDrop={ onHTMLDrop }
+						/>
+						<FormFileUpload
+							isLarge
+							className="editor-media-placeholder__upload-button"
+							onChange={ this.onUpload }
+							accept={ accept }
+							multiple={ multiple }
+						>
+							{ __( 'Upload' ) }
+						</FormFileUpload>
+						<MediaUpload
+							gallery={ multiple }
+							multiple={ multiple }
+							onSelect={ onSelect }
+							type={ type }
+							value={ value.id }
+							render={ ( { open } ) => (
+								<Button isLarge onClick={ open }>
+									{ __( 'Media Library' ) }
+								</Button>
+							) }
+						/>
+					</div>
+				) }
+				{ onSelectUrl && (
 					<form onSubmit={ this.onSubmitSrc }>
 						<input
 							type="url"
@@ -117,30 +146,15 @@ class MediaPlaceholder extends Component {
 						</Button>
 					</form>
 				) }
-				<FormFileUpload
-					isLarge
-					className="editor-media-placeholder__upload-button"
-					onChange={ this.onUpload }
-					accept={ accept }
-					multiple={ multiple }
-				>
-					{ __( 'Upload' ) }
-				</FormFileUpload>
-				<MediaUpload
-					gallery={ multiple }
-					multiple={ multiple }
-					onSelect={ onSelect }
-					type={ type }
-					value={ value.id }
-					render={ ( { open } ) => (
-						<Button isLarge onClick={ open }>
-							{ __( 'Media Library' ) }
-						</Button>
-					) }
-				/>
 			</Placeholder>
 		);
 	}
 }
 
-export default MediaPlaceholder;
+export default compose( [
+	withSelect( ( select ) => {
+		return {
+			hasUploadPermissions: select( 'core' ).hasUploadPermissions(),
+		};
+	} ),
+] )( MediaPlaceholder );

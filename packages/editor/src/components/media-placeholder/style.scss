@@ -28,3 +28,10 @@
 		color: $dark-gray-800;
 	}
 }
+
+.editor-media-placeholder__upload-controls {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+}
