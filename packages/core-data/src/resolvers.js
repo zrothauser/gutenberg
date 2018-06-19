@@ -113,7 +113,7 @@ export async function* getEmbedPreview( state, url ) {
  * Requests Upload Permissions from the REST API.
  */
 export async function* hasUploadPermissions() {
-	const header = await wp.apiRequest( { path: '/wp/v2/media', method: 'OPTIONS' } )
+	const header = await apiFetch( { path: '/wp/v2/media', method: 'OPTIONS' } )
 		.then( ( body, status, xhr ) => {
 			return xhr.getResponseHeader( 'allow' );
 		} );
