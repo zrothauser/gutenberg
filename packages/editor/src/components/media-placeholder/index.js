@@ -89,7 +89,7 @@ class MediaPlaceholder extends Component {
 			hasUploadPermissions,
 		} = this.props;
 		const defaultInstruction = onSelectUrl ? '' : __( 'To edit this block, you need permission to upload media.' );
-		const instructions = hasUploadPermissions ? sprintf( __( 'Drag %s, upload a new one, or select a file from your library.' ), labels.name ) : defaultInstruction;
+		const instructions = hasUploadPermissions ? sprintf( __( 'Drag %s, upload a new one or select a file from your library.' ), labels.name ) : defaultInstruction;
 
 		return (
 			<Placeholder
