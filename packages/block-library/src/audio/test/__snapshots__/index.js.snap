@@ -26,7 +26,7 @@ exports[`core/audio block edit matches snapshot 1`] = `
   <div
     class="components-placeholder__instructions"
   >
-    Drag an audio, upload a new one or select a file from your library.
+    Drag an audio, upload a new one, or select a file from your library.
   </div>
   <div
     class="components-placeholder__fieldset"
