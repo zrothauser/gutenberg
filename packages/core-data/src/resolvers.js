@@ -115,6 +115,10 @@ export async function* getEmbedPreview( state, url ) {
 export async function* hasUploadPermissions() {
 	const header = await apiFetch( { path: '/wp/v2/media', method: 'OPTIONS' } )
 		.then( ( body, status, xhr ) => {
+			if ( body.headers ) {
+				return body.headers.Allow;
+			}
+
 			return xhr.getResponseHeader( 'allow' );
 		} );
 
