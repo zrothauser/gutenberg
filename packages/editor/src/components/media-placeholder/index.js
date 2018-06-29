@@ -14,7 +14,7 @@ import {
 	DropZone,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { Component, compose } from '@wordpress/element';
+import { Component, compose, Fragment } from '@wordpress/element';
 import { withSelect } from '@wordpress/data';
 
 /**
@@ -103,7 +103,7 @@ class MediaPlaceholder extends Component {
 				notices={ notices }
 			>
 				{ hasUploadPermissions && (
-					<div className="editor-media-placeholder__upload-controls">
+					<Fragment>
 						<DropZone
 							onFilesDrop={ this.onFilesUpload }
 							onHTMLDrop={ onHTMLDrop }
@@ -129,7 +129,7 @@ class MediaPlaceholder extends Component {
 								</Button>
 							) }
 						/>
-					</div>
+					</Fragment>
 				) }
 				{ onSelectUrl && (
 					<form onSubmit={ this.onSubmitSrc }>
