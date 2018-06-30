@@ -14,13 +14,15 @@ import {
 	DropZone,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { Component, compose, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import MediaUpload from '../media-upload';
+import MediaUploadCheck from '../media-upload/check';
 import { mediaUpload } from '../../utils/';
 
 class MediaPlaceholder extends Component {
@@ -88,7 +90,7 @@ class MediaPlaceholder extends Component {
 			notices,
 			hasUploadPermissions,
 		} = this.props;
-		const defaultInstruction = onSelectUrl ? '' : __( 'To edit this block, you need permission to upload media.' );
+		const defaultInstruction = onSelectURL ? '' : __( 'To edit this block, you need permission to upload media.' );
 		const instructions = hasUploadPermissions ? sprintf( __( 'Drag %s, upload a new one, or select a file from your library.' ), labels.name ) : (
 			defaultInstruction || sprintf( __( 'Given your current role, you can only link %s, you cannot upload.' ), labels.name )
 		);
@@ -102,8 +104,8 @@ class MediaPlaceholder extends Component {
 				className={ classnames( 'editor-media-placeholder', className ) }
 				notices={ notices }
 			>
-				{ hasUploadPermissions && (
-					<Fragment>
+				{ (
+					<MediaUploadCheck>
 						<DropZone
 							onFilesDrop={ this.onFilesUpload }
 							onHTMLDrop={ onHTMLDrop }
@@ -129,9 +131,9 @@ class MediaPlaceholder extends Component {
 								</Button>
 							) }
 						/>
-					</Fragment>
+					</MediaUploadCheck>
 				) }
-				{ onSelectUrl && (
+				{ onSelectURL && (
 					<form onSubmit={ this.onSubmitSrc }>
 						<input
 							type="url"

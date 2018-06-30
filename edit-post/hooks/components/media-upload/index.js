@@ -192,6 +192,10 @@ class MediaUpload extends Component {
 	}
 
 	render() {
+		if ( ! this.props.render ) {
+			return null;
+		}
+
 		return this.props.render( { open: this.openModal } );
 	}
 }

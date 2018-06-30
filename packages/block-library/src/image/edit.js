@@ -35,6 +35,7 @@ import {
 	InspectorControls,
 	MediaPlaceholder,
 	MediaUpload,
+	MediaUploadCheck,
 	BlockAlignmentToolbar,
 	mediaUpload,
 } from '@wordpress/editor';
@@ -147,7 +148,6 @@ class ImageEdit extends Component {
 		} );
 	}
 
-
 	onSelectUrl( newUrl ) {
 		const { src, id } = this.props.attributes;
 
@@ -236,10 +236,17 @@ class ImageEdit extends Component {
 	}
 
 	render() {
-		const { attributes, setAttributes, isLargeViewport, isSelected, className, maxWidth, noticeOperations, noticeUI, toggleSelection, isRTL, hasUploadPermissions } = this.props;
-
+		const { attributes, setAttributes, isLargeViewport, isSelected, className, maxWidth, noticeOperations, noticeUI, toggleSelection, isRTL } = this.props;
 		const { url, src, alt, caption, align, id, href, linkDestination, width, height } = attributes;
 		const isLocal = ( url || src ) && ( url || src ).indexOf( window.location.origin ) === 0;
+		const toolbarEditButton = (
+			<IconButton
+				className="components-icon-button components-toolbar__control"
+				label={ __( 'Edit image' ) }
+				onClick={ this.switchToEditing }
+				icon="edit"
+			/>
+		);
 
 		const controls = (
 			<BlockControls>
@@ -248,30 +255,23 @@ class ImageEdit extends Component {
 					onChange={ this.updateAlignment }
 				/>
 				<Toolbar>
-					{ hasUploadPermissions && isLocal ? (
-						<MediaUpload
-							onSelect={ this.onSelectImage }
-							type="image"
-							value={ id }
-							render={ ( { open } ) => (
-								<IconButton
-									className="components-toolbar__control"
-									label={ __( 'Edit image' ) }
-									icon="edit"
-									onClick={ open }
-								/>
-							) }
-						/>
-					) : (
-						<IconButton
-							className="components-icon-button components-toolbar__control"
-							label={ __( 'Edit image' ) }
-							onClick={ this.switchToEditing }
-							icon="edit"
-						/>
-					) }
-
-					<UrlInputButton onChange={ this.onSetHref } url={ href } />
+					{ isLocal ? (
+						<MediaUploadCheck fallback={ toolbarEditButton }>
+							<MediaUpload
+								onSelect={ this.onSelectImage }
+								type="image"
+								value={ id }
+								render={ ( { open } ) => (
+									<IconButton
+										className="components-toolbar__control"
+										label={ __( 'Edit image' ) }
+										icon="edit"
+										onClick={ open }
+									/>
+								) }
+							/>
+						</MediaUploadCheck>
+					) : toolbarEditButton }
 				</Toolbar>
 			</BlockControls>
 		);
@@ -421,7 +421,7 @@ class ImageEdit extends Component {
 							// Disable reason: Image itself is not meant to be
 							// interactive, but should direct focus to block
 							// eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-							const img = <img src={ url } alt={ alt } onClick={ this.onImageClick } />;
+							const img = ( <img src={ url } alt={ alt } onClick={ this.onImageClick } /> );
 
 							if ( ! isResizable || ! imageWidthWithinContainer ) {
 								return (
@@ -542,7 +542,6 @@ export default compose( [
 			image: id ? getMedia( id ) : null,
 			maxWidth,
 			isRTL,
-			hasUploadPermissions: select( 'core' ).hasUploadPermissions(),
 		};
 	} ),
 	withViewportMatch( { isLargeViewport: 'medium' } ),

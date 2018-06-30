@@ -17,10 +17,10 @@ import {
 	BlockAlignmentToolbar,
 	MediaPlaceholder,
 	MediaUpload,
+	MediaUploadCheck,
 	AlignmentToolbar,
 	RichText,
 } from '@wordpress/editor';
-import { select } from '@wordpress/data';
 
 const validAlignments = [ 'left', 'center', 'right', 'wide', 'full' ];
 
@@ -118,8 +118,6 @@ export const settings = {
 			}
 		);
 
-		const hasUploadPermissions = select( 'core' ).hasUploadPermissions();
-
 		const controls = (
 			<Fragment>
 				<BlockControls>
@@ -133,22 +131,24 @@ export const settings = {
 							setAttributes( { contentAlign: nextAlign } );
 						} }
 					/>
-					{ !! hasUploadPermissions && (
-						<Toolbar>
-							<MediaUpload
-								onSelect={ onSelectImage }
-								type="image"
-								value={ id }
-								render={ ( { open } ) => (
-									<IconButton
-										className="components-toolbar__control"
-										label={ __( 'Edit image' ) }
-										icon="edit"
-										onClick={ open }
-									/>
-								) }
-							/>
-						</Toolbar>
+					{ (
+						<MediaUploadCheck>
+							<Toolbar>
+								<MediaUpload
+									onSelect={ onSelectImage }
+									type="image"
+									value={ id }
+									render={ ( { open } ) => (
+										<IconButton
+											className="components-toolbar__control"
+											label={ __( 'Edit image' ) }
+											icon="edit"
+											onClick={ open }
+										/>
+									) }
+								/>
+							</Toolbar>
+						</MediaUploadCheck>
 					) }
 				</BlockControls>
 				{ !! url && (
