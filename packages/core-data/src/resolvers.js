@@ -59,7 +59,10 @@ export async function* getEntityRecord( state, kind, name, key ) {
 	if ( ! entity ) {
 		return;
 	}
-	const record = await apiFetch( { path: `${ entity.baseURL }/${ key }?context=edit` } );
+
+	// Makes sure the media will be fetched even for contributors.
+	const context = 'media' === entity.name ? 'view' : 'edit';
+	const record = await apiFetch( { path: `${ entity.baseUrl }/${ key }?context=${ context }` } );
 	yield receiveEntityRecords( kind, name, record );
 }
 
