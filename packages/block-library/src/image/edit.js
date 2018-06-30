@@ -149,18 +149,19 @@ class ImageEdit extends Component {
 
 
 	onSelectUrl( newUrl ) {
-		const { url } = this.props.attributes;
-
-		if ( newUrl === url ) {
-			return;
-		}
+		const { src, id } = this.props.attributes;
 
 		this.props.setAttributes( {
 			url: newUrl,
-			alt: undefined,
-			id: undefined,
-			caption: undefined,
 		} );
+
+		if ( newUrl !== src && id ) {
+			this.props.setAttributes( {
+				alt: undefined,
+				id: undefined,
+				caption: undefined,
+			} );
+		}
 	}
 
 	onSetCustomHref( value ) {
@@ -230,9 +231,6 @@ class ImageEdit extends Component {
 
 		this.props.setAttributes( {
 			url: undefined,
-			alt: undefined,
-			id: undefined,
-			caption: undefined,
 			src: url,
 		} );
 	}
