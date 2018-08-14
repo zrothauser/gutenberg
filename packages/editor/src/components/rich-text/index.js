@@ -878,23 +878,26 @@ export class RichText extends Component {
 				<Autocomplete onReplace={ this.props.onReplace } completers={ autocompleters }>
 					{ ( { isExpanded, listBoxId, activeId } ) => (
 						<Fragment>
-							<TinyMCE
-								tagName={ Tagname }
-								getSettings={ this.getSettings }
-								onSetup={ this.onSetup }
-								style={ style }
-								defaultValue={ value }
-								format={ format }
-								isPlaceholderVisible={ isPlaceholderVisible }
-								aria-label={ placeholder }
-								aria-autocomplete="list"
-								aria-expanded={ isExpanded }
-								aria-owns={ listBoxId }
-								aria-activedescendant={ activeId }
-								{ ...ariaProps }
-								className={ className }
-								key={ key }
-							/>
+							{ isSelected &&
+								<TinyMCE
+									tagName={ Tagname }
+									getSettings={ this.getSettings }
+									onSetup={ this.onSetup }
+									style={ style }
+									defaultValue={ value }
+									format={ format }
+									isPlaceholderVisible={ isPlaceholderVisible }
+									aria-label={ placeholder }
+									aria-autocomplete="list"
+									aria-expanded={ isExpanded }
+									aria-owns={ listBoxId }
+									aria-activedescendant={ activeId }
+									{ ...ariaProps }
+									className={ className }
+									key={ key }
+								/>
+							}
+							{ ! isSelected && value }
 							{ isPlaceholderVisible &&
 								<Tagname
 									className={ classnames( 'editor-rich-text__tinymce', className ) }
@@ -940,7 +943,7 @@ const RichTextContainer = compose( [
 
 		// Ensures that only one RichText component can be focused.
 		return {
-			isSelected: context.isSelected && context.focusedElement === ownProps.instanceId,
+			isSelected: context.isSelected,
 			setFocusedElement: context.setFocusedElement,
 		};
 	} ),
