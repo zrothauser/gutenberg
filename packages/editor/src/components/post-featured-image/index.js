@@ -75,19 +75,19 @@ function PostFeaturedImage( { currentPostId, featuredImageId, onUpdateImage, onR
 					</MediaUploadCheck>
 				}
 				{ !! featuredImageId && media && ! media.isLoading &&
-				<MediaUploadCheck>
-					<MediaUpload
-						title={ postLabel.set_featured_image || DEFAULT_SET_FEATURE_IMAGE_LABEL }
-						onSelect={ onUpdateImage }
-						type="image"
-						modalClass="editor-post-featured-image__media-modal"
-						render={ ( { open } ) => (
-							<Button onClick={ open } isDefault isLarge>
-								{ __( 'Replace image' ) }
-							</Button>
-						) }
-					/>
-				</MediaUploadCheck>
+					<MediaUploadCheck>
+						<MediaUpload
+							title={ postLabel.set_featured_image || DEFAULT_SET_FEATURE_IMAGE_LABEL }
+							onSelect={ onUpdateImage }
+							type="image"
+							modalClass="editor-post-featured-image__media-modal"
+							render={ ( { open } ) => (
+								<Button onClick={ open } isDefault isLarge>
+									{ __( 'Replace image' ) }
+								</Button>
+							) }
+						/>
+					</MediaUploadCheck>
 				}
 				{ ! featuredImageId &&
 					<div>
