@@ -104,35 +104,33 @@ class MediaPlaceholder extends Component {
 				className={ classnames( 'editor-media-placeholder', className ) }
 				notices={ notices }
 			>
-				{ (
-					<MediaUploadCheck>
-						<DropZone
-							onFilesDrop={ this.onFilesUpload }
-							onHTMLDrop={ onHTMLDrop }
-						/>
-						<FormFileUpload
-							isLarge
-							className="editor-media-placeholder__upload-button"
-							onChange={ this.onUpload }
-							accept={ accept }
-							multiple={ multiple }
-						>
-							{ __( 'Upload' ) }
-						</FormFileUpload>
-						<MediaUpload
-							gallery={ multiple }
-							multiple={ multiple }
-							onSelect={ onSelect }
-							type={ type }
-							value={ value.id }
-							render={ ( { open } ) => (
-								<Button isLarge onClick={ open }>
-									{ __( 'Media Library' ) }
-								</Button>
-							) }
-						/>
-					</MediaUploadCheck>
-				) }
+				<MediaUploadCheck>
+					<DropZone
+						onFilesDrop={ this.onFilesUpload }
+						onHTMLDrop={ onHTMLDrop }
+					/>
+					<FormFileUpload
+						isLarge
+						className="editor-media-placeholder__upload-button"
+						onChange={ this.onUpload }
+						accept={ accept }
+						multiple={ multiple }
+					>
+						{ __( 'Upload' ) }
+					</FormFileUpload>
+					<MediaUpload
+						gallery={ multiple }
+						multiple={ multiple }
+						onSelect={ onSelect }
+						type={ type }
+						value={ value.id }
+						render={ ( { open } ) => (
+							<Button isLarge onClick={ open }>
+								{ __( 'Media Library' ) }
+							</Button>
+						) }
+					/>
+				</MediaUploadCheck>
 				{ onSelectURL && (
 					<form onSubmit={ this.onSubmitSrc }>
 						<input

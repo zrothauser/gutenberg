@@ -131,25 +131,23 @@ export const settings = {
 							setAttributes( { contentAlign: nextAlign } );
 						} }
 					/>
-					{ (
-						<MediaUploadCheck>
-							<Toolbar>
-								<MediaUpload
-									onSelect={ onSelectImage }
-									type="image"
-									value={ id }
-									render={ ( { open } ) => (
-										<IconButton
-											className="components-toolbar__control"
-											label={ __( 'Edit image' ) }
-											icon="edit"
-											onClick={ open }
-										/>
-									) }
-								/>
-							</Toolbar>
-						</MediaUploadCheck>
-					) }
+					<MediaUploadCheck>
+						<Toolbar>
+							<MediaUpload
+								onSelect={ onSelectImage }
+								type="image"
+								value={ id }
+								render={ ( { open } ) => (
+									<IconButton
+										className="components-toolbar__control"
+										label={ __( 'Edit image' ) }
+										icon="edit"
+										onClick={ open }
+									/>
+								) }
+							/>
+						</Toolbar>
+					</MediaUploadCheck>
 				</BlockControls>
 				{ !! url && (
 					<InspectorControls>
