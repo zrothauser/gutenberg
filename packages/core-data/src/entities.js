@@ -14,10 +14,13 @@ import apiFetch from '@wordpress/api-fetch';
 import { getEntitiesByKind } from './selectors';
 import { addEntities } from './actions';
 
+const getEditContext = () => 'edit';
+const getMediaContext = ( state ) => state.hasUploadPermissions ? 'edit' : 'view';
+
 export const defaultEntities = [
-	{ name: 'postType', kind: 'root', key: 'slug', baseURL: '/wp/v2/types' },
-	{ name: 'media', kind: 'root', baseURL: '/wp/v2/media', plural: 'mediaItems' },
-	{ name: 'taxonomy', kind: 'root', key: 'slug', baseURL: '/wp/v2/taxonomies', plural: 'taxonomies' },
+	{ name: 'postType', kind: 'root', key: 'slug', baseURL: '/wp/v2/types', getContext: getEditContext },
+	{ name: 'media', kind: 'root', baseURL: '/wp/v2/media', plural: 'mediaItems', getContext: getMediaContext },
+	{ name: 'taxonomy', kind: 'root', key: 'slug', baseURL: '/wp/v2/taxonomies', plural: 'taxonomies', getContext: getEditContext },
 ];
 
 export const kinds = [

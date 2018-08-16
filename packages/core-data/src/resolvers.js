@@ -48,33 +48,33 @@ export async function* getAuthors() {
 /**
  * Requests an entity's record from the REST API.
  *
- * @param {Object} state  State tree
- * @param {string} kind   Entity kind.
- * @param {string} name   Entity name.
- * @param {number} key    Record's key
+ * @param {Object}  state   State tree
+ * @param {string}  kind    Entity kind.
+ * @param {string}  name    Entity name.
+ * @param {number}  key     Record's key
+ * @param {string?} context What context should be used for the REST request (view|edit)
  */
-export async function* getEntityRecord( state, kind, name, key ) {
+export async function* getEntityRecord( state, kind, name, key, context = 'edit' ) {
 	const entities = yield* await getKindEntities( state, kind );
 	const entity = find( entities, { kind, name } );
 	if ( ! entity ) {
 		return;
 	}
 
-	// Makes sure the media will be fetched even for contributors.
-	const context = 'media' === entity.name ? 'view' : 'edit';
-	const record = await apiFetch( { path: `${ entity.baseUrl }/${ key }?context=${ context }` } );
+	const record = await apiFetch( { path: `${ entity.baseURL }/${ key }?context=${ context }` } );
 	yield receiveEntityRecords( kind, name, record );
 }
 
 /**
  * Requests the entity's records from the REST API.
  *
- * @param {Object}  state  State tree
- * @param {string}  kind   Entity kind.
- * @param {string}  name   Entity name.
- * @param {Object?} query  Query Object.
+ * @param {Object}  state   State tree
+ * @param {string}  kind    Entity kind.
+ * @param {string}  name    Entity name.
+ * @param {Object?} query   Query Object.
+ * @param {string?} context What context should be used for the REST request (view|edit)
  */
-export async function* getEntityRecords( state, kind, name, query = {} ) {
+export async function* getEntityRecords( state, kind, name, query = {}, context = 'edit' ) {
 	const entities = yield* await getKindEntities( state, kind );
 	const entity = find( entities, { kind, name } );
 	if ( ! entity ) {
@@ -82,7 +82,7 @@ export async function* getEntityRecords( state, kind, name, query = {} ) {
 	}
 	const path = addQueryArgs( entity.baseURL, {
 		...query,
-		context: 'edit',
+		context,
 	} );
 	const records = await apiFetch( { path } );
 	yield receiveEntityRecords( kind, name, Object.values( records ), query );

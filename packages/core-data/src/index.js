@@ -14,9 +14,9 @@ import { defaultEntities, getMethodName } from './entities';
 import { REDUCER_KEY } from './name';
 
 const createEntityRecordGetter = ( source ) => defaultEntities.reduce( ( result, entity ) => {
-	const { kind, name } = entity;
-	result[ getMethodName( kind, name ) ] = ( state, key ) => source.getEntityRecord( state, kind, name, key );
-	result[ getMethodName( kind, name, 'get', true ) ] = ( state ) => source.getEntityRecords( state, kind, name );
+	const { kind, name, getContext } = entity;
+	result[ getMethodName( kind, name ) ] = ( state, key ) => source.getEntityRecord( state, kind, name, key, getContext( state ) );
+	result[ getMethodName( kind, name, 'get', true ) ] = ( state ) => source.getEntityRecords( state, kind, name, undefined, getContext( state ) );
 	return result;
 }, {} );
 
