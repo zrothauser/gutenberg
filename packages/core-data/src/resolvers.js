@@ -125,5 +125,5 @@ export async function* hasUploadPermissions() {
 			return xhr.getResponseHeader( 'allow' );
 		} );
 
-	yield receiveUploadPermissions( includes( header.split( ',' ).map( ( verb ) => verb.trim() ), 'POST' ) );
+	yield receiveUploadPermissions( includes( header, 'POST' ) );
 }
