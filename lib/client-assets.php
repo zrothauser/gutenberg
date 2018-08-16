@@ -1207,10 +1207,6 @@ function gutenberg_editor_scripts_and_styles( $hook ) {
 			'method' => 'GET',
 		),
 		array(
-			'path'   => sprintf( '/wp/v2/users/me?post_type=%s&context=edit', $post_type ),
-			'method' => 'GET',
-		),
-		array(
 			'path'   => '/wp/v2/media',
 			'method' => 'OPTIONS',
 		),
