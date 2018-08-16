@@ -19,7 +19,7 @@ import {
 	receiveEntityRecords,
 	receiveThemeSupportsFromIndex,
 	receiveEmbedPreview,
-	receiveUdploadPermissions,
+	receiveUploadPermissions,
 } from './actions';
 import { getKindEntities } from './entities';
 
@@ -125,5 +125,5 @@ export async function* hasUploadPermissions() {
 			return xhr.getResponseHeader( 'allow' );
 		} );
 
-	yield receiveUdploadPermissions( includes( header.split( ',' ).map( ( verb ) => verb.trim() ), 'POST' ) );
+	yield receiveUploadPermissions( includes( header.split( ',' ).map( ( verb ) => verb.trim() ), 'POST' ) );
 }

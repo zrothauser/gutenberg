@@ -127,7 +127,7 @@ export function receiveEmbedPreview( url, preview ) {
  *
  * @return {Object} Action object.
  */
-export function receiveUdploadPermissions( uploadFiles ) {
+export function receiveUploadPermissions( uploadFiles ) {
 	return {
 		type: 'RECEIVE_UPLOAD_PERMISSIONS',
 		hasUploadPermissions: uploadFiles,
