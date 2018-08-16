@@ -175,6 +175,18 @@ get back from the oEmbed preview API.
 
 Is the preview for the URL an oEmbed link fallback.
 
+### hasUploadPermissions
+
+Return Upload Permissions.
+
+*Parameters*
+
+ * state: State tree.
+
+*Returns*
+
+Upload Permissions.
+
 ## Actions
 
 ### receiveTerms
@@ -232,3 +244,11 @@ a given URl has been received.
 
  * url: URL to preview the embed for.
  * preview: Preview data.
+
+### receiveUploadPermissions
+
+Returns an action object used in signalling that Upload permissions have been received.
+
+*Parameters*
+
+ * hasUploadPermissions: Does the user have permission to upload files?
