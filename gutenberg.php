@@ -340,11 +340,15 @@ function gutenberg_replace_default_add_new_button() {
 			box-shadow: 0 0 2px rgba( 30, 140, 190, 0.8 );
 		}
 
+		.split-page-title-action > a:focus {
+			z-index: 1;
+		}
+
 		.split-page-title-action .expander:after {
 			content: "\f140";
 			font: 400 20px/.5 dashicons;
 			speak: none;
-			top: 1px;
+			top: 0;
 			<?php if ( is_rtl() ) : ?>
 			right: -1px;
 			<?php else : ?>
@@ -379,6 +383,12 @@ function gutenberg_replace_default_add_new_button() {
 		}
 
 		.split-page-title-action .expander {
+			margin: 0;
+			padding: 0;
+			box-shadow: none;
+			border: 0;
+			border-radius: 0;
+			background: none;
 			outline: none;
 		}
 
@@ -398,7 +408,7 @@ function gutenberg_replace_default_add_new_button() {
 
 			var newbutton = '<span id="split-page-title-action" class="split-page-title-action">';
 			newbutton += '<a href="' + url + '">' + button.innerText + '</a>';
-			newbutton += '<span class="expander" tabindex="0" role="button" aria-haspopup="true" aria-label="<?php echo esc_js( __( 'Toggle editor selection menu', 'gutenberg' ) ); ?>"></span>';
+			newbutton += '<button type="button" class="expander" aria-expanded="false" aria-haspopup="true" aria-label="<?php echo esc_js( __( 'Select editor', 'gutenberg' ) ); ?>"></button>';
 			newbutton += '<span class="dropdown"><a href="' + url + '">Gutenberg</a>';
 			newbutton += '<a href="' + classicUrl + '"><?php echo esc_js( __( 'Classic Editor', 'gutenberg' ) ); ?></a></span></span><span class="page-title-action" style="display:none;"></span>';
 
@@ -410,15 +420,10 @@ function gutenberg_replace_default_add_new_button() {
 			function toggleDropdown() {
 				dropdown.classList.toggle( 'visible' );
 			}
-			expander.addEventListener( 'click', function( e ) {
-				e.preventDefault();
+			expander.addEventListener( 'click', function() {
+				var ariaEpandedValue = this.getAttribute( 'aria-expanded' );
+				this.setAttribute( 'aria-expanded', ariaEpandedValue === 'false' ? 'true' : 'false' );
 				toggleDropdown();
-			} );
-			expander.addEventListener( 'keydown', function( e ) {
-				if ( 13 === e.which || 32 === e.which ) {
-					e.preventDefault();
-					toggleDropdown();
-				}
 			} );
 		} );
 	</script>
