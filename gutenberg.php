@@ -397,7 +397,7 @@ function gutenberg_replace_default_add_new_button() {
 		document.addEventListener( 'DOMContentLoaded', function() {
 			var buttons = document.getElementsByClassName( 'page-title-action' ),
 				button = buttons.item( 0 ),
-				url, urlHasParams, classicUrl, newbutton, expander, dropdown;
+				url, urlHasParams, classicUrl, newbutton, expander, dropdown, menuElements, i;
 
 			if ( ! button ) {
 				return;
@@ -409,9 +409,9 @@ function gutenberg_replace_default_add_new_button() {
 
 			newbutton = '<span id="split-page-title-action" class="split-page-title-action">';
 			newbutton += '<a href="' + url + '">' + button.innerText + '</a>';
-			newbutton += '<button type="button" class="expander" aria-expanded="false" aria-haspopup="true" aria-label="<?php echo esc_js( __( 'Select editor', 'gutenberg' ) ); ?>"></button>';
-			newbutton += '<span class="dropdown"><a href="' + url + '">Gutenberg</a>';
-			newbutton += '<a href="' + classicUrl + '"><?php echo esc_js( __( 'Classic Editor', 'gutenberg' ) ); ?></a></span></span><span class="page-title-action" style="display:none;"></span>';
+			newbutton += '<button type="button" class="expander split-menu-element" aria-expanded="false" aria-haspopup="true" aria-label="<?php echo esc_js( __( 'Select editor', 'gutenberg' ) ); ?>"></button>';
+			newbutton += '<span class="dropdown"><a href="' + url + '" class="split-menu-element">Gutenberg</a>';
+			newbutton += '<a href="' + classicUrl + '" class="split-menu-element"><?php echo esc_js( __( 'Classic Editor', 'gutenberg' ) ); ?></a></span></span><span class="page-title-action" style="display:none;"></span>';
 
 			button.insertAdjacentHTML( 'afterend', newbutton );
 			button.parentNode.removeChild( button );
@@ -422,9 +422,21 @@ function gutenberg_replace_default_add_new_button() {
 				dropdown.classList.toggle( 'visible' );
 				expander.setAttribute( 'aria-expanded', dropdown.classList.contains( 'visible' ) );
 			}
+			function closeOnEscape() {
+				if ( event.keyCode === 27 && dropdown.classList.contains( 'visible' ) ) {
+					toggleDropdown();
+					expander.focus();
+				}
+			}
 			expander.addEventListener( 'click', function() {
 				toggleDropdown();
 			} );
+			menuElements = expander.parentNode.querySelectorAll( '.split-menu-element' );
+			for ( i = 0; i < menuElements.length; i++ ) {
+				menuElements[ i ].addEventListener( 'keydown', function() {
+					closeOnEscape();
+				} );
+			}
 		} );
 	</script>
 	<?php
