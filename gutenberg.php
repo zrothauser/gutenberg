@@ -396,17 +396,18 @@ function gutenberg_replace_default_add_new_button() {
 	<script type="text/javascript">
 		document.addEventListener( 'DOMContentLoaded', function() {
 			var buttons = document.getElementsByClassName( 'page-title-action' ),
-				button = buttons.item( 0 );
+				button = buttons.item( 0 ),
+				url, urlHasParams, classicUrl, newbutton, expander, dropdown, ariaExpandedValue;
 
 			if ( ! button ) {
 				return;
 			}
 
-			var url = button.href;
-			var urlHasParams = ( -1 !== url.indexOf( '?' ) );
-			var classicUrl = url + ( urlHasParams ? '&' : '?' ) + 'classic-editor';
+			url = button.href;
+			urlHasParams = ( -1 !== url.indexOf( '?' ) );
+			classicUrl = url + ( urlHasParams ? '&' : '?' ) + 'classic-editor';
 
-			var newbutton = '<span id="split-page-title-action" class="split-page-title-action">';
+			newbutton = '<span id="split-page-title-action" class="split-page-title-action">';
 			newbutton += '<a href="' + url + '">' + button.innerText + '</a>';
 			newbutton += '<button type="button" class="expander" aria-expanded="false" aria-haspopup="true" aria-label="<?php echo esc_js( __( 'Select editor', 'gutenberg' ) ); ?>"></button>';
 			newbutton += '<span class="dropdown"><a href="' + url + '">Gutenberg</a>';
@@ -415,14 +416,14 @@ function gutenberg_replace_default_add_new_button() {
 			button.insertAdjacentHTML( 'afterend', newbutton );
 			button.parentNode.removeChild( button );
 
-			var expander = document.getElementById( 'split-page-title-action' ).getElementsByClassName( 'expander' ).item( 0 );
-			var dropdown = expander.parentNode.querySelector( '.dropdown' );
+			expander = document.getElementById( 'split-page-title-action' ).getElementsByClassName( 'expander' ).item( 0 );
+			dropdown = expander.parentNode.querySelector( '.dropdown' );
 			function toggleDropdown() {
 				dropdown.classList.toggle( 'visible' );
 			}
 			expander.addEventListener( 'click', function() {
-				var ariaEpandedValue = this.getAttribute( 'aria-expanded' );
-				this.setAttribute( 'aria-expanded', ariaEpandedValue === 'false' ? 'true' : 'false' );
+				ariaExpandedValue = this.getAttribute( 'aria-expanded' );
+				this.setAttribute( 'aria-expanded', ariaExpandedValue === 'false' ? 'true' : 'false' );
 				toggleDropdown();
 			} );
 		} );
