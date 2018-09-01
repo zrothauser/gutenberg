@@ -397,7 +397,7 @@ function gutenberg_replace_default_add_new_button() {
 		document.addEventListener( 'DOMContentLoaded', function() {
 			var buttons = document.getElementsByClassName( 'page-title-action' ),
 				button = buttons.item( 0 ),
-				url, urlHasParams, classicUrl, newbutton, expander, dropdown, ariaExpandedValue;
+				url, urlHasParams, classicUrl, newbutton, expander, dropdown;
 
 			if ( ! button ) {
 				return;
@@ -420,10 +420,9 @@ function gutenberg_replace_default_add_new_button() {
 			dropdown = expander.parentNode.querySelector( '.dropdown' );
 			function toggleDropdown() {
 				dropdown.classList.toggle( 'visible' );
+				expander.setAttribute( 'aria-expanded', dropdown.classList.contains( 'visible' ) );
 			}
 			expander.addEventListener( 'click', function() {
-				ariaExpandedValue = this.getAttribute( 'aria-expanded' );
-				this.setAttribute( 'aria-expanded', ariaExpandedValue === 'false' ? 'true' : 'false' );
 				toggleDropdown();
 			} );
 		} );
