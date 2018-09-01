@@ -422,7 +422,7 @@ function gutenberg_replace_default_add_new_button() {
 				dropdown.classList.toggle( 'visible' );
 				expander.setAttribute( 'aria-expanded', dropdown.classList.contains( 'visible' ) );
 			}
-			function closeOnEscape() {
+			function closeOnEscape( event ) {
 				if ( event.keyCode === 27 && dropdown.classList.contains( 'visible' ) ) {
 					toggleDropdown();
 					expander.focus();
@@ -433,8 +433,8 @@ function gutenberg_replace_default_add_new_button() {
 			} );
 			menuElements = expander.parentNode.querySelectorAll( '.split-menu-element' );
 			for ( i = 0; i < menuElements.length; i++ ) {
-				menuElements[ i ].addEventListener( 'keydown', function() {
-					closeOnEscape();
+				menuElements[ i ].addEventListener( 'keydown', function( event ) {
+					closeOnEscape( event );
 				} );
 			}
 		} );
