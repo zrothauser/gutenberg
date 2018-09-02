@@ -305,20 +305,21 @@ function gutenberg_replace_default_add_new_button() {
 	?>
 	<style type="text/css">
 		.split-page-title-action {
-			display: inline-block;
+			display: inline-flex;
+			padding-top: 9px;
+			position: relative;
+			vertical-align: top;
 		}
 
 		.split-page-title-action a,
-		.split-page-title-action a:active,
-		.split-page-title-action .expander:after {
+		.split-page-title-action .expander {
 			padding: 6px 10px;
+			box-sizing: border-box;
 			position: relative;
-			top: -3px;
 			text-decoration: none;
 			border: 1px solid #ccc;
 			border-radius: 2px;
 			background: #f7f7f7;
-			text-shadow: none;
 			font-weight: 600;
 			font-size: 13px;
 			line-height: normal; /* IE8-IE11 need this for buttons */
@@ -327,71 +328,64 @@ function gutenberg_replace_default_add_new_button() {
 			outline: 0;
 		}
 
+		.split-page-title-action > a {
+			display: inline-flex;
+			align-items: center;
+			height: 30px;
+			line-height: 20px; /* Same as the split button Dashicon */
+		}
+
+		.split-page-title-action .expander {
+			margin: 0;
+			padding: 4px 5px 4px 3px;
+			box-shadow: none;
+			<?php if ( is_rtl() ) : ?>
+			right: -1px;
+			<?php else : ?>
+			left: -1px;
+			<?php endif; ?>
+		}
+
 		.split-page-title-action a:hover,
-		.split-page-title-action .expander:hover:after {
+		.split-page-title-action .expander:hover {
 			border-color: #008EC2;
 			background: #00a0d2;
 			color: #fff;
 		}
 
 		.split-page-title-action a:focus,
-		.split-page-title-action .expander:focus:after {
+		.split-page-title-action .expander:focus {
 			border-color: #5b9dd9;
 			box-shadow: 0 0 2px rgba( 30, 140, 190, 0.8 );
 		}
 
-		.split-page-title-action > a:focus {
-			z-index: 1;
+		.split-page-title-action :focus {
+			z-index: 2; /* Make the focus style always visible */
 		}
 
 		.split-page-title-action .expander:after {
 			content: "\f140";
-			font: 400 20px/.5 dashicons;
+			font: 400 20px/1 dashicons;
 			speak: none;
-			top: 0;
-			<?php if ( is_rtl() ) : ?>
-			right: -1px;
-			<?php else : ?>
-			left: -1px;
-			<?php endif; ?>
-			position: relative;
-			vertical-align: top;
-			text-decoration: none !important;
-			padding: 4px 5px 4px 3px;
+			display: block;
 		}
 
 		.split-page-title-action .dropdown {
 			display: none;
+			position: absolute;
+			top: 39px;
+			z-index: 1;
 		}
 
 		.split-page-title-action .dropdown.visible {
 			display: block;
-			position: absolute;
-			margin-top: 3px;
-			z-index: 1;
 		}
 
-		.split-page-title-action .dropdown.visible a {
+		.split-page-title-action .dropdown a {
 			display: block;
-			top: 0;
+			white-space: nowrap;
 			margin: -1px 0;
-			<?php if ( is_rtl() ) : ?>
-			padding-left: 9px;
-			<?php else : ?>
-			padding-right: 9px;
-			<?php endif; ?>
 		}
-
-		.split-page-title-action .expander {
-			margin: 0;
-			padding: 0;
-			box-shadow: none;
-			border: 0;
-			border-radius: 0;
-			background: none;
-			outline: none;
-		}
-
 	</style>
 	<script type="text/javascript">
 		document.addEventListener( 'DOMContentLoaded', function() {
@@ -408,7 +402,7 @@ function gutenberg_replace_default_add_new_button() {
 			classicUrl = url + ( urlHasParams ? '&' : '?' ) + 'classic-editor';
 
 			newbutton = '<span id="split-page-title-action" class="split-page-title-action">';
-			newbutton += '<a href="' + url + '">' + button.innerText + '</a>';
+			newbutton += '<a href="' + url + '"><span>' + button.innerText + '</span></a>';
 			newbutton += '<button type="button" class="expander split-menu-element" aria-expanded="false" aria-haspopup="true" aria-label="<?php echo esc_js( __( 'Select editor', 'gutenberg' ) ); ?>"></button>';
 			newbutton += '<span class="dropdown"><a href="' + url + '" class="split-menu-element">Gutenberg</a>';
 			newbutton += '<a href="' + classicUrl + '" class="split-menu-element"><?php echo esc_js( __( 'Classic Editor', 'gutenberg' ) ); ?></a></span></span><span class="page-title-action" style="display:none;"></span>';
