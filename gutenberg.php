@@ -374,6 +374,11 @@ function gutenberg_replace_default_add_new_button() {
 			display: none;
 			position: absolute;
 			top: 39px;
+			<?php if ( is_rtl() ) : ?>
+			right: 0;
+			<?php else : ?>
+			left: 0;
+			<?php endif; ?>
 			z-index: 1;
 		}
 
