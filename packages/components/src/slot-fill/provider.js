@@ -8,6 +8,11 @@ import { pick, sortBy, forEach, without, noop } from 'lodash';
  */
 import { Component } from '@wordpress/element';
 
+/**
+ * Internal dependencies
+ */
+import { withPortalProvider } from './portals';
+
 class SlotFillProvider extends Component {
 	constructor() {
 		super( ...arguments );
@@ -107,4 +112,4 @@ SlotFillProvider.childContextTypes = {
 	getFills: noop,
 };
 
-export default SlotFillProvider;
+export default withPortalProvider( SlotFillProvider );

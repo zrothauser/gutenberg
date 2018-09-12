@@ -18,6 +18,7 @@ import { Component, Children, cloneElement, Fragment } from '@wordpress/element'
  * Internal dependencies
  */
 import { isEmptyElement } from './utils';
+import { SlotContent } from './portals';
 
 class Slot extends Component {
 	constructor() {
@@ -83,9 +84,9 @@ class Slot extends Component {
 		);
 
 		return (
-			<Fragment>
+			<SlotContent name={ name }>
 				{ isFunction( children ) ? children( fills ) : fills }
-			</Fragment>
+			</SlotContent>
 		);
 	}
 }

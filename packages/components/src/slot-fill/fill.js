@@ -6,7 +6,12 @@ import { noop, isFunction } from 'lodash';
 /**
  * WordPress dependencies
  */
-import { Component, createPortal } from '@wordpress/element';
+import { Component } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
+import { createPortal } from './portals';
 
 let occurrences = 0;
 
