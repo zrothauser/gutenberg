@@ -1,3 +1,17 @@
+body {
+	transition: margin 0.2s;
+
+	#adminmenumain,
+	#wpadminbar {
+		transition: all 0.2s;
+	}
+
+	#wpcontent,
+	#wpfooter {
+		transition: margin 0.2s;
+	}
+}
+
 body.is-fullscreen-mode {
 	// Reset the html.wp-topbar padding
 	margin-top: -$admin-bar-height-big;
@@ -7,7 +21,16 @@ body.is-fullscreen-mode {
 
 	#adminmenumain,
 	#wpadminbar {
-		display: none;
+		visibility: hidden;
+		opacity: 0;
+	}
+
+	#wpadminbar {
+		transform: translateY(-100%);
+	}
+
+	#adminmenumain {
+		transform: translateX(-100%);
 	}
 
 	#wpcontent,
@@ -15,10 +38,7 @@ body.is-fullscreen-mode {
 		margin-left: 0;
 	}
 
-	// Animations
-	@include fade_in(0.3s);
-
 	.edit-post-header {
-		@include slide_in_top();
+		@include slide_in_top(0.1s);
 	}
 }
