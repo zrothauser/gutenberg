@@ -125,7 +125,7 @@ export function getEmbedEdit( title, icon ) {
 				const { html } = preview;
 
 				// This indicates it's a WordPress embed, there aren't a set of URL patterns we can use to match WordPress URLs.
-				if ( includes( html, 'class="wp-embedded-content" data-secret' ) ) {
+				if ( includes( html, 'class="wp-embedded-content"' ) ) {
 					// If this is not the WordPress embed block, transform it into one.
 					if ( this.props.name !== 'core-embed/wordpress' ) {
 						this.props.onReplace( createBlock( 'core-embed/wordpress', { url } ) );
