@@ -16,6 +16,7 @@ import {
 	Dashicon,
 	IconButton,
 	withFallbackStyles,
+	ToggleControl,
 } from '@wordpress/components';
 import {
 	URLInput,
@@ -45,6 +46,11 @@ class ButtonEdit extends Component {
 		super( ...arguments );
 		this.nodeRef = null;
 		this.bindRef = this.bindRef.bind( this );
+		this.toggleLinkSettingsVisibility = this.toggleLinkSettingsVisibility.bind( this );
+
+		this.state = {
+			settingsVisible: false,
+		};
 	}
 
 	bindRef( node ) {
@@ -52,6 +58,10 @@ class ButtonEdit extends Component {
 			return;
 		}
 		this.nodeRef = node;
+	}
+
+	toggleLinkSettingsVisibility() {
+		this.setState( ( state ) => ( { settingsVisible: ! state.settingsVisible } ) );
 	}
 
 	render() {
@@ -69,9 +79,14 @@ class ButtonEdit extends Component {
 		} = this.props;
 
 		const {
+			settingsVisible,
+		} = this.state;
+
+		const {
 			text,
 			url,
 			title,
+			linkTarget,
 		} = attributes;
 
 		return (
@@ -136,6 +151,21 @@ class ButtonEdit extends Component {
 							onChange={ ( value ) => setAttributes( { url: value } ) }
 						/>
 						<IconButton icon="editor-break" label={ __( 'Apply' ) } type="submit" />
+						<IconButton
+							className="link-settings-toggle"
+							icon="ellipsis"
+							label={ __( 'Link Settings' ) }
+							onClick={ this.toggleLinkSettingsVisibility }
+							aria-expanded={ settingsVisible }
+						/>
+						{ settingsVisible && (
+							<div className="link-settings">
+								<ToggleControl
+									label={ __( 'Open in New Window' ) }
+									onChange={ () => setAttributes( { linkTarget: ! linkTarget } ) }
+									checked={ linkTarget } />
+							</div>
+						) }
 					</form>
 				) }
 			</Fragment>

@@ -49,6 +49,9 @@ const blockAttributes = {
 	customTextColor: {
 		type: 'string',
 	},
+	linkTarget: {
+		type: 'boolean',
+	},
 };
 
 export const name = 'core/button';
@@ -96,6 +99,7 @@ export const settings = {
 			textColor,
 			customBackgroundColor,
 			customTextColor,
+			linkTarget,
 		} = attributes;
 
 		const textClass = getColorClassName( 'color', textColor );
@@ -122,6 +126,8 @@ export const settings = {
 					title={ title }
 					style={ buttonStyle }
 					value={ text }
+					target={ linkTarget ? '_blank' : null }
+					rel={ linkTarget ? 'noreferrer noopener' : null }
 				/>
 			</div>
 		);
