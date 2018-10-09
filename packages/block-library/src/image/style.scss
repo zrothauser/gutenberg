@@ -57,4 +57,12 @@
 	figcaption {
 		@include caption-style();
 	}
+
+	// Circle crop variation.
+	&.is-style-circle-crop {
+		img {
+			border-radius: 50%;
+			object-fit: cover;
+		}
+	}
 }

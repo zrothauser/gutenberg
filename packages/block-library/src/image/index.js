@@ -103,6 +103,11 @@ export const settings = {
 
 	attributes: blockAttributes,
 
+	styles: [
+		{ name: 'default', label: __( 'Regular' ), isDefault: true },
+		{ name: 'circle-crop', label: __( 'Circle Crop' ) },
+	],
+
 	transforms: {
 		from: [
 			{
