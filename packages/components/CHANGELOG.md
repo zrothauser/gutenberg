@@ -13,6 +13,7 @@
 
 - `Dropdown` now has a `focusOnMount` prop which is passed directly to the contained `Popover`.
 - `DatePicker` has new prop `isInvalidDate` exposing react-dates' `isOutsideRange`.
+- Added a new `AutosizeInput` component.
 
 ## 7.0.5 (2019-01-03)
 

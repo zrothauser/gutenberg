@@ -2,6 +2,7 @@
 export * from './primitives';
 // eslint-disable-next-line camelcase
 export { default as Autocomplete } from './autocomplete';
+export { default as AutosizeInput } from './autosize-input';
 export { default as BaseControl } from './base-control';
 export { default as Button } from './button';
 export { default as ButtonGroup } from './button-group';
