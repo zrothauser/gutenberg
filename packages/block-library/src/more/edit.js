@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { PanelBody, ToggleControl } from '@wordpress/components';
+import { PanelBody, ToggleControl, AutosizeInput } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { InspectorControls } from '@wordpress/editor';
 import { ENTER } from '@wordpress/keycodes';
@@ -47,7 +47,6 @@ export default class MoreEdit extends Component {
 		const toggleNoTeaser = () => setAttributes( { noTeaser: ! noTeaser } );
 		const { defaultText } = this.state;
 		const value = customText !== undefined ? customText : defaultText;
-		const inputLength = value.length + 1;
 
 		return (
 			<Fragment>
@@ -61,10 +60,9 @@ export default class MoreEdit extends Component {
 					</PanelBody>
 				</InspectorControls>
 				<div className="wp-block-more">
-					<input
+					<AutosizeInput
 						type="text"
 						value={ value }
-						size={ inputLength }
 						onChange={ this.onChangeInput }
 						onKeyDown={ this.onKeyDown }
 					/>
