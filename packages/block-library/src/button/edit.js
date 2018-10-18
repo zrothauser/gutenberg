@@ -161,7 +161,7 @@ class ButtonEdit extends Component {
 						{ settingsVisible && (
 							<div className="link-settings">
 								<ToggleControl
-									label={ __( 'Open in New Window' ) }
+									label={ __( 'Open in New Tab' ) }
 									onChange={ () => setAttributes( { linkTarget: ! linkTarget } ) }
 									checked={ linkTarget } />
 							</div>
