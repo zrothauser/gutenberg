@@ -1,6 +1,21 @@
 .editor-format-toolbar {
 	display: flex;
 	flex-shrink: 0;
+
+	&--inline {
+		flex-shrink: initial;
+		justify-content: center;
+		position: absolute;
+		top: -$block-controls-height - 4px;
+		line-height: 0;
+		left: 0;
+		right: 0;
+		z-index: 1;
+
+		ul.components-toolbar {
+			box-shadow: $shadow-toolbar;
+		}
+	}
 }
 
 .editor-format-toolbar__selection-position {

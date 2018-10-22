@@ -1,8 +1,19 @@
-const ToolbarContainer = ( props ) => (
-	<div
-		className="editor-format-toolbar"
-	>
-		{ props.children }
-	</div>
-);
+/**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+const ToolbarContainer = ( { children, isInline } ) => {
+	const classes = classnames( 'editor-format-toolbar', {
+		'editor-format-toolbar--inline': isInline,
+	} );
+
+	return (
+		<div className={ classes }>
+			{ children }
+		</div>
+
+	);
+};
+
 export default ToolbarContainer;

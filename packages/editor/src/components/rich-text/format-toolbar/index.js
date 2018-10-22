@@ -146,11 +146,10 @@ class FormatToolbar extends Component {
 		return (
 			<Fragment>
 				{ isInline ? (
-					<div className="editor-rich-text__inline-toolbar">
-						<ToolbarContainer>
-							<Toolbar controls={ toolbarControls } />
-						</ToolbarContainer>
-					</div>
+					<ToolbarContainer isInline>
+						<Toolbar controls={ toolbarControls } />
+					</ToolbarContainer>
+
 				) : (
 					<BlockFormatControls>
 						<ToolbarContainer>
