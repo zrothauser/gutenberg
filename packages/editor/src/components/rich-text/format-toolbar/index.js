@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Toolbar } from '@wordpress/components';
 import { rawShortcut } from '@wordpress/keycodes';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import {
 	applyFormat,
 	removeFormat,
@@ -17,6 +17,7 @@ import { isURL } from '@wordpress/url';
 /**
  * Internal dependencies
  */
+import BlockFormatControls from '../../block-format-controls';
 import { FORMATTING_CONTROLS } from '../formatting-controls';
 import LinkContainer from './link-container';
 import ToolbarContainer from './toolbar-container';
@@ -112,6 +113,12 @@ class FormatToolbar extends Component {
 	}
 
 	render() {
+		const {
+			record,
+			onChange,
+			isInline,
+		} = this.props;
+
 		const link = this.getActiveFormat( 'a' );
 		const toolbarControls = FORMATTING_CONTROLS
 			.filter( ( control ) => this.props.enabledControls.indexOf( control.format ) !== -1 )
@@ -137,12 +144,24 @@ class FormatToolbar extends Component {
 			} );
 
 		return (
-			<ToolbarContainer>
-				<Toolbar controls={ toolbarControls } />
+			<Fragment>
+				{ isInline ? (
+					<div className="editor-rich-text__inline-toolbar">
+						<ToolbarContainer>
+							<Toolbar controls={ toolbarControls } />
+						</ToolbarContainer>
+					</div>
+				) : (
+					<BlockFormatControls>
+						<ToolbarContainer>
+							<Toolbar controls={ toolbarControls } />
+						</ToolbarContainer>
+					</BlockFormatControls>
+				) }
 				<LinkContainer
 					link={ link }
-					record={ this.props.record }
-					onChange={ this.props.onChange }
+					record={ record }
+					onChange={ onChange }
 					applyFormat={ this.applyFormat }
 					removeFormat={ this.removeFormat }
 					getActiveFormat={ this.getActiveFormat }
@@ -150,7 +169,7 @@ class FormatToolbar extends Component {
 					addingLink={ this.state.addingLink }
 					stopAddingLink={ this.stopAddingLink }
 				/>
-			</ToolbarContainer>
+			</Fragment>
 		);
 	}
 }

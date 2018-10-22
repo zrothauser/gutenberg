@@ -47,7 +47,6 @@ import { decodeEntities } from '@wordpress/html-entities';
  * Internal dependencies
  */
 import Autocomplete from '../autocomplete';
-import BlockFormatControls from '../block-format-controls';
 import { FORMATTING_CONTROLS } from './formatting-controls';
 import FormatToolbar from './format-toolbar';
 import TinyMCE from './tinymce';
@@ -865,29 +864,19 @@ export class RichText extends Component {
 		const classes = classnames( wrapperClassName, 'editor-rich-text' );
 		const record = this.getRecord();
 
-		const formatToolbar = this.editor && (
-			<FormatToolbar
-				record={ record }
-				onChange={ this.onChange }
-				enabledControls={ formattingControls }
-				editor={ this.editor }
-			/>
-		);
-
 		return (
 			<div className={ classes }
 				ref={ this.containerRef }
 				onFocus={ this.setFocusedElement }
 			>
-				{ isSelected && ! inlineToolbar && (
-					<BlockFormatControls>
-						{ formatToolbar }
-					</BlockFormatControls>
-				) }
-				{ isSelected && inlineToolbar && (
-					<div className="editor-rich-text__inline-toolbar">
-						{ formatToolbar }
-					</div>
+				{ this.editor && isSelected && (
+					<FormatToolbar
+						record={ record }
+						onChange={ this.onChange }
+						enabledControls={ formattingControls }
+						editor={ this.editor }
+						isInline={ inlineToolbar }
+					/>
 				) }
 				{ isSelected &&
 					<TokenUI
