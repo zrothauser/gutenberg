@@ -97,7 +97,10 @@ class ImageEdit extends Component {
 		this.updateHeight = this.updateHeight.bind( this );
 		this.updateDimensions = this.updateDimensions.bind( this );
 		this.onSetCustomHref = this.onSetCustomHref.bind( this );
+		this.onSetLinkClass = this.onSetLinkClass.bind( this );
+		this.onSetLinkRel = this.onSetLinkRel.bind( this );
 		this.onSetLinkDestination = this.onSetLinkDestination.bind( this );
+		this.onSetNewTab = this.onSetNewTab.bind( this );
 		this.toggleIsEditing = this.toggleIsEditing.bind( this );
 
 		this.state = {
@@ -200,6 +203,33 @@ class ImageEdit extends Component {
 		this.props.setAttributes( { href: value } );
 	}
 
+	onSetLinkClass( value ) {
+		this.props.setAttributes( { linkClass: value } );
+	}
+
+	onSetLinkRel( value ) {
+		this.props.setAttributes( { rel: value } );
+	}
+
+	onSetNewTab( value ) {
+		const newTabRel = 'noreferrer noopener';
+
+		if ( value ) {
+			value = '_blank';
+			if ( ! this.props.attributes.rel ) {
+				this.props.setAttributes( { rel: newTabRel } );
+			}
+		} else {
+			if ( this.props.attributes.rel === newTabRel ) {
+				this.props.setAttributes( { rel: undefined } );
+			}
+
+			value = undefined;
+		}
+
+		this.props.setAttributes( { linkTarget: value } );
+	}
+
 	onFocusCaption() {
 		if ( ! this.state.captionFocused ) {
 			this.setState( {
@@ -267,7 +297,7 @@ class ImageEdit extends Component {
 	render() {
 		const { isEditing } = this.state;
 		const { attributes, setAttributes, isLargeViewport, isSelected, className, maxWidth, noticeOperations, noticeUI, toggleSelection, isRTL } = this.props;
-		const { url, alt, caption, align, id, href, linkDestination, width, height, linkTarget } = attributes;
+		const { url, alt, caption, align, id, href, rel, linkClass, linkDestination, width, height, linkTarget } = attributes;
 		const isExternal = isExternalImage( id, url );
 
 		let toolbarEditButton;
@@ -438,10 +468,21 @@ class ImageEdit extends Component {
 							/>
 							<ToggleControl
 								label={ __( 'Open in New Tab' ) }
-								onChange={ () => setAttributes( { linkTarget: ! linkTarget ? '_blank' : undefined } ) }
+								onChange={ this.onSetNewTab }
 								checked={ linkTarget === '_blank' } />
+							<TextControl
+								label={ __( 'Link CSS Class' ) }
+								value={ linkClass || '' }
+								onChange={ this.onSetLinkClass }
+							/>
+							<TextControl
+								label={ __( 'Link Rel' ) }
+								value={ rel || '' }
+								onChange={ this.onSetLinkRel }
+							/>
 						</Fragment>
 					) }
+
 				</PanelBody>
 			</InspectorControls>
 		);
