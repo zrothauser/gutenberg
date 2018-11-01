@@ -106,6 +106,11 @@ export default class TinyMCE extends Component {
 
 	onFocus() {
 		this.initialize();
+
+		const { onFocus } = this.props;
+		if ( onFocus ) {
+			onFocus();
+		}
 	}
 
 	shouldComponentUpdate() {

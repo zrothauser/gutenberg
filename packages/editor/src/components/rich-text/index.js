@@ -186,7 +186,6 @@ export class RichText extends Component {
 		editor.on( 'keydown', this.onKeyDown );
 		editor.on( 'keyup', this.onKeyUp );
 		editor.on( 'BeforeExecCommand', this.onPropagateUndo );
-		editor.on( 'focus', this.onFocus );
 		// The change event in TinyMCE fires every time an undo level is added.
 		editor.on( 'change', this.onCreateUndoLevel );
 
@@ -972,6 +971,7 @@ export class RichText extends Component {
 								multilineTag={ this.multilineTag }
 								multilineWrapperTags={ this.multilineWrapperTags }
 								setRef={ this.setRef }
+								onFocus={ this.onFocus }
 							/>
 							{ isPlaceholderVisible &&
 								<Tagname
