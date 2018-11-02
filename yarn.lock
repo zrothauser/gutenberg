@@ -7256,12 +7256,6 @@ react-native-randombytes@^2.2.0:
     buffer "^4.9.1"
     sjcl "^1.0.3"
 
-"react-native-recyclerview-list@git+https://github.com/wordpress-mobile/react-native-recyclerview-list.git#336f7159eb6e7bad467c041b3f34667d485e7b58":
-  version "0.3.2"
-  resolved "git+https://github.com/wordpress-mobile/react-native-recyclerview-list.git#336f7159eb6e7bad467c041b3f34667d485e7b58"
-  dependencies:
-    prop-types "^15.6.0"
-
 react-native-sass-transformer@^1.1.1:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/react-native-sass-transformer/-/react-native-sass-transformer-1.2.2.tgz#cdbf44223d10d289dd95663689af2c35c92448f2"
