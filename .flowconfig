@@ -41,7 +41,7 @@
 <PROJECT_ROOT>/node_modules/prettier/.*
 
 ; Ignore react-native-recyclerview-list example app
-<PROJECT_ROOT>/node_modules/react-native-recyclerview-list/example
+<PROJECT_ROOT>/libs/react-native-recyclerview-list/example
 
 ; Ignore immutable-js. See https://github.com/facebook/immutable-js/issues/1308
 <PROJECT_ROOT>/node_modules/immutable/.*
@@ -63,6 +63,7 @@
 <PROJECT_ROOT>/gutenberg/packages/element/node_modules/.*
 
 [include]
+<PROJECT_ROOT>libs/react-native-recyclerview-list
 
 [libs]
 node_modules/react-native/Libraries/react-native/react-native-interface.js
