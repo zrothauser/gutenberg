@@ -1,0 +1,5 @@
+; ignore the submodules
+gutenberg
+symlinked-packages-in-parent
+libs
+
