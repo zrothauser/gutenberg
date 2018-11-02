@@ -27,7 +27,7 @@ module.exports = {
 	resolver: {
 		blacklistRE: blacklistElements,
 		sourceExts: [ 'js', 'json', 'scss', 'sass' ],
-		providesModuleNodeModules: [ 'react-native-svg', 'react-native' ],
+		providesModuleNodeModules: [ 'react-native-svg', 'react-native', 'react-native-hr' ],
 	},
 	transformer: {
 		babelTransformerPath: require.resolve( './sass-transformer-inside-gb.js' ),
