@@ -2,8 +2,8 @@
  * @format */
 
 import { createElement } from '@wordpress/element';
-import jsdom from 'jsdom-jscore';
-import jsdomLevel1Core from 'jsdom-jscore/lib/jsdom/level1/core';
+import jsdom from 'jsdom-jscore-rn';
+import jsdomLevel1Core from 'jsdom-jscore-rn/lib/jsdom/level1/core';
 
 global.wp = {
 	element: {
