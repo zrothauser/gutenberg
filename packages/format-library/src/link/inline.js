@@ -274,7 +274,7 @@ class InlineLinkUI extends Component {
 						) }
 					</URLPopover>
 				</PositionedAtSelection>
-				<SelectionOverlay />
+				{ showInput && <SelectionOverlay /> }
 			</Fragment>
 		);
 	}
