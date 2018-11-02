@@ -7,7 +7,7 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import { sprintf, __ } from '@wordpress/i18n';
-import { Component, createRef } from '@wordpress/element';
+import { Component, Fragment, createRef } from '@wordpress/element';
 import {
 	ExternalLink,
 	IconButton,
@@ -29,6 +29,7 @@ import { URLInput, URLPopover } from '@wordpress/editor';
  */
 import PositionedAtSelection from './positioned-at-selection';
 import { isValidHref } from './utils';
+import SelectionOverlay from './selection-overlay';
 
 const stopKeyPropagation = ( event ) => event.stopPropagation();
 
@@ -242,36 +243,39 @@ class InlineLinkUI extends Component {
 		const showInput = isShowingInput( this.props, this.state );
 
 		return (
-			<PositionedAtSelection
-				key={ `${ value.start }${ value.end }` /* Used to force rerender on selection change */ }
-			>
-				<URLPopover
-					onClickOutside={ this.onClickOutside }
-					focusOnMount={ showInput ? 'firstElement' : false }
-					renderSettings={ () => (
-						<ToggleControl
-							label={ __( 'Open in New Tab' ) }
-							checked={ opensInNewWindow }
-							onChange={ this.setLinkTarget }
-						/>
-					) }
+			<Fragment>
+				<PositionedAtSelection
+					key={ `${ value.start }${ value.end }` /* Used to force rerender on selection change */ }
 				>
-					{ showInput ? (
-						<LinkEditor
-							value={ inputValue }
-							onChangeInputValue={ this.onChangeInputValue }
-							onKeyDown={ this.onKeyDown }
-							submitLink={ this.submitLink }
-							autocompleteRef={ this.autocompleteRef }
-						/>
-					) : (
-						<LinkViewer
-							url={ url }
-							editLink={ this.editLink }
-						/>
-					) }
-				</URLPopover>
-			</PositionedAtSelection>
+					<URLPopover
+						onClickOutside={ this.onClickOutside }
+						focusOnMount={ showInput ? 'firstElement' : false }
+						renderSettings={ () => (
+							<ToggleControl
+								label={ __( 'Open in New Tab' ) }
+								checked={ opensInNewWindow }
+								onChange={ this.setLinkTarget }
+							/>
+						) }
+					>
+						{ showInput ? (
+							<LinkEditor
+								value={ inputValue }
+								onChangeInputValue={ this.onChangeInputValue }
+								onKeyDown={ this.onKeyDown }
+								submitLink={ this.submitLink }
+								autocompleteRef={ this.autocompleteRef }
+							/>
+						) : (
+							<LinkViewer
+								url={ url }
+								editLink={ this.editLink }
+							/>
+						) }
+					</URLPopover>
+				</PositionedAtSelection>
+				<SelectionOverlay />
+			</Fragment>
 		);
 	}
 }
