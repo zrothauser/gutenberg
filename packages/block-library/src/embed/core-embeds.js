@@ -176,6 +176,7 @@ export const others = [
 		settings: {
 			title: 'Imgur',
 			icon: embedPhotoIcon,
+			responsive: false,
 			description: __( 'Embed Imgur content.' ),
 		},
 		patterns: [ /^https?:\/\/(.+\.)?imgur\.com\/.+/i ],
