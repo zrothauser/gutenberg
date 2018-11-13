@@ -24,4 +24,31 @@
 		border-top: $border-width solid $light-gray-500;
 		padding-top: 7px + $border-width;
 	}
+
+	&__form {
+		display: flex;
+		position: relative;
+
+		// Selector requires a lot of specificity to override base styles.
+		input.editor-url-popover__input[type] {
+			width: 100%;
+			@include break-small() {
+				width: 300px;
+			}
+
+			flex-grow: 1;
+			border: none;
+			border-radius: 0;
+			margin: 2px;
+
+			&::-ms-clear {
+				display: none;
+			}
+		}
+
+		.editor-url-popover__submit-button {
+			flex-shrink: 1;
+		}
+	}
+
 }

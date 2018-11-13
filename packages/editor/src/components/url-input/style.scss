@@ -2,29 +2,7 @@
 $input-padding: 8px;
 $input-size: 300px;
 
-.editor-block-list__block .editor-url-input,
-.components-popover .editor-url-input,
-.editor-url-input {
-	flex-grow: 1;
-	position: relative;
-	padding: 1px;
-
-	input[type="text"] {
-		width: 100%;
-		@include break-small() {
-			width: $input-size;
-		}
-		padding: $input-padding;
-		border: none;
-		border-radius: 0;
-		margin-left: 0;
-		margin-right: 0;
-
-		&::-ms-clear {
-			display: none;
-		}
-	}
-
+.editor-url-popover {
 	.components-spinner {
 		position: absolute;
 		right: $input-padding;

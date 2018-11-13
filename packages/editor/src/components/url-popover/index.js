@@ -8,7 +8,11 @@ import {
 	IconButton,
 } from '@wordpress/components';
 
-class URLPopover extends Component {
+export { URLPopoverForm } from './form';
+export { URLPopoverInput } from './input';
+export { URLPopoverSubmitButton } from './submit-button';
+
+export default class URLPopover extends Component {
 	constructor() {
 		super( ...arguments );
 
@@ -70,5 +74,3 @@ class URLPopover extends Component {
 		);
 	}
 }
-
-export default URLPopover;

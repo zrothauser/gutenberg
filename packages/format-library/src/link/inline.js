@@ -24,7 +24,12 @@ import {
 	getTextContent,
 	slice,
 } from '@wordpress/rich-text';
-import { URLInput, URLPopover } from '@wordpress/editor';
+import {
+	URLInput,
+	URLPopover,
+	URLPopoverForm,
+	URLPopoverSubmitButton,
+} from '@wordpress/editor';
 
 /**
  * Internal dependencies
@@ -70,8 +75,8 @@ function isShowingInput( props, state ) {
 const LinkEditor = ( { value, onChangeInputValue, onKeyDown, submitLink, autocompleteRef } ) => (
 	// Disable reason: KeyPress must be suppressed so the block doesn't hide the toolbar
 	/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-	<form
-		className="editor-format-toolbar__link-container-content"
+	<URLPopoverForm
+		// className="editor-format-toolbar__link-container-content"
 		onKeyPress={ stopKeyPropagation }
 		onKeyDown={ onKeyDown }
 		onSubmit={ submitLink }
@@ -81,8 +86,8 @@ const LinkEditor = ( { value, onChangeInputValue, onKeyDown, submitLink, autocom
 			onChange={ onChangeInputValue }
 			autocompleteRef={ autocompleteRef }
 		/>
-		<IconButton icon="editor-break" label={ __( 'Apply' ) } type="submit" />
-	</form>
+		<URLPopoverSubmitButton />
+	</URLPopoverForm>
 	/* eslint-enable jsx-a11y/no-noninteractive-element-interactions */
 );
 

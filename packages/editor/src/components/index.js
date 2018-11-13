@@ -30,7 +30,12 @@ export { default as MediaUpload } from './media-upload';
 export { default as MediaUploadCheck } from './media-upload/check';
 export { default as URLInput } from './url-input';
 export { default as URLInputButton } from './url-input/button';
-export { default as URLPopover } from './url-popover';
+export {
+	default as URLPopover,
+	URLPopoverForm,
+	URLPopoverInput,
+	URLPopoverSubmitButton,
+} from './url-popover';
 
 // Post Related Components
 export { default as AutosaveMonitor } from './autosave-monitor';

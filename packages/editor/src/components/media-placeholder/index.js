@@ -12,7 +12,6 @@ import {
 	FormFileUpload,
 	Placeholder,
 	DropZone,
-	IconButton,
 	withFilters,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
@@ -25,30 +24,25 @@ import { withSelect } from '@wordpress/data';
  */
 import MediaUpload from '../media-upload';
 import MediaUploadCheck from '../media-upload/check';
-import URLPopover from '../url-popover';
+import URLPopover, {
+	URLPopoverForm,
+	URLPopoverInput,
+	URLPopoverSubmitButton,
+} from '../url-popover';
 import { mediaUpload } from '../../utils/';
 
 const InsertFromURLPopover = ( { src, onChange, onSubmit, onClose } ) => (
 	<URLPopover onClose={ onClose }>
-		<form
-			className="editor-media-placeholder__url-input-form"
+		<URLPopoverForm
 			onSubmit={ onSubmit }
 		>
-			<input
-				className="editor-media-placeholder__url-input-field"
-				type="url"
-				aria-label={ __( 'URL' ) }
-				placeholder={ __( 'Paste or type URL' ) }
+			<URLPopoverInput
+				aria-label={ __( 'Enter URL' ) }
 				onChange={ onChange }
 				value={ src }
 			/>
-			<IconButton
-				className="editor-media-placeholder__url-input-submit-button"
-				icon="editor-break"
-				label={ __( 'Apply' ) }
-				type="submit"
-			/>
-		</form>
+			<URLPopoverSubmitButton />
+		</URLPopoverForm>
 	</URLPopover>
 );
 

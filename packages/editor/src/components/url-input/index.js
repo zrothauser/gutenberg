@@ -16,6 +16,7 @@ import { Spinner, withSpokenMessages, Popover } from '@wordpress/components';
 import { withInstanceId } from '@wordpress/compose';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
+import { URLPopoverInput } from '../url-popover';
 
 // Since URLInput is rendered in the context of other inputs, but should be
 // considered a separate modal node, prevent keyboard events from propagating
@@ -231,8 +232,8 @@ class URLInput extends Component {
 		const { showSuggestions, posts, selectedSuggestion, loading } = this.state;
 		/* eslint-disable jsx-a11y/no-autofocus */
 		return (
-			<div className="editor-url-input">
-				<input
+			<div>
+				<URLPopoverInput
 					autoFocus={ autoFocus }
 					type="text"
 					aria-label={ __( 'URL' ) }
