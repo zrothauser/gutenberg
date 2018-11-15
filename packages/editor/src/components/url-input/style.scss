@@ -2,6 +2,11 @@
 $input-padding: 8px;
 $input-size: 300px;
 
+.editor-url-input {
+	display: flex;
+	flex: 1;
+}
+
 .editor-url-popover {
 	.components-spinner {
 		position: absolute;

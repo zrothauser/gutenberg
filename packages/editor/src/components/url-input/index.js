@@ -232,7 +232,7 @@ class URLInput extends Component {
 		const { showSuggestions, posts, selectedSuggestion, loading } = this.state;
 		/* eslint-disable jsx-a11y/no-autofocus */
 		return (
-			<div>
+			<div className="editor-url-input">
 				<URLPopoverInput
 					autoFocus={ autoFocus }
 					type="text"
