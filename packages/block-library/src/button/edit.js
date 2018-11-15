@@ -14,11 +14,12 @@ import {
 import { compose } from '@wordpress/compose';
 import {
 	Dashicon,
-	IconButton,
 	withFallbackStyles,
 } from '@wordpress/components';
 import {
 	URLInput,
+	URLPopoverForm,
+	URLPopoverSubmitButton,
 	RichText,
 	ContrastChecker,
 	InspectorControls,
@@ -127,16 +128,17 @@ class ButtonEdit extends Component {
 					</InspectorControls>
 				</div>
 				{ isSelected && (
-					<form
+					<URLPopoverForm
 						className="block-library-button__inline-link"
-						onSubmit={ ( event ) => event.preventDefault() }>
+						onSubmit={ ( event ) => event.preventDefault() }
+					>
 						<Dashicon icon="admin-links" />
 						<URLInput
 							value={ url }
 							onChange={ ( value ) => setAttributes( { url: value } ) }
 						/>
-						<IconButton icon="editor-break" label={ __( 'Apply' ) } type="submit" />
-					</form>
+						<URLPopoverSubmitButton />
+					</URLPopoverForm>
 				) }
 			</Fragment>
 		);
