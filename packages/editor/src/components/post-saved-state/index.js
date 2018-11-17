@@ -55,6 +55,7 @@ export class PostSavedState extends Component {
 			isAutosaving,
 			isPending,
 			isLargeViewport,
+			isPrivate,
 		} = this.props;
 		const { forceSavedMessage } = this.state;
 		if ( isSaving ) {
@@ -77,7 +78,7 @@ export class PostSavedState extends Component {
 			return <PostSwitchToDraftButton />;
 		}
 
-		if ( ! isSaveable ) {
+		if ( ! isSaveable || isPrivate ) {
 			return null;
 		}
 
@@ -146,6 +147,7 @@ export default compose( [
 			isSaveable: isEditedPostSaveable(),
 			isAutosaving: isAutosavingPost(),
 			isPending: 'pending' === getEditedPostAttribute( 'status' ),
+			isPrivate: 'private' === getEditedPostAttribute( 'status' ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
