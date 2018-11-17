@@ -17,6 +17,7 @@ export function PublishButtonLabel( {
 	isPublishing,
 	hasPublishAction,
 	isAutosaving,
+	visibility,
 } ) {
 	if ( isPublishing ) {
 		return __( 'Publishing…' );
@@ -34,6 +35,10 @@ export function PublishButtonLabel( {
 		return __( 'Schedule' );
 	}
 
+	if ( 'private' === visibility ) {
+		return __( 'Publish Privately' );
+	}
+
 	return __( 'Publish' );
 }
 
@@ -47,6 +52,7 @@ export default compose( [
 			getCurrentPost,
 			getCurrentPostType,
 			isAutosavingPost,
+			getEditedPostVisibility,
 		} = select( 'core/editor' );
 		return {
 			isPublished: isCurrentPostPublished(),
@@ -56,6 +62,7 @@ export default compose( [
 			hasPublishAction: get( getCurrentPost(), [ '_links', 'wp:action-publish' ], false ),
 			postType: getCurrentPostType(),
 			isAutosaving: isAutosavingPost(),
+			visibility: getEditedPostVisibility(),
 		};
 	} ),
 ] )( PublishButtonLabel );
