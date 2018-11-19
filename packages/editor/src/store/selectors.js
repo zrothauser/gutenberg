@@ -1756,21 +1756,7 @@ const canIncludeReusableBlockInInserter = ( state, reusableBlock, rootClientId )
 		return false;
 	}
 
-	const referencedBlockName = getBlockName( state, reusableBlock.clientId );
-	if ( ! referencedBlockName ) {
-		return false;
-	}
-
-	const referencedBlockType = getBlockType( referencedBlockName );
-	if ( ! referencedBlockType ) {
-		return false;
-	}
-
-	if ( ! canInsertBlockTypeUnmemoized( state, referencedBlockName, rootClientId ) ) {
-		return false;
-	}
-
-	if ( isAncestorOf( state, reusableBlock.clientId, rootClientId ) ) {
+	if ( reusableBlock.clientId && isAncestorOf( state, reusableBlock.clientId, rootClientId ) ) {
 		return false;
 	}
 
@@ -1878,8 +1864,7 @@ export const getInserterItems = createSelector(
 		const buildReusableBlockInserterItem = ( reusableBlock ) => {
 			const id = `core/block/${ reusableBlock.id }`;
 
-			const referencedBlockName = getBlockName( state, reusableBlock.clientId );
-			const referencedBlockType = getBlockType( referencedBlockName );
+			const { name, icon, category, keywords } = getBlockType( 'core/block' );
 
 			const { time, count = 0 } = getInsertUsage( state, id ) || {};
 			const utility = calculateUtility( 'reusable', count, false );
@@ -1887,12 +1872,12 @@ export const getInserterItems = createSelector(
 
 			return {
 				id,
-				name: 'core/block',
+				name,
 				initialAttributes: { ref: reusableBlock.id },
 				title: reusableBlock.title,
-				icon: referencedBlockType.icon,
-				category: 'reusable',
-				keywords: [],
+				icon,
+				category,
+				keywords,
 				isDisabled: false,
 				utility,
 				frecency,

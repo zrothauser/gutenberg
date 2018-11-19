@@ -47,8 +47,10 @@ class ReusableBlockEdit extends Component {
 	}
 
 	componentDidMount() {
-		if ( ! this.props.reusableBlock ) {
-			this.props.fetchReusableBlock();
+		const { reusableBlock, block, fetchReusableBlock } = this.props;
+
+		if ( ! reusableBlock || ! block ) {
+			fetchReusableBlock();
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { castArray, map, uniqueId } from 'lodash';
+import { castArray, map, uniqueId, compact } from 'lodash';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 
 /**
@@ -38,7 +38,6 @@ import {
 	getBlocks,
 	getBlocksByClientId,
 } from '../selectors';
-import { getPostRawValue } from '../reducer';
 
 /**
  * Module Constants
@@ -66,23 +65,32 @@ export const fetchReusableBlocks = async ( action, store ) => {
 	if ( id ) {
 		result = apiFetch( { path: `/wp/v2/${ postType.rest_base }/${ id }?context=edit` } );
 	} else {
-		result = apiFetch( { path: `/wp/v2/${ postType.rest_base }?per_page=-1&context=edit` } );
+		result = apiFetch( { path: `/wp/v2/${ postType.rest_base }?per_page=-1` } );
 	}
 
 	try {
-		const reusableBlockOrBlocks = await result;
+		const postOrPosts = await result;
+
 		dispatch( receiveReusableBlocksAction( map(
-			castArray( reusableBlockOrBlocks ),
+			castArray( postOrPosts ),
 			( post ) => {
-				const parsedBlocks = parse( post.content.raw );
+				let parsedBlock = null;
+
+				if ( post.content.raw ) {
+					const parsedBlocks = parse( post.content.raw );
+					if ( parsedBlocks.length === 1 ) {
+						parsedBlock = parsedBlocks[ 0 ];
+					} else {
+						parsedBlock = createBlock( 'core/template', {}, parsedBlocks );
+					}
+				}
+
 				return {
 					reusableBlock: {
 						id: post.id,
-						title: getPostRawValue( post.title ),
+						title: post.title.raw || post.title.rendered,
 					},
-					parsedBlock: parsedBlocks.length === 1 ?
-						parsedBlocks[ 0 ] :
-						createBlock( 'core/template', {}, parsedBlocks ),
+					parsedBlock,
 				};
 			}
 		) ) );
@@ -219,7 +227,7 @@ export const deleteReusableBlocks = async ( action, store ) => {
  * @return {Object} receive blocks action
  */
 export const receiveReusableBlocks = ( action ) => {
-	return receiveBlocks( map( action.results, 'parsedBlock' ) );
+	return receiveBlocks( compact( map( action.results, 'parsedBlock' ) ) );
 };
 
 /**

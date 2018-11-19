@@ -975,7 +975,7 @@ export const reusableBlocks = combineReducers( {
 			case 'RECEIVE_REUSABLE_BLOCKS': {
 				return reduce( action.results, ( nextState, result ) => {
 					const { id, title } = result.reusableBlock;
-					const { clientId } = result.parsedBlock;
+					const clientId = result.parsedBlock ? result.parsedBlock.clientId : null;
 
 					const value = { clientId, title };
 
