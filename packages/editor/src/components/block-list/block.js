@@ -529,18 +529,6 @@ export class BlockListBlock extends Component {
 								clientId={ clientId }
 								rootClientId={ rootClientId }
 							/>
-							{ shouldRenderMovers && (
-								<BlockMover
-									clientIds={ clientId }
-									blockElementId={ blockElementId }
-									isFirst={ isFirst }
-									isLast={ isLast }
-									isHidden={ ! ( isHovered || isSelected ) || hoverArea !== 'left' }
-									isDraggable={ ( isDraggable !== false ) && ( ! isPartOfMultiSelection && isMovable ) }
-									onDragStart={ this.onDragStart }
-									onDragEnd={ this.onDragEnd }
-								/>
-							) }
 							{ isFirstMultiSelected && (
 								<BlockMultiControls rootClientId={ rootClientId } />
 							) }
@@ -604,6 +592,18 @@ export class BlockListBlock extends Component {
 									{ !! error && <BlockCrashWarning /> }
 								</IgnoreNestedEvents>
 							</div>
+							{ shouldRenderMovers && (
+								<BlockMover
+									clientIds={ clientId }
+									blockElementId={ blockElementId }
+									isFirst={ isFirst }
+									isLast={ isLast }
+									isHidden={ ! ( isHovered || isSelected ) || hoverArea !== 'left' }
+									isDraggable={ ( isDraggable !== false ) && ( ! isPartOfMultiSelection && isMovable ) }
+									onDragStart={ this.onDragStart }
+									onDragEnd={ this.onDragEnd }
+								/>
+							) }
 							{ showEmptyBlockSideInserter && (
 								<Fragment>
 									<div className="editor-block-list__side-inserter">

@@ -11,9 +11,7 @@
 	// To vertically center against a 56px paragraph, move upwards 72px - 56px / 2.
 	// Don't do this for wide, fullwide, or mobile.
 	@include break-small() {
-		.editor-block-list__block:not([data-align="wide"]):not([data-align="full"]) & {
-			margin-top: -$grid-size;
-		}
+		margin-top: -$grid-size;
 	}
 }
 

@@ -168,7 +168,7 @@
 		background-color: $blue-medium-highlight;
 	}
 
-	// selection style for multiple blocks
+	// Selection style for multiple blocks.
 	&.is-multi-selected *::selection {
 		background-color: transparent;
 	}
@@ -179,7 +179,7 @@
 		// Use opacity to work in various editor styles.
 		mix-blend-mode: multiply;
 
-		// Collapse extra vertical padding on selection
+		// Collapse extra vertical padding on selection.
 		top: -$block-padding;
 		bottom: -$block-padding;
 
@@ -293,12 +293,6 @@
 			margin-bottom: $border-width;
 		}
 
-		// Hide all additional UI on floats.
-		.editor-block-mover,
-		.editor-block-list__block-mobile-toolbar {
-			display: none;
-		}
-
 		// Position toolbar better on mobile.
 		.editor-block-contextual-toolbar {
 			width: auto;
@@ -376,39 +370,9 @@
 		// Without z-index, the block toolbar will be below an adjecent float
 		z-index: z-index(".editor-block-list__block {core/image aligned wide or fullwide}");
 
-		// Mover and settings above
-		> .editor-block-mover {
-			// This moves the menu up by the height of the button + border + padding.
-			top: -$block-side-ui-width - $block-padding - $block-side-ui-clearance;
-			bottom: auto;
-			min-height: 0;
-			height: auto;
-			width: auto;
-			z-index: inherit;
-
-			&::before {
-				content: none;
-			}
-		}
-
-		> .editor-block-mover .editor-block-mover__control {
-			float: left;
-		}
-
 		// Position hover label on the right
 		> .editor-block-list__breadcrumb {
 			right: -$border-width;
-		}
-
-		// Hide mover until wide breakpoints, or it might be covered by toolbar
-		> .editor-block-mover {
-			display: none;
-		}
-
-		@include break-wide() {
-			> .editor-block-mover {
-				display: block;
-			}
 		}
 
 		// Beyond the mobile breakpoint, wide images stretch outside of the column.
@@ -417,14 +381,6 @@
 			.editor-block-toolbar {
 				display: inline-flex;
 			}
-		}
-	}
-
-	// Wide
-	&[data-align="wide"] {
-		// Position mover
-		> .editor-block-mover {
-			left: -$block-padding + $border-width;
 		}
 	}
 
@@ -462,11 +418,6 @@
 			right: 0;
 			border-left-width: 0;
 			border-right-width: 0;
-		}
-
-		// Position mover
-		> .editor-block-mover {
-			left: $border-width;
 		}
 	}
 
@@ -535,14 +486,94 @@
 	> .editor-block-mover {
 		padding-right: $block-side-ui-clearance;
 
-		// Position for top level blocks
+		// Position for top level blocks.
 		left: -$block-side-ui-width - $block-side-ui-clearance;
 
-		// Mobile
+		// Hide on mobile, as that has a separate solution.
 		display: none;
 		@include break-small() {
 			display: block;
 		}
+	}
+
+	// Show side UI below the block for floats, wide, and full-wide blocks.
+	// But show only when block is selected, and never on hover.
+	&[data-align="left"],
+	&[data-align="right"],
+	&[data-align="wide"],
+	&[data-align="full"] {
+		// Show always when the block is selected.
+		&.is-selected > .editor-block-mover {
+			// Don't show on mobile, allow the special mobile toolbar to work there.
+			display: none;
+			@include break-small() {
+				display: flex;
+				opacity: 1;
+				animation: none;
+			}
+
+			// Position below the block.
+			position: relative;
+			margin: 0;
+			height: auto;
+			width: auto;
+			clear: both;
+			height: auto;
+			min-height: 0;
+			top: 0;
+			left: 0;
+
+			@include break-small() {
+				margin-top: -$block-padding;
+				margin-bottom: $block-padding;
+			}
+
+			// Stack controls in a row instead of a column.
+			.editor-block-mover__control {
+				float: left;
+			}
+		}
+
+		// Don't show on hover.
+		&.is-hovered > .editor-block-mover {
+			display: none;
+		}
+	}
+
+	// Horizontally center the mover controls to match the centered block toolbar.
+	&[data-align="wide"].is-selected > .editor-block-mover,
+	&[data-align="full"].is-selected > .editor-block-mover {
+		max-width: $content-width;
+		margin-left: auto;
+		margin-right: auto;
+		left: 0;
+	}
+
+	// Floats need a few special rules.
+	&[data-align="left"].is-selected,
+	&[data-align="right"].is-selected {
+		// Position correctly.
+		&.is-selected > .editor-block-mover {
+			top: -$block-padding;
+			left: -$block-padding * 2;
+		}
+
+		// Hide the special mobile toolbar for floats, show the desktop movers.
+		> .editor-block-list__block-mobile-toolbar {
+			display: none;
+		}
+	}
+
+	// Floats need additional, float-specific, float rules in order to increase in dimensions.
+	// These rules should match the alignments, and should not be auto-flipped by autoRTL.
+	&[data-align="left"].is-selected > .editor-block-mover {
+		/*rtl:ignore*/
+		float: left;
+	}
+
+	&[data-align="right"].is-selected > .editor-block-mover {
+		/*rtl:ignore*/
+		float: right;
 	}
 }
 
