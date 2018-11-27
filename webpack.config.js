@@ -9,6 +9,8 @@ const postcss = require( 'postcss' );
 const { get } = require( 'lodash' );
 const { basename } = require( 'path' );
 
+const WebpackBar = require( 'webpackbar' );
+
 /**
  * WordPress dependencies
  */
@@ -106,6 +108,7 @@ const config = {
 	},
 	plugins: [
 		// Create RTL files with a -rtl suffix
+		new WebpackBar(),
 		new WebpackRTLPlugin( {
 			suffix: '-rtl',
 			minify: process.env.NODE_ENV === 'production' ? { safe: true } : false,
