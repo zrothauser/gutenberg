@@ -15,6 +15,9 @@ import {
 	isEqual,
 	overSome,
 	get,
+	findKey,
+	uniq,
+	pickBy,
 } from 'lodash';
 
 /**
@@ -264,6 +267,116 @@ const withBlockReset = ( reducer ) => ( state, action ) => {
 	return reducer( state, action );
 };
 
+const withBlockObjectCacheKey = ( reducer ) => ( state, action ) => {
+	const newState = reducer( state, action );
+	const getNextCacheKeyForClientIds = ( clientIdsToUpdate, clientIdsToRemove = [] ) => {
+		return {
+			...omit( state.cacheKey, clientIdsToRemove ),
+			...clientIdsToUpdate.reduce( ( acc, clientId ) => {
+				acc[ clientId ] = [];
+				return acc;
+			}, { } ),
+		};
+	};
+	const getParentBlocks = ( clientId ) => {
+		const parent = findKey(
+			newState.order,
+			( children ) => children.indexOf( clientId ) !== -1
+		);
+		if ( ! parent ) {
+			return [ clientId ];
+		}
+		return [ clientId ].concat( getParentBlocks( parent ) );
+	};
+	const getChildrenBlocks = ( clientId ) => {
+		if ( ! newState.order[ clientId ] || newState.order[ clientId ].length === 0 ) {
+			return [];
+		}
+		return newState.order[ clientId ].concat( newState.order[ clientId ].map( getChildrenBlocks ) );
+	};
+	switch ( action.type ) {
+		case 'RESET_BLOCKS':
+			return {
+				...newState,
+				cacheKey: mapValues( newState.byClientId, () => (
+					[]
+				) ),
+			};
+		case 'RECEIVE_BLOCKS':
+		case 'INSERT_BLOCKS': {
+			const parents = action.rootClientId ? getParentBlocks( action.rootClientId ) : [];
+			return {
+				...newState,
+				cacheKey: getNextCacheKeyForClientIds(
+					parents.concat( keys( getFlattenedBlocks( action.blocks ) ) ),
+				),
+			};
+		}
+		case 'REPLACE_BLOCKS': {
+			const parents = uniq( action.blocks.reduce( ( acc, block ) => {
+				return acc.concat( getParentBlocks( block.clientId ) );
+			}, [] ) );
+			return {
+				...newState,
+				cacheKey: getNextCacheKeyForClientIds(
+					parents,
+					action.clientIds.map( getChildrenBlocks )
+				),
+			};
+		}
+		case 'UPDATE_BLOCK':
+		case 'UPDATE_BLOCK_ATTRIBUTES':
+			return {
+				...newState,
+				cacheKey: getNextCacheKeyForClientIds(
+					getParentBlocks( action.clientId )
+				),
+			};
+		case 'REMOVE_BLOCKS':
+			return {
+				...newState,
+				cacheKey: omit( state.cacheKey, action.clientIds.map( getChildrenBlocks ) ),
+			};
+
+		case 'MOVE_BLOCK_TO_POSITION': {
+			return {
+				...newState,
+				cacheKey: getNextCacheKeyForClientIds(
+					( action.fromRootClientId ? getParentBlocks( action.fromRootClientId ) : [] )
+						.concat( action.toRootClientId ? getParentBlocks( action.toRootClientId ) : [] )
+				),
+			};
+		}
+		case 'MOVE_BLOCKS_UP':
+		case 'MOVE_BLOCKS_DOWN': {
+			return {
+				...newState,
+				cacheKey: getNextCacheKeyForClientIds(
+					action.rootClientId ? getParentBlocks( action.rootClientId ) : []
+				),
+			};
+		}
+		case 'SAVE_REUSABLE_BLOCK_SUCCESS': {
+			const { id, updatedId } = action;
+			if ( id === updatedId ) {
+				return newState;
+			}
+			const updatedBlocks = pickBy( state.byClientId, ( block ) => {
+				return block.name === 'core/block' && block.attributes.ref === id;
+			} );
+			const parents = uniq( keys( updatedBlocks ).reduce( ( acc, clientId ) => {
+				return acc.concat( getParentBlocks( clientId ) );
+			}, [] ) );
+			return {
+				...newState,
+				cacheKey: getNextCacheKeyForClientIds( parents ),
+			};
+		}
+	}
+
+	return newState;
+};
+
 /**
  * Undoable reducer returning the editor post state, including blocks parsed
  * from current HTML markup.
@@ -348,6 +461,8 @@ export const editor = flow( [
 			resetTypes: [ 'SETUP_EDITOR_STATE', 'REQUEST_POST_UPDATE_START' ],
 			ignoreTypes: [ 'RECEIVE_BLOCKS', 'RESET_POST', 'UPDATE_POST' ],
 		} ),
+
+		withBlockObjectCacheKey,
 	] )( {
 		byClientId( state = {}, action ) {
 			switch ( action.type ) {
