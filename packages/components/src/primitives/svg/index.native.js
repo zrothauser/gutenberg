@@ -30,11 +30,12 @@ export const SVG = ( props ) => {
 	}
 
 	const safeProps = { ...props, style };
+	const key = ( safeProps.style && safeProps.style.color ) ? safeProps.style.color : null;
 
 	return (
 		<Svg
 			//We want to re-render when style color is changed
-			key={ safeProps.style.color }
+			key={ key }
 			height="100%"
 			width="100%"
 			{ ...safeProps }
