@@ -8,7 +8,7 @@ import '@wordpress/viewport';
 import '@wordpress/notices';
 import { registerCoreBlocks } from '@wordpress/block-library';
 import { render, unmountComponentAtNode } from '@wordpress/element';
-import { dispatch } from '@wordpress/data';
+import { dispatch, StoreSubscriptionProvider } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -83,13 +83,15 @@ export function initializeEditor( id, postType, postId, settings, initialEdits )
 	] );
 
 	render(
-		<Editor
-			settings={ settings }
-			onError={ reboot }
-			postId={ postId }
-			postType={ postType }
-			initialEdits={ initialEdits }
-		/>,
+		<StoreSubscriptionProvider>
+			<Editor
+				settings={ settings }
+				onError={ reboot }
+				postId={ postId }
+				postType={ postType }
+				initialEdits={ initialEdits }
+			/>
+		</StoreSubscriptionProvider>,
 		target
 	);
 }
