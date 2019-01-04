@@ -97,8 +97,8 @@ function buildFiles( files ) {
 	}, { jsFiles: new Set(), scssPackagePaths: new Set() } );
 
 	return Promise.all( [
-		...buildPaths.jsFiles.map( buildJsFile ),
-		...buildPaths.scssPackagePaths.map( buildPackageScss ),
+		...[ ...buildPaths.jsFiles ].map( buildJsFile ),
+		...[ ...buildPaths.scssPackagePaths ].map( buildPackageScss ),
 	] );
 }
 
