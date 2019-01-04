@@ -14,7 +14,7 @@ const path = require( 'path' );
 let glob = require( 'glob' );
 const babel = require( '@babel/core' );
 const chalk = require( 'chalk' );
-let mkdirp = require( 'mkdirp' );
+const makeDir = require( 'make-dir' );
 const sass = require( 'node-sass' );
 const postcss = require( 'postcss' );
 
@@ -42,7 +42,6 @@ const writeFile = promisify( fs.writeFile );
 const transformFile = promisify( babel.transformFile );
 const renderSass = promisify( sass.render );
 glob = promisify( glob );
-mkdirp = promisify( mkdirp );
 
 /**
  * Get the package name for a specified file
@@ -137,7 +136,7 @@ async function buildScssFile( styleFile ) {
 	const outputFile = getBuildPath( styleFile.replace( '.scss', '.css' ), BUILD_DIR.style );
 	const outputFileRTL = getBuildPath( styleFile.replace( '.scss', '-rtl.css' ), BUILD_DIR.style );
 
-	await mkdirp( path.dirname( outputFile ) );
+	await makeDir( path.dirname( outputFile ) );
 
 	const contents = await readFile( styleFile, 'utf8' );
 	const builtSass = await renderSass( {
@@ -184,7 +183,7 @@ async function buildJsFileFor( file, silent, environment ) {
 	babelOptions.sourceMaps = true;
 	babelOptions.sourceFileName = file;
 
-	await mkdirp( path.dirname( destPath ) );
+	await makeDir( path.dirname( destPath ) );
 	const transformed = await transformFile( file, babelOptions );
 	writeFile( destPath + '.map', JSON.stringify( transformed.map ) );
 	writeFile( destPath, transformed.code + '\n//# sourceMappingURL=' + path.basename( destPath ) + '.map' );
