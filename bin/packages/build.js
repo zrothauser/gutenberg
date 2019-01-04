@@ -185,8 +185,10 @@ async function buildJsFileFor( file, silent, environment ) {
 
 	await makeDir( path.dirname( destPath ) );
 	const transformed = await transformFile( file, babelOptions );
-	writeFile( destPath + '.map', JSON.stringify( transformed.map ) );
-	writeFile( destPath, transformed.code + '\n//# sourceMappingURL=' + path.basename( destPath ) + '.map' );
+	await Promise.all( [
+		writeFile( destPath + '.map', JSON.stringify( transformed.map ) ),
+		writeFile( destPath, transformed.code + '\n//# sourceMappingURL=' + path.basename( destPath ) + '.map' ),
+	] );
 
 	if ( ! silent ) {
 		process.stdout.write(
