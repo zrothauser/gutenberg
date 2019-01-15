@@ -9,6 +9,7 @@ import {
 	IconButton,
 	PanelBody,
 	SelectControl,
+	TextControl,
 	Toolbar,
 	ToggleControl,
 	withNotices,
@@ -126,7 +127,8 @@ class VideoEdit extends Component {
 			muted,
 			poster,
 			preload,
-			src,
+			sources,
+			subtitles,
 		} = this.props.attributes;
 		const { setAttributes, isSelected, className, noticeOperations, noticeUI } = this.props;
 		const { editing } = this.state;
@@ -235,6 +237,25 @@ class VideoEdit extends Component {
 							</BaseControl>
 						</MediaUploadCheck>
 					</PanelBody>
+					<PanelBody title={ __( 'Sources' ) }>
+						{ sources.map( ( source ) => {
+							return (
+								<div key={ source.src }>
+									<TextControl
+										type="text"
+										label={ source.type }
+										value={ source.src }
+										disabled
+									/>
+									<Button
+										isLink
+										className="is-destructive"
+										onClick={ () => this.removeSource( source.src ) }
+									>{ __( 'Remove video source' ) }</Button>
+								</div>
+							);
+						} ) }
+					</PanelBody>
 				</InspectorControls>
 				<figure className={ className }>
 					{ /*
@@ -244,10 +265,32 @@ class VideoEdit extends Component {
 					<Disabled>
 						<video
 							controls={ controls }
+							loop={ loop }
+							muted={ muted }
 							poster={ poster }
-							src={ src }
-							ref={ this.videoPlayer }
-						/>
+						>
+							{ sources.map( ( source ) => {
+								return (
+									<source
+										key={ source.src }
+										src={ source.src }
+										type={ source.type }
+									/>
+								);
+							} ) }
+
+							{ subtitles.map( ( subtitle ) => {
+								return (
+									<track
+										key={ subtitle.src }
+										srcLang={ subtitle.srclang }
+										label={ subtitle.label }
+										kind={ subtitle.kind }
+										src={ subtitle.src }
+									/>
+								);
+							} ) }
+						</video>
 					</Disabled>
 					{ ( ! RichText.isEmpty( caption ) || isSelected ) && (
 						<RichText

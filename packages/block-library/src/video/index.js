@@ -44,9 +44,6 @@ export const settings = {
 			attribute: 'controls',
 			default: true,
 		},
-		id: {
-			type: 'number',
-		},
 		loop: {
 			type: 'boolean',
 			source: 'attribute',
@@ -72,11 +69,45 @@ export const settings = {
 			attribute: 'preload',
 			default: 'metadata',
 		},
-		src: {
-			type: 'string',
-			source: 'attribute',
-			selector: 'video',
-			attribute: 'src',
+		sources: {
+			type: 'array',
+			default: [],
+			source: 'query',
+			selector: 'source',
+			query: {
+				src: {
+					source: 'attribute',
+					attribute: 'src',
+				},
+				type: {
+					source: 'attribute',
+					attribute: 'type',
+				},
+			},
+		},
+		subtitles: {
+			type: 'array',
+			default: [],
+			source: 'query',
+			selector: 'track',
+			query: {
+				src: {
+					source: 'attribute',
+					attribute: 'src',
+				},
+				srclang: {
+					source: 'attribute',
+					attribute: 'srclang',
+				},
+				kind: {
+					source: 'attribute',
+					attribute: 'kind',
+				},
+				label: {
+					source: 'attribute',
+					attribute: 'label',
+				},
+			},
 		},
 	},
 
@@ -108,20 +139,40 @@ export const settings = {
 	edit,
 
 	save( { attributes } ) {
-		const { autoplay, caption, controls, loop, muted, poster, preload, src } = attributes;
+		const { autoplay, caption, controls, loop, muted, poster, preload, sources, subtitles } = attributes;
 		return (
 			<figure>
-				{ src && (
-					<video
-						autoPlay={ autoplay }
-						controls={ controls }
-						loop={ loop }
-						muted={ muted }
-						poster={ poster }
-						preload={ preload !== 'metadata' ? preload : undefined }
-						src={ src }
-					/>
-				) }
+				{ !! sources.length &&
+				<video
+					autoPlay={ autoplay }
+					controls={ controls }
+					loop={ loop }
+					muted={ muted }
+					preload={ preload }
+					poster={ poster }
+				>
+					{ sources.map( ( source ) => {
+						return (
+							<source
+								key={ source.src }
+								src={ source.src }
+								type={ source.type }
+							/>
+						);
+					} ) }
+					{ subtitles.map( ( subtitle ) => {
+						return (
+							<track
+								key={ subtitle.src }
+								srcLang={ subtitle.srclang }
+								label={ subtitle.label }
+								kind={ subtitle.kind }
+								src={ subtitle.src }
+							/>
+						);
+					} ) }
+				</video>
+				}
 				{ ! RichText.isEmpty( caption ) && (
 					<RichText.Content tagName="figcaption" value={ caption } />
 				) }
