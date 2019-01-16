@@ -60,7 +60,7 @@ export default class MoreEdit extends Component {
 		return (
 			<View>
 				<PlainText
-					style={ styles[ 'block-library-more__text' ] }
+					//style={ styles[ 'block-library-more__text' ] }
 					value={ value }
 					multiline={ true }
 					underlineColorAndroid="transparent"
