@@ -46,7 +46,7 @@ class VideoEdit extends Component {
 		this.videoPlayer = createRef();
 		this.posterImageButton = createRef();
 		this.toggleAttribute = this.toggleAttribute.bind( this );
-		this.onSelectURL = this.onSelectURL.bind( this );
+		this.addSource = this.addSource.bind( this );
 		this.onSelectPoster = this.onSelectPoster.bind( this );
 		this.onRemovePoster = this.onRemovePoster.bind( this );
 	}
@@ -105,6 +105,59 @@ class VideoEdit extends Component {
 		this.setState( { editing: false } );
 	}
 
+	setSubtitleAttributes( index, attributes ) {
+		const { attributes: { subtitles }, setAttributes } = this.props;
+		if ( ! subtitles[ index ] ) {
+			return;
+		}
+		setAttributes( {
+			subtitles: [
+				...subtitles.slice( 0, index ),
+				{
+					...subtitles[ index ],
+					...attributes,
+				},
+				...subtitles.slice( index + 1 ),
+			],
+		} );
+	}
+
+	addSubtitle() {
+		const { attributes: { subtitles }, setAttributes } = this.props;
+		setAttributes( {
+			subtitles: [ ...subtitles, {} ],
+		} );
+	}
+
+	removeSubtitle( index ) {
+		const { attributes: { subtitles }, setAttributes } = this.props;
+		const tempSubtitles = [ ...subtitles ];
+		tempSubtitles.splice( index, 1 );
+		setAttributes( {
+			subtitles: tempSubtitles,
+		} );
+	}
+
+	videoSourceTypeExists( type ) {
+		return this.props.attributes.sources.find( ( source ) => type === source.type );
+	}
+
+	removeSource( url ) {
+		const { setAttributes, attributes } = this.props;
+		const filteredSources = attributes.sources.filter( ( source ) => source.url !== url );
+		setAttributes( {
+			sources: filteredSources,
+		} );
+	}
+
+	addSource( media ) {
+		const { setAttributes, attributes } = this.props;
+		const type = media.mime || this.getVideoMimeType( media.url );
+		setAttributes( {
+			sources: [ ...attributes.sources, { src: media.url, type } ],
+		} );
+	}
+
 	onSelectPoster( image ) {
 		const { setAttributes } = this.props;
 		setAttributes( { poster: image.url } );
@@ -139,14 +192,10 @@ class VideoEdit extends Component {
 			if ( ! media || ! media.url ) {
 				// in this case there was an error and we should continue in the editing state
 				// previous attributes should be removed because they may be temporary blob urls
-				setAttributes( { src: undefined, id: undefined } );
-				switchToEditing();
+				setAttributes( { sources: [] } );
 				return;
 			}
-			// sets the block's attribute and updates the edit component from the
-			// selected media, then switches off the editing UI
-			setAttributes( { src: media.url, id: media.id } );
-			this.setState( { src: media.url, editing: false } );
+			this.addSource( media );
 		};
 
 		if ( editing ) {
@@ -155,7 +204,7 @@ class VideoEdit extends Component {
 					icon="media-video"
 					className={ className }
 					onSelect={ onSelectVideo }
-					onSelectURL={ this.onSelectURL }
+					onSelectURL={ this.addSource }
 					accept="video/*"
 					allowedTypes={ ALLOWED_MEDIA_TYPES }
 					value={ this.props.attributes }
