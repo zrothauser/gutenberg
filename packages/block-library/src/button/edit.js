@@ -16,10 +16,13 @@ import {
 	Dashicon,
 	IconButton,
 	withFallbackStyles,
+	PanelBody,
+	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
 import {
 	URLInput,
+	URLPopover,
 	RichText,
 	ContrastChecker,
 	InspectorControls,
@@ -41,16 +44,15 @@ const applyFallbackStyles = withFallbackStyles( ( node, ownProps ) => {
 	};
 } );
 
+const NEW_TAB_REL = 'noreferrer noopener';
+
 class ButtonEdit extends Component {
 	constructor() {
 		super( ...arguments );
 		this.nodeRef = null;
 		this.bindRef = this.bindRef.bind( this );
-		this.toggleLinkSettingsVisibility = this.toggleLinkSettingsVisibility.bind( this );
-
-		this.state = {
-			settingsVisible: false,
-		};
+		this.onSetLinkRel = this.onSetLinkRel.bind( this );
+		this.onSetNewTab = this.onSetNewTab.bind( this );
 	}
 
 	bindRef( node ) {
@@ -60,8 +62,25 @@ class ButtonEdit extends Component {
 		this.nodeRef = node;
 	}
 
-	toggleLinkSettingsVisibility() {
-		this.setState( ( state ) => ( { settingsVisible: ! state.settingsVisible } ) );
+	onSetLinkRel( value ) {
+		this.props.setAttributes( { rel: value } );
+	}
+
+	onSetNewTab( value ) {
+		const { rel } = this.props.attributes;
+		const linkTarget = value ? '_blank' : undefined;
+
+		let updatedRel = rel;
+		if ( linkTarget && ! rel ) {
+			updatedRel = NEW_TAB_REL;
+		} else if ( ! linkTarget && rel === NEW_TAB_REL ) {
+			updatedRel = undefined;
+		}
+
+		this.props.setAttributes( {
+			linkTarget,
+			rel: updatedRel,
+		} );
 	}
 
 	render() {
@@ -79,15 +98,22 @@ class ButtonEdit extends Component {
 		} = this.props;
 
 		const {
-			settingsVisible,
-		} = this.state;
-
-		const {
 			text,
 			url,
 			title,
 			linkTarget,
+			rel,
+			align,
 		} = attributes;
+
+		let PopoverPosition;
+		if ( 'left' === align ) {
+			PopoverPosition = 'bottom right';
+		} else if ( 'center' === align ) {
+			PopoverPosition = 'bottom center';
+		} else if ( 'right' === align ) {
+			PopoverPosition = 'bottom left';
+		}
 
 		return (
 			<Fragment>
@@ -139,34 +165,37 @@ class ButtonEdit extends Component {
 								} }
 							/>
 						</PanelColorSettings>
+						<PanelBody title={ __( 'Link Settings' ) }>
+							<TextControl
+								label={ __( 'Link Rel' ) }
+								value={ rel || '' }
+								onChange={ this.onSetLinkRel }
+							/>
+						</PanelBody>
 					</InspectorControls>
 				</div>
 				{ isSelected && (
-					<form
-						className="block-library-button__inline-link"
-						onSubmit={ ( event ) => event.preventDefault() }>
-						<Dashicon icon="admin-links" />
-						<URLInput
-							value={ url }
-							onChange={ ( value ) => setAttributes( { url: value } ) }
-						/>
-						<IconButton icon="editor-break" label={ __( 'Apply' ) } type="submit" />
-						<IconButton
-							className="link-settings-toggle"
-							icon="ellipsis"
-							label={ __( 'Link Settings' ) }
-							onClick={ this.toggleLinkSettingsVisibility }
-							aria-expanded={ settingsVisible }
-						/>
-						{ settingsVisible && (
-							<div className="link-settings">
-								<ToggleControl
-									label={ __( 'Open in New Tab' ) }
-									onChange={ () => setAttributes( { linkTarget: ! linkTarget } ) }
-									checked={ linkTarget } />
-							</div>
+					<URLPopover
+						position={ PopoverPosition }
+						renderSettings={ () => (
+							<ToggleControl
+								label={ __( 'Open in New Tab' ) }
+								onChange={ this.onSetNewTab }
+								checked={ linkTarget === '_blank' }
+							/>
 						) }
-					</form>
+					>
+						<form
+							className="block-library-button__inline-link"
+							onSubmit={ ( event ) => event.preventDefault() }>
+							<Dashicon icon="admin-links" />
+							<URLInput
+								value={ url }
+								onChange={ ( value ) => setAttributes( { url: value } ) }
+							/>
+							<IconButton icon="editor-break" label={ __( 'Apply' ) } type="submit" />
+						</form>
+					</URLPopover>
 				) }
 			</Fragment>
 		);

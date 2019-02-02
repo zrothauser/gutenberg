@@ -50,7 +50,16 @@ const blockAttributes = {
 		type: 'string',
 	},
 	linkTarget: {
-		type: 'boolean',
+		type: 'string',
+		source: 'attribute',
+		selector: 'a',
+		attribute: 'target',
+	},
+	linkRel: {
+		type: 'string',
+		source: 'attribute',
+		selector: 'a',
+		attribute: 'rel',
 	},
 };
 
@@ -100,6 +109,7 @@ export const settings = {
 			customBackgroundColor,
 			customTextColor,
 			linkTarget,
+			linkRel,
 		} = attributes;
 
 		const textClass = getColorClassName( 'color', textColor );
@@ -126,8 +136,8 @@ export const settings = {
 					title={ title }
 					style={ buttonStyle }
 					value={ text }
-					target={ linkTarget ? '_blank' : null }
-					rel={ linkTarget ? 'noreferrer noopener' : null }
+					target={ linkTarget }
+					rel={ linkRel }
 				/>
 			</div>
 		);

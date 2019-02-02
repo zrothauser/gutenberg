@@ -48,17 +48,12 @@
 
 .block-library-button__inline-link {
 	background: $white;
-	box-shadow: 0 3px 30px rgba(25, 30, 35, 0.1);
-	border: 1px solid #e2e4e7;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	font-family: $default-font;
 	font-size: $default-font-size;
 	line-height: $default-line-height;
-	position: relative;
-	margin-top: 10px;
-	padding: 1px;
 
 	// The width of input box plus padding plus two icon buttons.
 	$blocks-button__link-input-width: 300px + 2px + 2 * $icon-button-size;
@@ -93,49 +88,5 @@
 	[data-align="right"] & {
 		margin-left: auto;
 		margin-right: 0;
-	}
-
-	.link-settings {
-		padding: 7px 8px;
-		border-top: $border-width solid $light-gray-500;
-		padding-top: 7px + $border-width;
-		margin: 0;
-		width: 280px;
-
-		.components-base-control {
-			margin: 0;
-			flex-grow: 1;
-			flex-shrink: 1;
-		}
-	}
-
-	&::before {
-		border: 8px solid #e2e4e7;
-		content: "";
-		position: absolute;
-		height: 0;
-		width: 0;
-		line-height: 0;
-		top: -8px;
-		left: 45px;
-		border-bottom-style: solid;
-		border-left-color: transparent;
-		border-right-color: transparent;
-		border-top: none;
-	}
-
-	&::after {
-		border: 8px solid #fff;
-		content: "";
-		position: absolute;
-		height: 0;
-		width: 0;
-		line-height: 0;
-		top: -6px;
-		left: 45px;
-		border-bottom-style: solid;
-		border-left-color: transparent;
-		border-right-color: transparent;
-		border-top: none;
 	}
 }
