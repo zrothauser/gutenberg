@@ -38,7 +38,9 @@
 		"classnames": "^2.2.5",
 		"lodash": "^4.17.10",
 		"memize": "^1.0.5",
-		"url": "^0.11.0"
+		"url": "^0.11.0",
+		"react-dates": "^17.1.1",
+		"moment": "^2.22.1"
 	},
 	"publishConfig": {
 		"access": "public"
