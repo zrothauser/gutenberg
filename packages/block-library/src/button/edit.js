@@ -9,7 +9,6 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import {
 	Component,
-	Fragment,
 } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
@@ -106,74 +105,70 @@ class ButtonEdit extends Component {
 			align,
 		} = attributes;
 
-		let PopoverPosition;
-		if ( 'left' === align ) {
-			PopoverPosition = 'bottom right';
-		} else if ( 'center' === align ) {
+		let PopoverPosition = 'bottom right';
+		if ( 'center' === align ) {
 			PopoverPosition = 'bottom center';
 		} else if ( 'right' === align ) {
 			PopoverPosition = 'bottom left';
 		}
 
 		return (
-			<Fragment>
-				<div className={ className } title={ title } ref={ this.bindRef }>
-					<RichText
-						placeholder={ __( 'Add text…' ) }
-						value={ text }
-						onChange={ ( value ) => setAttributes( { text: value } ) }
-						formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
-						className={ classnames(
-							'wp-block-button__link', {
-								'has-background': backgroundColor.color,
-								[ backgroundColor.class ]: backgroundColor.class,
-								'has-text-color': textColor.color,
-								[ textColor.class ]: textColor.class,
-							}
-						) }
-						style={ {
-							backgroundColor: backgroundColor.color,
-							color: textColor.color,
-						} }
-						keepPlaceholderOnFocus
-					/>
-					<InspectorControls>
-						<PanelColorSettings
-							title={ __( 'Color Settings' ) }
-							colorSettings={ [
-								{
-									value: backgroundColor.color,
-									onChange: setBackgroundColor,
-									label: __( 'Background Color' ),
-								},
-								{
-									value: textColor.color,
-									onChange: setTextColor,
-									label: __( 'Text Color' ),
-								},
-							] }
-						>
-							<ContrastChecker
-								{ ...{
-									// Text is considered large if font size is greater or equal to 18pt or 24px,
-									// currently that's not the case for button.
-									isLargeText: false,
-									textColor: textColor.color,
-									backgroundColor: backgroundColor.color,
-									fallbackBackgroundColor,
-									fallbackTextColor,
-								} }
-							/>
-						</PanelColorSettings>
-						<PanelBody title={ __( 'Link Settings' ) }>
-							<TextControl
-								label={ __( 'Link Rel' ) }
-								value={ rel || '' }
-								onChange={ this.onSetLinkRel }
-							/>
-						</PanelBody>
-					</InspectorControls>
-				</div>
+			<div className={ className } title={ title } ref={ this.bindRef }>
+				<RichText
+					placeholder={ __( 'Add text…' ) }
+					value={ text }
+					onChange={ ( value ) => setAttributes( { text: value } ) }
+					formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
+					className={ classnames(
+						'wp-block-button__link', {
+							'has-background': backgroundColor.color,
+							[ backgroundColor.class ]: backgroundColor.class,
+							'has-text-color': textColor.color,
+							[ textColor.class ]: textColor.class,
+						}
+					) }
+					style={ {
+						backgroundColor: backgroundColor.color,
+						color: textColor.color,
+					} }
+					keepPlaceholderOnFocus
+				/>
+				<InspectorControls>
+					<PanelColorSettings
+						title={ __( 'Color Settings' ) }
+						colorSettings={ [
+							{
+								value: backgroundColor.color,
+								onChange: setBackgroundColor,
+								label: __( 'Background Color' ),
+							},
+							{
+								value: textColor.color,
+								onChange: setTextColor,
+								label: __( 'Text Color' ),
+							},
+						] }
+					>
+						<ContrastChecker
+							{ ...{
+								// Text is considered large if font size is greater or equal to 18pt or 24px,
+								// currently that's not the case for button.
+								isLargeText: false,
+								textColor: textColor.color,
+								backgroundColor: backgroundColor.color,
+								fallbackBackgroundColor,
+								fallbackTextColor,
+							} }
+						/>
+					</PanelColorSettings>
+					<PanelBody title={ __( 'Link Settings' ) }>
+						<TextControl
+							label={ __( 'Link Rel' ) }
+							value={ rel || '' }
+							onChange={ this.onSetLinkRel }
+						/>
+					</PanelBody>
+				</InspectorControls>
 				{ isSelected && (
 					<URLPopover
 						position={ PopoverPosition }
@@ -197,7 +192,7 @@ class ButtonEdit extends Component {
 						</form>
 					</URLPopover>
 				) }
-			</Fragment>
+			</div>
 		);
 	}
 }
