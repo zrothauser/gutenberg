@@ -50,7 +50,7 @@ class ButtonEdit extends Component {
 		this.nodeRef = null;
 		this.bindRef = this.bindRef.bind( this );
 		this.onSetLinkRel = this.onSetLinkRel.bind( this );
-		this.onSetNewTab = this.onSetNewTab.bind( this );
+		this.onToggleOpenInNewTab = this.onToggleOpenInNewTab.bind( this );
 	}
 
 	bindRef( node ) {
@@ -64,7 +64,7 @@ class ButtonEdit extends Component {
 		this.props.setAttributes( { rel: value } );
 	}
 
-	onSetNewTab( value ) {
+	onToggleOpenInNewTab( value ) {
 		const { rel } = this.props.attributes;
 		const linkTarget = value ? '_blank' : undefined;
 
@@ -174,7 +174,7 @@ class ButtonEdit extends Component {
 						renderSettings={ () => (
 							<ToggleControl
 								label={ __( 'Open in New Tab' ) }
-								onChange={ this.onSetNewTab }
+								onChange={ this.onToggleOpenInNewTab }
 								checked={ linkTarget === '_blank' }
 							/>
 						) }
