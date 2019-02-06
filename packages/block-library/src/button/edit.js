@@ -12,7 +12,6 @@ import {
 } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
-	Dashicon,
 	IconButton,
 	withFallbackStyles,
 	PanelBody,
@@ -181,9 +180,8 @@ class ButtonEdit extends Component {
 						) }
 					>
 						<form
-							className="block-library-button__inline-link"
+							className="editor-format-toolbar__link-container-content"
 							onSubmit={ ( event ) => event.preventDefault() }>
-							<Dashicon icon="admin-links" />
 							<URLInput
 								value={ url }
 								onChange={ ( value ) => setAttributes( { url: value } ) }
