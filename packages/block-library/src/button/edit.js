@@ -105,11 +105,11 @@ class ButtonEdit extends Component {
 			align,
 		} = attributes;
 
-		let PopoverPosition = 'bottom right';
+		let popoverPosition = 'bottom right';
 		if ( 'center' === align ) {
-			PopoverPosition = 'bottom center';
+			popoverPosition = 'bottom center';
 		} else if ( 'right' === align ) {
-			PopoverPosition = 'bottom left';
+			popoverPosition = 'bottom left';
 		}
 
 		return (
@@ -171,7 +171,7 @@ class ButtonEdit extends Component {
 				</InspectorControls>
 				{ isSelected && (
 					<URLPopover
-						position={ PopoverPosition }
+						position={ popoverPosition }
 						renderSettings={ () => (
 							<ToggleControl
 								label={ __( 'Open in New Tab' ) }
