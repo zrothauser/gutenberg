@@ -37,10 +37,20 @@ const embedAttributes = {
 	},
 };
 
-export function getEmbedBlockSettings( { title, description, icon, category = 'embed', transforms, keywords = [], supports = {}, responsive = true } ) {
+export function getEmbedBlockSettings( {
+	title,
+	description,
+	icon,
+	category = 'embed',
+	transforms,
+	keywords = [],
+	supports = {},
+	responsive = true,
+	previewable = true,
+} ) {
 	// translators: %s: Name of service (e.g. VideoPress, YouTube)
 	const blockDescription = description || sprintf( __( 'Add a block that displays content pulled from other sites, like Twitter, Instagram or YouTube.' ), title );
-	const edit = getEmbedEditComponent( title, icon, responsive );
+	const edit = getEmbedEditComponent( title, icon, responsive, previewable );
 	return {
 		title,
 		description: blockDescription,
