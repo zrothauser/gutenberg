@@ -190,67 +190,6 @@ export function toDom( {
 	};
 }
 
-/**
- * Create an `Element` tree from a Rich Text value and applies the difference to
- * the `Element` tree contained by `current`. If a `multilineTag` is provided,
- * text separated by two new lines will be wrapped in an `Element` of that type.
- *
- * @param {Object}      value        Value to apply.
- * @param {HTMLElement} current      The live root node to apply the element
- *                                   tree to.
- * @param {string}      multilineTag Multiline tag.
- */
-export function apply( {
-	value,
-	current,
-	multilineTag,
-	multilineWrapperTags,
-	createLinePadding,
-	prepareEditableTree,
-} ) {
-	// Construct a new element tree in memory.
-	const { body, selection } = toDom( {
-		value,
-		multilineTag,
-		multilineWrapperTags,
-		createLinePadding,
-		prepareEditableTree,
-	} );
-
-	applyValue( body, current );
-
-	if ( value.start !== undefined ) {
-		applySelection( selection, current );
-	}
-}
-
-export function applyValue( future, current ) {
-	let i = 0;
-
-	while ( future.firstChild ) {
-		const currentChild = current.childNodes[ i ];
-		const futureNodeType = future.firstChild.nodeType;
-
-		if ( ! currentChild ) {
-			current.appendChild( future.firstChild );
-		} else if (
-			futureNodeType !== currentChild.nodeType ||
-			futureNodeType !== TEXT_NODE ||
-			future.firstChild.nodeValue !== currentChild.nodeValue
-		) {
-			current.replaceChild( future.firstChild, currentChild );
-		} else {
-			future.removeChild( future.firstChild );
-		}
-
-		i++;
-	}
-
-	while ( current.childNodes[ i ] ) {
-		current.removeChild( current.childNodes[ i ] );
-	}
-}
-
 export function applySelection( selection, current ) {
 	const { node: startContainer, offset: startOffset } = getNodeByPath( current, selection.startPath );
 	const { node: endContainer, offset: endOffset } = getNodeByPath( current, selection.endPath );

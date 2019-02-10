@@ -11,6 +11,7 @@ import classnames from 'classnames';
 import { Component, createElement } from '@wordpress/element';
 import { BACKSPACE, DELETE, ENTER, LEFT, RIGHT } from '@wordpress/keycodes';
 import { isEntirelySelected } from '@wordpress/dom';
+import { toElement, applySelection } from '@wordpress/rich-text';
 
 /**
  * Internal dependencies
@@ -120,36 +121,6 @@ export default class TinyMCE extends Component {
 		}
 
 		this.initialize();
-	}
-
-	// We must prevent rerenders because RichText, the browser, and TinyMCE will
-	// modify the DOM. React will rerender the DOM fine, but we're losing
-	// selection and it would be more expensive to do so as it would just set
-	// the inner HTML through `dangerouslySetInnerHTML`. Instead RichText does
-	// it's own diffing and selection setting.
-	//
-	// Because we never update the component, we have to look through props and
-	// update the attributes on the wrapper nodes here. `componentDidUpdate`
-	// will never be called.
-	shouldComponentUpdate( nextProps ) {
-		this.configureIsPlaceholderVisible( nextProps.isPlaceholderVisible );
-
-		if ( ! isEqual( this.props.style, nextProps.style ) ) {
-			this.editorNode.setAttribute( 'style', '' );
-			Object.assign( this.editorNode.style, nextProps.style );
-		}
-
-		if ( ! isEqual( this.props.className, nextProps.className ) ) {
-			this.editorNode.className = classnames( nextProps.className, 'editor-rich-text__tinymce' );
-		}
-
-		const { removedKeys, updatedKeys } = diffAriaProps( this.props, nextProps );
-		removedKeys.forEach( ( key ) =>
-			this.editorNode.removeAttribute( key ) );
-		updatedKeys.forEach( ( key ) =>
-			this.editorNode.setAttribute( key, nextProps[ key ] ) );
-
-		return false;
 	}
 
 	componentWillUnmount() {
@@ -337,13 +308,19 @@ export default class TinyMCE extends Component {
 		}
 	}
 
+	componentDidUpdate() {
+		if ( this.selection && this.selection.startPath.length > 0 ) {
+			console.log( this.selection, this.editorNode );
+			applySelection( this.selection, this.editorNode );
+		}
+	}
+
 	render() {
 		const ariaProps = pickAriaProps( this.props );
 		const {
 			tagName = 'div',
 			style,
-			record,
-			valueToEditableHTML,
+			value,
 			className,
 			isPlaceholderVisible,
 			onPaste,
@@ -363,24 +340,36 @@ export default class TinyMCE extends Component {
 			ariaProps[ 'aria-multiline' ] = true;
 		}
 
+		const { element, selection } = toElement( {
+			value,
+			multilineTag: this.multilineTag,
+			multilineWrapperTags: this.multilineWrapperTags,
+			createLinePadding: () => <br data-mce-bogus="1" />,
+		} );
+
+		this.selection = selection;
+
 		// If a default value is provided, render it into the DOM even before
 		// TinyMCE finishes initializing. This avoids a short delay by allowing
 		// us to show and focus the content before it's truly ready to edit.
-		return createElement( tagName, {
-			...ariaProps,
-			className: classnames( className, 'editor-rich-text__tinymce' ),
-			contentEditable: true,
-			[ IS_PLACEHOLDER_VISIBLE_ATTR_NAME ]: isPlaceholderVisible,
-			ref: this.bindEditorNode,
-			style,
-			suppressContentEditableWarning: true,
-			dangerouslySetInnerHTML: { __html: valueToEditableHTML( record ) },
-			onPaste,
-			onInput,
-			onFocus: this.onFocus,
-			onBlur,
-			onKeyDown,
-			onCompositionEnd,
-		} );
+		return createElement(
+			tagName,
+			{
+				...ariaProps,
+				className: classnames( className, 'editor-rich-text__tinymce' ),
+				contentEditable: true,
+				[ IS_PLACEHOLDER_VISIBLE_ATTR_NAME ]: isPlaceholderVisible,
+				ref: this.bindEditorNode,
+				style,
+				suppressContentEditableWarning: true,
+				onPaste,
+				onInput,
+				onFocus: this.onFocus,
+				onBlur,
+				onKeyDown,
+				onCompositionEnd,
+			},
+			element
+		);
 	}
 }

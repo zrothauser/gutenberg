@@ -27,7 +27,6 @@ import { isURL } from '@wordpress/url';
 import {
 	isEmpty,
 	create,
-	apply,
 	applyFormat,
 	split,
 	toHTMLString,
@@ -105,7 +104,6 @@ export class RichText extends Component {
 		this.onSelectionChange = this.onSelectionChange.bind( this );
 		this.getRecord = this.getRecord.bind( this );
 		this.createRecord = this.createRecord.bind( this );
-		this.applyRecord = this.applyRecord.bind( this );
 		this.isEmpty = this.isEmpty.bind( this );
 		this.valueToFormat = this.valueToFormat.bind( this );
 		this.setRef = this.setRef.bind( this );
@@ -175,21 +173,6 @@ export class RichText extends Component {
 			unwrapNode: ( node ) => !! node.getAttribute( 'data-mce-bogus' ),
 			removeAttribute: ( attribute ) => attribute.indexOf( 'data-mce-' ) === 0,
 			filterString: ( string ) => string.replace( TINYMCE_ZWSP, '' ),
-			prepareEditableTree: this.props.prepareEditableTree,
-		} );
-	}
-
-	applyRecord( record ) {
-		apply( {
-			value: record,
-			current: this.editableRef,
-			multilineTag: this.multilineTag,
-			multilineWrapperTags: this.multilineWrapperTags,
-			createLinePadding( doc ) {
-				const element = doc.createElement( 'br' );
-				element.setAttribute( 'data-mce-bogus', '1' );
-				return element;
-			},
 			prepareEditableTree: this.props.prepareEditableTree,
 		} );
 	}
@@ -422,8 +405,6 @@ export class RichText extends Component {
 	 *                                    created.
 	 */
 	onChange( record, { withoutHistory } = {} ) {
-		this.applyRecord( record );
-
 		const { start, end } = record;
 
 		this.onChangeEditableValue( record );
@@ -642,61 +623,61 @@ export class RichText extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const { tagName, value, isSelected } = this.props;
+		// const { tagName, value, isSelected } = this.props;
 
-		if (
-			tagName === prevProps.tagName &&
-			value !== prevProps.value &&
-			value !== this.savedContent
-		) {
-			// Handle deprecated `children` and `node` sources.
-			// The old way of passing a value with the `node` matcher required
-			// the value to be mapped first, creating a new array each time, so
-			// a shallow check wouldn't work. We need to check deep equality.
-			// This is only executed for a deprecated API and will eventually be
-			// removed.
-			if ( Array.isArray( value ) && isEqual( value, this.savedContent ) ) {
-				return;
-			}
+		// if (
+		// 	tagName === prevProps.tagName &&
+		// 	value !== prevProps.value &&
+		// 	value !== this.savedContent
+		// ) {
+		// 	// Handle deprecated `children` and `node` sources.
+		// 	// The old way of passing a value with the `node` matcher required
+		// 	// the value to be mapped first, creating a new array each time, so
+		// 	// a shallow check wouldn't work. We need to check deep equality.
+		// 	// This is only executed for a deprecated API and will eventually be
+		// 	// removed.
+		// 	if ( Array.isArray( value ) && isEqual( value, this.savedContent ) ) {
+		// 		return;
+		// 	}
 
-			const record = this.formatToValue( value );
+		// 	const record = this.formatToValue( value );
 
-			if ( isSelected ) {
-				const prevRecord = this.formatToValue( prevProps.value );
-				const length = getTextContent( prevRecord ).length;
-				record.start = length;
-				record.end = length;
-			}
+		// 	if ( isSelected ) {
+		// 		const prevRecord = this.formatToValue( prevProps.value );
+		// 		const length = getTextContent( prevRecord ).length;
+		// 		record.start = length;
+		// 		record.end = length;
+		// 	}
 
-			this.applyRecord( record );
-			this.savedContent = value;
-		}
+		// 	this.applyRecord( record );
+		// 	this.savedContent = value;
+		// }
 
 		// If any format props update, reapply value.
-		const shouldReapply = Object.keys( this.props ).some( ( name ) => {
-			if ( name.indexOf( 'format_' ) !== 0 ) {
-				return false;
-			}
+		// const shouldReapply = Object.keys( this.props ).some( ( name ) => {
+		// 	if ( name.indexOf( 'format_' ) !== 0 ) {
+		// 		return false;
+		// 	}
 
-			// Allow primitives and arrays:
-			if ( ! isPlainObject( this.props[ name ] ) ) {
-				return this.props[ name ] !== prevProps[ name ];
-			}
+		// 	// Allow primitives and arrays:
+		// 	if ( ! isPlainObject( this.props[ name ] ) ) {
+		// 		return this.props[ name ] !== prevProps[ name ];
+		// 	}
 
-			return Object.keys( this.props[ name ] ).some( ( subName ) => {
-				return this.props[ name ][ subName ] !== prevProps[ name ][ subName ];
-			} );
-		} );
+		// 	return Object.keys( this.props[ name ] ).some( ( subName ) => {
+		// 		return this.props[ name ][ subName ] !== prevProps[ name ][ subName ];
+		// 	} );
+		// } );
 
-		if ( shouldReapply ) {
-			const record = this.formatToValue( value );
+		// if ( shouldReapply ) {
+		// 	const record = this.formatToValue( value );
 
-			// Maintain the previous selection:
-			record.start = this.state.start;
-			record.end = this.state.end;
+		// 	// Maintain the previous selection:
+		// 	record.start = this.state.start;
+		// 	record.end = this.state.end;
 
-			this.applyRecord( record );
-		}
+		// 	this.applyRecord( record );
+		// }
 	}
 
 	/**
@@ -864,8 +845,7 @@ export class RichText extends Component {
 								tagName={ Tagname }
 								onSetup={ this.onSetup }
 								style={ style }
-								record={ record }
-								valueToEditableHTML={ this.valueToEditableHTML }
+								value={ record }
 								isPlaceholderVisible={ isPlaceholderVisible }
 								aria-label={ placeholder }
 								aria-autocomplete="list"
