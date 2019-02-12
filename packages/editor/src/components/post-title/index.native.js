@@ -47,6 +47,7 @@ class PostTitle extends Component {
 
 		return (
 			<RichText
+				setRef={ this.props.setRef }
 				tagName={ 'p' }
 				rootTagsToEliminate={ [ 'strong' ] }
 				onFocus={ this.onSelect }

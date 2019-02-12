@@ -6,6 +6,7 @@ import { View, Platform } from 'react-native';
 import {
 	forEach,
 	merge,
+	noop,
 } from 'lodash';
 
 /**
@@ -385,8 +386,8 @@ export class RichText extends Component {
 				<RCTAztecView
 					ref={ ( ref ) => {
 						this._editor = ref;
-					}
-					}
+						this.props.setRef( ref );
+					} }
 					text={ { text: html, eventCount: this.lastEventCount } }
 					placeholder={ this.props.placeholder }
 					placeholderTextColor={ this.props.placeholderTextColor || 'lightgrey' }
@@ -416,6 +417,7 @@ export class RichText extends Component {
 RichText.defaultProps = {
 	formattingControls: FORMATTING_CONTROLS.map( ( { format } ) => format ),
 	format: 'string',
+	setRef: noop,
 };
 
 const RichTextContainer = compose( [
