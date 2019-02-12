@@ -154,6 +154,21 @@ export function updateBlock( clientId, updates ) {
 
 /**
  * Returns an action object used in signalling that the block with the
+ * specified blockNode needs to be inflated.
+ *
+ * @param {Object} blockNode Parsed block node.
+ *
+ * @return {Object} Action object.
+ */
+export function inflateBlock( blockNode ) {
+	return {
+		type: 'INFLATE_BLOCK',
+		blockNode,
+	};
+}
+
+/**
+ * Returns an action object used in signalling that the block with the
  * specified client ID has been selected, optionally accepting a position
  * value reflecting its selection directionality. An initialPosition of -1
  * reflects a reverse selection.

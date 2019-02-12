@@ -457,6 +457,10 @@ export function createBlockWithFallback( blockNode ) {
 		innerBlocks
 	);
 
+	if ( blockNode.clientId ) {
+		block.clientId =  blockNode.clientId ;
+	}
+
 	// Block validation assumes an idempotent operation from source block to serialized block
 	// provided there are no changes in attributes. The validation procedure thus compares the
 	// provided source value with the serialized output before there are any modifications to

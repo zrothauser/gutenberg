@@ -21,7 +21,7 @@ import {
 /**
  * WordPress dependencies
  */
-import { isReusableBlock } from '@wordpress/blocks';
+import { createBlockWithFallback, isReusableBlock } from '@wordpress/blocks';
 import { combineReducers } from '@wordpress/data';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -427,6 +427,19 @@ export const editor = flow( [
 						...getFlattenedBlocksWithoutAttributes( action.blocks ),
 					};
 
+				case 'INFLATE_BLOCK':
+					const block = createBlockWithFallback( action.blockNode );
+					if ( block ) {
+						return {
+							...state,
+							[ action.blockNode.clientId ]: {
+								...block,
+							},
+						};
+					} else {
+						return state;
+					}
+			
 				case 'UPDATE_BLOCK':
 					// Ignore updates if block isn't known
 					if ( ! state[ action.clientId ] ) {
@@ -481,6 +494,19 @@ export const editor = flow( [
 						...getFlattenedBlockAttributes( action.blocks ),
 					};
 
+				case 'INFLATE_BLOCK':
+					const block = createBlockWithFallback( action.blockNode );
+					if ( block ) {
+						return {
+							...state,
+							[ action.blockNode.clientId ]: {
+								...block.attributes,
+							},
+						};
+					} else {
+						return state;
+					}
+			
 				case 'UPDATE_BLOCK':
 					// Ignore updates if block isn't known or there are no attribute changes.
 					if ( ! state[ action.clientId ] || ! action.updates.attributes ) {

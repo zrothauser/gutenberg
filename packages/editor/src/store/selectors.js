@@ -716,6 +716,34 @@ export const getBlock = createSelector(
 	]
 );
 
+/**
+ * Returns a parserd block given its client ID. This is a parsed copy of the block,
+ * containing its `blockName`, `clientId`, but not its `attributes` state. This
+ * is not the block's registration settings, which must be retrieved from the
+ * blocks module registration store.
+ *
+ * @param {Object} state    Editor state.
+ * @param {string} clientId Block client ID.
+ *
+ * @return {Object} Parsed block object.
+ */
+export const getBlockNode = createSelector(
+	( state, clientId ) => {
+		const block = state.editor.present.blocks.byClientId[ clientId ];
+		if ( ! block ) {
+			return null;
+		}
+
+		return {
+			...block
+		};
+	},
+	( state, clientId ) => [
+		...getBlockAttributes.getDependants( state, clientId ),
+		getBlockDependantsCacheBust( state, clientId ),
+	]
+);
+
 export const __unstableGetBlockWithoutInnerBlocks = createSelector(
 	( state, clientId ) => {
 		const block = state.editor.present.blocks.byClientId[ clientId ];

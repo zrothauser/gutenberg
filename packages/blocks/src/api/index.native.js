@@ -4,6 +4,7 @@ export {
 } from './factory';
 export {
 	default as parse,
+	createBlockWithFallback,
 	parseWithAttributeSchema,
 } from './parser';
 export {
