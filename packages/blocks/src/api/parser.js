@@ -3,6 +3,7 @@
  */
 import { parse as hpqParse } from 'hpq';
 import { flow, castArray, mapValues, omit, stubFalse } from 'lodash';
+import uuid from 'uuid/v4';
 
 /**
  * WordPress dependencies
@@ -489,6 +490,20 @@ const createParse = ( parseImplementation ) =>
 		return memo;
 	}, [] );
 
+const createParsePhase1 = ( parseImplementation ) => 
+	( content ) => { 
+		const parsed = parseImplementation( content );
+		const arr = parsed.reduce( ( memo, blockNode ) => {
+			// TODO: improve validity detection. Checking for name won't detect stray html
+			if (blockNode.blockName) {
+				const clientId = uuid();
+				memo.push( { clientId, ...blockNode } );
+			}
+			return memo;
+		}, [] );
+		return arr;
+	}
+
 /**
  * Parses the post content with a PegJS grammar and returns a list of blocks.
  *
@@ -496,6 +511,6 @@ const createParse = ( parseImplementation ) =>
  *
  * @return {Array} Block list.
  */
-export const parseWithGrammar = createParse( defaultParse );
+export const parseWithGrammar = createParsePhase1( defaultParse );
 
 export default parseWithGrammar;
