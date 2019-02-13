@@ -209,7 +209,7 @@ export function getBlockContent( block ) {
 	// block contains nested content, exempt it from this condition because we
 	// otherwise have no access to its original content and content loss would
 	// still occur.
-	let saveContent = block.originalContent;
+	let saveContent = block.originalContent || block.innerHTML;
 	if ( block.isValid || block.innerBlocks.length ) {
 		try {
 			saveContent = getSaveContent( block.name, block.attributes, block.innerBlocks );
@@ -260,7 +260,7 @@ export function getCommentDelimitedContent( rawBlockName, attributes, content ) 
  * @return {string} Serialized block.
  */
 export function serializeBlock( block ) {
-	const blockName = block.name;
+	const blockName = block.name || block.blockName;
 	const saveContent = getBlockContent( block );
 
 	switch ( blockName ) {
@@ -270,7 +270,7 @@ export function serializeBlock( block ) {
 
 		default: {
 			const blockType = getBlockType( blockName );
-			const saveAttributes = getCommentAttributes( blockType, block.attributes );
+			const saveAttributes = blockType !== undefined ? getCommentAttributes( blockType, block.attributes || block.attrs ) : serializeAttributes( block.attrs );
 			return getCommentDelimitedContent( blockName, saveAttributes, saveContent );
 		}
 	}
