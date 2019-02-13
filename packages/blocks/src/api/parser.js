@@ -494,14 +494,25 @@ const createParse = ( parseImplementation ) =>
 		return memo;
 	}, [] );
 
+function assignClientId( block ) {
+	const clientId = uuid();
+	const newBlock = { clientId, ...block };
+
+	newBlock.innerBlocks = newBlock.innerBlocks.reduce( ( arr, block ) => {
+		arr.push( assignClientId( block ) );
+		return arr;
+	}, [] )
+
+	return newBlock;
+}
+
 const createParsePhase1 = ( parseImplementation ) => 
 	( content ) => { 
 		const parsed = parseImplementation( content );
 		const arr = parsed.reduce( ( memo, blockNode ) => {
 			// TODO: improve validity detection. Checking for name won't detect stray html
 			if (blockNode.blockName) {
-				const clientId = uuid();
-				memo.push( { clientId, ...blockNode } );
+				memo.push( assignClientId( blockNode ) );
 			}
 			return memo;
 		}, [] );
