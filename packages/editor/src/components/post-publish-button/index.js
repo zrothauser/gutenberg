@@ -64,10 +64,10 @@ export class PostPublishButton extends Component {
 		let publishStatus;
 		if ( ! hasPublishAction ) {
 			publishStatus = 'pending';
-		} else if ( isBeingScheduled ) {
-			publishStatus = 'future';
 		} else if ( visibility === 'private' ) {
 			publishStatus = 'private';
+		} else if ( isBeingScheduled ) {
+			publishStatus = 'future';
 		} else {
 			publishStatus = 'publish';
 		}
@@ -107,10 +107,10 @@ export class PostPublishButton extends Component {
 		};
 
 		let toggleChildren;
-		if ( isBeingScheduled ) {
-			toggleChildren = __( 'Schedule…' );
-		} else if ( 'private' === visibility ) {
+		if ( 'private' === visibility ) {
 			toggleChildren = __( 'Publish Privately…' );
+		} else if ( isBeingScheduled ) {
+			toggleChildren = __( 'Schedule…' );
 		} else {
 			toggleChildren = __( 'Publish…' );
 		}
@@ -165,3 +165,4 @@ export default compose( [
 		};
 	} ),
 ] )( PostPublishButton );
+
