@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Text, View, KeyboardAvoidingView, Platform } from 'react-native';
+import { Text, View, KeyboardAvoidingView, Platform, ScrollView, Keyboard, Dimensions, LayoutAnimation } from 'react-native';
 import Modal from 'react-native-modal';
 import SafeArea from 'react-native-safe-area';
 
@@ -17,31 +17,65 @@ import styles from './styles.scss';
 import Button from './button';
 import Cell from './cell';
 import PickerCell from './picker-cell';
+import { min } from 'moment';
 
 class BottomSheet extends Component {
 	constructor() {
 		super( ...arguments );
 		this.onSafeAreaInsetsUpdate = this.onSafeAreaInsetsUpdate.bind( this );
+		this.onScrollViewSizeChange = this.onScrollViewSizeChange.bind( this );
+		this.keyboardDidShow = this.keyboardDidShow.bind( this );
+		this.keyboardDidHide = this.keyboardDidHide.bind( this );
+		this.isAnimating = false;
 		this.state = {
-			safeAreaBottomInset: 0,
+			safeAreaInset: {},
+			contentHeight: 0,
+			keyboardContentHeight: 0,
+			isKeyboardShowing: false,
+			viewportHeight: Dimensions.get('window').height,
 		};
 
 		SafeArea.getSafeAreaInsetsForRootView().then( this.onSafeAreaInsetsUpdate );
 	}
 
 	componentDidMount() {
+		Keyboard.addListener( 'keyboardWillShow', this.keyboardDidShow );
+		Keyboard.addListener( 'keyboardWillHide', this.keyboardDidHide );
 		SafeArea.addEventListener( 'safeAreaInsetsForRootViewDidChange', this.onSafeAreaInsetsUpdate );
 	}
 
 	componentWillUnmount() {
+		Keyboard.removeListener( 'keyboardWillShow', this.keyboardDidShow );
+		Keyboard.removeListener( 'keyboardWillHide', this.keyboardDidHide );
 		SafeArea.removeEventListener( 'safeAreaInsetsForRootViewDidChange', this.onSafeAreaInsetsUpdate );
+	}
+
+	keyboardDidShow(event) {
+		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+		this.setState({
+			viewportHeight: event.endCoordinates.screenY - (this.state.safeAreaInset.top || 0),
+			isKeyboardShowing: true,
+		})
+	}
+
+	keyboardDidHide(event) {
+		const { top, bottom } = this.state.safeAreaInset;
+		const verticalSafeArea = top + bottom;
+		this.setState({
+			viewportHeight: Dimensions.get('window').height - (verticalSafeArea || 0),
+			isKeyboardShowing: false,
+		})
 	}
 
 	onSafeAreaInsetsUpdate( result ) {
 		const { safeAreaInsets } = result;
-		if ( this.state.safeAreaBottomInset !== safeAreaInsets.bottom ) {
-			this.setState( { safeAreaBottomInset: safeAreaInsets.bottom } );
+		if ( this.state.safeAreaInset !== safeAreaInsets ) {
+			this.setState( { safeAreaInsets: safeAreaInsets } );
 		}
+	}
+
+	onScrollViewSizeChange(width, height) {
+		this.setState({contentHeight: height});
 	}
 
 	render() {
@@ -61,31 +95,16 @@ class BottomSheet extends Component {
 				swipeDirection="down"
 			>
 				<KeyboardAvoidingView
-					behavior={ Platform.OS === 'ios' && 'padding' }
-					style={ { ...styles.content, borderColor: 'rgba(0, 0, 0, 0.1)' } }
-					keyboardVerticalOffset={ -this.state.safeAreaBottomInset }
+					behavior={ Platform.OS === 'ios' && 'position' }
+					style={ { height: Math.min(this.state.viewportHeight , this.state.contentHeight) } }
 				>
-					<View style={ styles.dragIndicator } />
-					{ hideHeader || (
-						<View>
-							<View style={ styles.head }>
-								<View style={ { flex: 1 } }>
-									{ leftButton }
-								</View>
-								<View style={ styles.titleContainer }>
-									<Text style={ styles.title }>
-										{ title }
-									</Text>
-								</View>
-								<View style={ { flex: 1 } }>
-									{ rightButton }
-								</View>
-							</View>
-							<View style={ styles.separator } />
+					<ScrollView onContentSizeChange={ this.onScrollViewSizeChange } >
+						<View style={ {...styles.content, borderColor: 'rgba(0, 0, 0, 0.1)'} }>
+							<View style={ styles.dragIndicator } />
+							{ this.props.children }
+							<View style={ { height: this.state.safeAreaBottomInset } } />
 						</View>
-					) }
-					{ this.props.children }
-					<View style={ { height: this.state.safeAreaBottomInset } } />
+					</ScrollView>
 				</KeyboardAvoidingView>
 			</Modal>
 
