@@ -37,6 +37,12 @@ export const settings = {
 		backgroundColor: {
 			type: 'string',
 		},
+		backgroundImageURL: {
+			type: 'string',
+		},
+		backgroundImageId: {
+			type: 'number',
+		},
 	},
 
 	edit,
