@@ -12,7 +12,6 @@ import {
 } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
-	IconButton,
 	withFallbackStyles,
 	PanelBody,
 	TextControl,
@@ -186,7 +185,6 @@ class ButtonEdit extends Component {
 								value={ url }
 								onChange={ ( value ) => setAttributes( { url: value } ) }
 							/>
-							<IconButton icon="editor-break" label={ __( 'Apply' ) } type="submit" />
 						</form>
 					</URLPopover>
 				) }
