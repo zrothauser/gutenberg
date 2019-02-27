@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import createAuthMiddleware from './middlewares/auth';
 import createNonceMiddleware from './middlewares/nonce';
 import createRootURLMiddleware from './middlewares/root-url';
 import createPreloadingMiddleware from './middlewares/preloading';
@@ -154,6 +155,7 @@ function apiFetch( options ) {
 apiFetch.use = registerMiddleware;
 apiFetch.setFetchHandler = setFetchHandler;
 
+apiFetch.createAuthMiddleware = createAuthMiddleware;
 apiFetch.createNonceMiddleware = createNonceMiddleware;
 apiFetch.createPreloadingMiddleware = createPreloadingMiddleware;
 apiFetch.createRootURLMiddleware = createRootURLMiddleware;

@@ -65,7 +65,7 @@ apiFetch.use( ( options, next ) => {
 
 ### Built-in middlewares
 
-The `api-fetch` package provides built-in middlewares you can use to provide a `nonce` and a custom `rootURL`.
+The `api-fetch` package provides built-in middlewares you can use to provide a `nonce`, an authentication `token`, and a custom `rootURL`.
 
 **Nonce middleware**
 
@@ -77,6 +77,17 @@ apiFetch.use( apiFetch.createNonceMiddleware( nonce ) );
 ```
 
 The function returned by `createNonceMiddleware` includes a `nonce` property corresponding to the actively used nonce. You may also assign to this property if you have a fresh nonce value to use.
+
+**Authorization middleware**
+
+```js
+import apiFetch from '@wordpress/api-fetch';
+
+const token = "token value";
+apiFetch.use( apiFetch.createAuthorizationMiddleware( token ) );
+```
+
+The function returned by `createAuthorizationMiddleware` includes a `token` property corresponding to the actively used token. This token is used to create an `Authorization` header to use with oAuth 2.0 or JWT authentication.
 
 **Root URL middleware**
 
