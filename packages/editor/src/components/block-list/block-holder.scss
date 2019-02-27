@@ -1,0 +1,62 @@
+/** @format */
+
+@import 'colors.scss';
+@import 'block-styles.scss';
+
+.blockHolder {
+	flex: 1 1 auto;
+}
+
+.blockContainer {
+	background-color: white;
+	padding-left: 16;
+	padding-right: 16;
+	padding-top: 12;
+	padding-bottom: 12;
+}
+
+.blockContainerFocused {
+	background-color: white;
+	padding-left: 16;
+	padding-right: 16;
+	padding-top: 12;
+	padding-bottom: 0; // will be flushed into inline toolbar height
+}
+
+.blockTitle {
+	background-color: grey;
+	padding-left: 8;
+	padding-top: 4;
+	padding-bottom: 4;
+}
+
+.unsupportedBlock {
+	background-color: #e9eff3; // grey lighten 30 
+	padding-top: 8;
+	padding-bottom: 8;
+	padding-left: 8;
+	padding-right: 8;
+}
+
+.unsupportedBlockImagePlaceholder {
+	margin: auto;
+	text-align: center;
+	background-color: #4f748e; // dark grey
+	width: 20;
+	height: 20;
+	margin-top: 24;
+	margin-bottom: 8;
+}
+
+.unsupportedBlockMessage {
+	text-align: center;
+	color: #4f748e; // grey darken 20
+	padding-top: 24;
+	padding-bottom: 24;
+	font-size: 16px;
+	font-family: $default-regular-font;
+}
+
+.aztec_container {
+	flex: 1;
+}

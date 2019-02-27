@@ -12,6 +12,7 @@ export { default as MediaPlaceholder } from './media-placeholder';
 export { default as BlockFormatControls } from './block-format-controls';
 export { default as BlockControls } from './block-controls';
 export { default as BlockEdit } from './block-edit';
+export { default as BlockList } from './block-list';
 export { default as DefaultBlockAppender } from './default-block-appender';
 export { default as PostTitle } from './post-title';
 export { default as EditorHistoryRedo } from './editor-history/redo';

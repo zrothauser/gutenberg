@@ -1,8 +1,8 @@
+import { TextInput } from 'react-native';
 
 /**
  * External dependencies
  */
-import TextareaAutosize from 'react-autosize-textarea';
 import { isEqual } from 'lodash';
 
 /**
@@ -55,7 +55,7 @@ export class BlockHTML extends Component {
 	render() {
 		const { html } = this.state;
 		return (
-			<TextareaAutosize
+			<TextInput
 				className="editor-block-list__block-html-textarea"
 				value={ html }
 				onBlur={ this.onBlur }

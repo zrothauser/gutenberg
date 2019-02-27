@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { View } from 'react-native';
 import { pick, isEqual, map } from 'lodash';
 import classnames from 'classnames';
 
@@ -110,13 +111,13 @@ class InnerBlocks extends Component {
 		} );
 
 		return (
-			<div className={ classes }>
+			<View className={ classes }>
 				{ ! templateInProcess && (
 					<BlockList
 						rootClientId={ clientId }
 					/>
 				) }
-			</div>
+			</View>
 		);
 	}
 }

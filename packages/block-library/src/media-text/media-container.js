@@ -29,19 +29,6 @@ class MediaContainer extends Component {
 		return (
 			<BlockControls>
 				<Toolbar>
-					<MediaUpload
-						onSelect={ onSelectMedia }
-						allowedTypes={ ALLOWED_MEDIA_TYPES }
-						value={ mediaId }
-						render={ ( { open } ) => (
-							<IconButton
-								className="components-toolbar__control"
-								label={ __( 'Edit media' ) }
-								icon="edit"
-								onClick={ open }
-							/>
-						) }
-					/>
 				</Toolbar>
 			</BlockControls>
 		);
@@ -53,9 +40,10 @@ class MediaContainer extends Component {
 			<Fragment>
 				{ this.renderToolbarEditButton() }
 				<ImageBackground
-					style={ { width: 100, height: 100, opacity: 1 } }
+					resizeMethod="scale"
 					source={ { uri: mediaUrl } }
 					key={ mediaUrl }
+					style={ { width: 100, height: 100, opacity: 1 } }
 				/>
 			</Fragment>
 		);

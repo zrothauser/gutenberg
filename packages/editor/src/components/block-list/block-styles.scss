@@ -1,0 +1,11 @@
+/** @format */
+
+@import './variables.scss';
+
+.blockCode {
+	font-family: $default-monospace-font;
+}
+
+.blockText {
+	min-height: 50;
+}
