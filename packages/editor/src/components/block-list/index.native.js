@@ -274,7 +274,7 @@ export default compose( [
 			showHtml: getBlockMode() === 'html',
 		};
 	} ),
-	withDispatch( ( dispatch ) => {
+	withDispatch( ( dispatch, { rootClientId } ) => {
 		const {
 			clearSelectedBlock,
 			insertBlock,
@@ -283,8 +283,10 @@ export default compose( [
 		} = dispatch( 'core/editor' );
 
 		return {
-			insertBlock,
-			focusBlock: ( clientId ) => {
+			insertBlock( block, insertionIndex ) {
+				insertBlock( block, insertionIndex, rootClientId );
+			},
+			focusBlock( clientId ) {
 				clearSelectedBlock();
 				selectBlock( clientId );
 			},
