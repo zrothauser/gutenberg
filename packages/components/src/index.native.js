@@ -5,6 +5,7 @@ export { default as Toolbar } from './toolbar';
 export { default as ToolbarButton } from './toolbar-button';
 export { default as withSpokenMessages } from './higher-order/with-spoken-messages';
 export { default as IconButton } from './icon-button';
+export { default as ResizableBox } from './resizable-box';
 export { default as Spinner } from './spinner';
 export { createSlotFill, Slot, Fill, Provider as SlotFillProvider } from './slot-fill';
 export { default as BaseControl } from './base-control';

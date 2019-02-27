@@ -3,6 +3,7 @@
  */
 import classnames from 'classnames';
 import { get } from 'lodash';
+import { View } from 'react-native';
 
 /**
  * WordPress dependencies
@@ -157,46 +158,23 @@ class MediaTextEdit extends Component {
 		const onMediaAltChange = ( newMediaAlt ) => {
 			setAttributes( { mediaAlt: newMediaAlt } );
 		};
-		const mediaTextGeneralSettings = (
-			<PanelBody title={ __( 'Media & Text Settings' ) }>
-				<ToggleControl
-					label={ __( 'Stack on mobile' ) }
-					checked={ isStackedOnMobile }
-					onChange={ () => setAttributes( {
-						isStackedOnMobile: ! isStackedOnMobile,
-					} ) }
-				/>
-				{ mediaType === 'image' && ( <TextareaControl
-					label={ __( 'Alt Text (Alternative Text)' ) }
-					value={ mediaAlt }
-					onChange={ onMediaAltChange }
-					help={ __( 'Alternative text describes your image to people who can’t see it. Add a short description with its key details.' ) }
-				/> ) }
-			</PanelBody>
-		);
 		return (
 			<Fragment>
 				<InspectorControls>
-					{ mediaTextGeneralSettings }
-					<PanelColorSettings
-						title={ __( 'Color Settings' ) }
-						initialOpen={ false }
-						colorSettings={ colorSettings }
-					/>
 				</InspectorControls>
 				<BlockControls>
 					<Toolbar
 						controls={ toolbarControls }
 					/>
 				</BlockControls>
-				<div className={ classNames } style={ style } >
+				<View className={ classNames } style={ style } >
 					{ this.renderMediaArea() }
 					<InnerBlocks
 						allowedBlocks={ ALLOWED_BLOCKS }
 						template={ TEMPLATE }
 						templateInsertUpdatesSelection={ false }
 					/>
-				</div>
+				</View>
 			</Fragment>
 		);
 	}

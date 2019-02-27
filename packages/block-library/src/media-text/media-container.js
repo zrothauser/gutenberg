@@ -1,7 +1,9 @@
+import { ImageBackground } from 'react-native';
+
 /**
  * WordPress dependencies
  */
-import { IconButton, ResizableBox, Toolbar } from '@wordpress/components';
+import { IconButton, Toolbar } from '@wordpress/components';
 import {
 	BlockControls,
 	BlockIcon,
@@ -50,9 +52,11 @@ class MediaContainer extends Component {
 		return (
 			<Fragment>
 				{ this.renderToolbarEditButton() }
-				<figure className={ className }>
-					<img src={ mediaUrl } alt={ mediaAlt } />
-				</figure>
+				<ImageBackground
+					style={ { width: 100, height: 100, opacity: 1 } }
+					source={ { uri: mediaUrl } }
+					key={ mediaUrl }
+				/>
 			</Fragment>
 		);
 	}
@@ -62,9 +66,6 @@ class MediaContainer extends Component {
 		return (
 			<Fragment>
 				{ this.renderToolbarEditButton() }
-				<figure className={ className }>
-					<video controls src={ mediaUrl } />
-				</figure>
 			</Fragment>
 		);
 	}
@@ -108,20 +109,7 @@ class MediaContainer extends Component {
 					mediaElement = this.renderVideo();
 					break;
 			}
-			return (
-				<ResizableBox
-					className="editor-media-container__resizer"
-					size={ { width: mediaWidth + '%' } }
-					minWidth="10%"
-					maxWidth="100%"
-					enable={ enablePositions }
-					onResize={ onResize }
-					onResizeStop={ onResizeStop }
-					axis="x"
-				>
-					{ mediaElement }
-				</ResizableBox>
-			);
+			return mediaElement;
 		}
 		return this.renderPlaceholder();
 	}
