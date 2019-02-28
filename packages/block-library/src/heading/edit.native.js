@@ -14,14 +14,12 @@ import { View } from 'react-native';
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { RichText, BlockControls } from '@wordpress/editor';
-import { parse, createBlock } from '@wordpress/blocks';
+import { createBlock } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
-import './editor.scss';
-
-const minHeight = 50;
+import styles from './style.scss';
 
 class HeadingEdit extends Component {
 	constructor( props ) {
@@ -47,6 +45,9 @@ class HeadingEdit extends Component {
 		} = attributes;
 
 		const tagName = 'h' + level;
+
+		const minHeight = styles.blockText.minHeight;
+
 		return (
 			<View>
 				<BlockControls>
@@ -62,14 +63,7 @@ class HeadingEdit extends Component {
 					style={ {
 						minHeight: Math.max( minHeight, this.state.aztecHeight ),
 					} }
-					onChange={ ( event ) => {
-						// Create a React Tree from the new HTML
-						const newParaBlock = parse( `<!-- wp:heading {"level":${ level }} --><${ tagName }>${ event.content }</${ tagName }><!-- /wp:heading -->` )[ 0 ];
-						setAttributes( {
-							...this.props.attributes,
-							content: newParaBlock.attributes.content,
-						} );
-					} }
+					onChange={ ( value ) => setAttributes( { content: value } ) }
 					onMerge={ mergeBlocks }
 					onSplit={
 						insertBlocksAfter ?

@@ -5,6 +5,7 @@ export {
 export {
 	default as parse,
 	createBlockWithFallback,
+	getBlockAttributes,
 	parseWithAttributeSchema,
 } from './parser';
 export {
@@ -29,5 +30,5 @@ export {
 export {
 	isUnmodifiedDefaultBlock,
 } from './utils';
-export { getPhrasingContentSchema } from './raw-handling';
+export { pasteHandler, getPhrasingContentSchema } from './raw-handling';
 export { default as children } from './children';
