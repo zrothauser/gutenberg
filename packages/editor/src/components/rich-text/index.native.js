@@ -358,7 +358,7 @@ export class RichText extends Component {
 		}
 	}
 
-	onSelectionChange( start, end, text, event ) {
+	onSelectionChange( start, end, event ) {
 		// `end` can be less than `start` on iOS
 		// Let's fix that here so `rich-text/slice` can work properly
 		const realStart = Math.min( start, end );
@@ -380,7 +380,7 @@ export class RichText extends Component {
 		this.lastEventCount = event.nativeEvent.eventCount;
 		// we don't want to refresh aztec as no content can have changed from this event
 		// let's update lastContent to prevent that in shouldComponentUpdate
-		this.lastContent = this.removeRootTagsProduceByAztec( unescapeSpaces( text ) );
+		// this.lastContent = this.removeRootTagsProduceByAztec( unescapeSpaces( text ) );
 		this.props.onChange( this.lastContent );
 	}
 
@@ -517,7 +517,8 @@ export class RichText extends Component {
 							this.props.setRef( ref );
 						}
 					} }
-					text={ { text: html, eventCount: this.lastEventCount } }
+					// text={ { text: html, eventCount: this.lastEventCount } }
+					value={ html }
 					placeholder={ this.props.placeholder }
 					placeholderTextColor={ this.props.placeholderTextColor || styles[ 'editor-rich-text' ].textDecorationColor }
 					onChange={ this.onChange }
@@ -532,7 +533,7 @@ export class RichText extends Component {
 					onSelectionChange={ this.onSelectionChange }
 					isSelected={ isSelected }
 					blockType={ { tag: tagName } }
-					color={ 'black' }
+					colour={ 'black' }
 					maxImagesWidth={ 200 }
 					style={ style }
 					fontFamily={ this.props.fontFamily || styles[ 'editor-rich-text' ].fontFamily }
