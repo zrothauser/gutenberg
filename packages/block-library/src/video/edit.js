@@ -65,8 +65,8 @@ class VideoEdit extends Component {
 		// without setting the actual value outside of the edit UI
 		this.state = {
 			editing: ! this.props.attributes.src,
-			modalContent: '',
-			isOpen: false,
+			modalContent: false,
+			modalHeadline: '',
 		};
 
 		this.videoPlayer = createRef();
@@ -181,9 +181,10 @@ class VideoEdit extends Component {
 
 	addSource( media ) {
 		const { setAttributes, attributes } = this.props;
-		const type = media.mime || this.getVideoMimeType( media.url );
+		const src = media.url !== undefined ? media.url : media;
+		const type = media.mime || this.getVideoMimeType( src );
 		setAttributes( {
-			sources: [ ...attributes.sources, { src: media.url, type } ],
+			sources: [ ...attributes.sources, { src, type } ],
 		} );
 	}
 
@@ -230,7 +231,7 @@ class VideoEdit extends Component {
 			subtitles,
 		} = this.props.attributes;
 		const { availableLanguages, setAttributes, isSelected, className, noticeOperations, noticeUI } = this.props;
-		const { modalContent, isOpen } = this.state;
+		const { modalHeadline, modalContent } = this.state;
 		const onSelectVideo = ( media ) => {
 			if ( ! media || ! media.url ) {
 				// in this case there was an error and we should continue in the editing state
@@ -259,10 +260,10 @@ class VideoEdit extends Component {
 
 		const MyModal = (
 			<div>
-				{ isOpen && (
+				{ modalContent && (
 					<Modal
-						title="This is my modal"
-						onRequestClose={ () => this.setState( { isOpen: false } ) }
+						title={ modalHeadline }
+						onRequestClose={ () => this.setState( { modalContent: false } ) }
 						shouldCloseOnClickOutside={ false }
 					>
 						{ modalContent === 'sources' && (
@@ -414,17 +415,17 @@ class VideoEdit extends Component {
 								<NavigableMenu className="editor-block-settings-menu__content">
 									<MenuItem
 										className="editor-block-settings-menu__control"
-										onClick={ () => this.setState( { modalContent: 'sources', isOpen: true } ) }
+										onClick={ () => this.setState( { modalContent: 'sources', modalHeadline: __( 'Format Settings' ) } ) }
 										icon="media-video"
 									>
-										{ __( 'Add more formats' ) }
+										{ __( 'Edit formats' ) }
 									</MenuItem>
 									<MenuItem
 										className="editor-block-settings-menu__control"
-										onClick={ () => this.setState( { modalContent: 'tracks', isOpen: true } ) }
+										onClick={ () => this.setState( { modalContent: 'tracks', modalHeadline: __( 'Track Settings' ) } ) }
 										icon="admin-comments"
 									>
-										{ __( 'Add Subtitles' ) }
+										{ __( 'Edit Subtitles' ) }
 									</MenuItem>
 
 								</NavigableMenu>
