@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
  * WordPress dependencies
  */
 import { getBlobByURL, isBlobURL } from '@wordpress/blob';
@@ -6,12 +11,12 @@ import {
 	BaseControl,
 	Button,
 	Disabled,
-	IconButton,
 	PanelBody,
+	Modal,
 	SelectControl,
 	TextControl,
 	ToggleControl,
-	Toolbar,
+	Toolbar, Dropdown, NavigableMenu, MenuItem,
 	withNotices,
 } from '@wordpress/components';
 import {
@@ -26,6 +31,8 @@ import {
 } from '@wordpress/editor';
 import { Component, Fragment, createRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -36,6 +43,21 @@ import icon from './icon';
 const ALLOWED_MEDIA_TYPES = [ 'video' ];
 const VIDEO_POSTER_ALLOWED_MEDIA_TYPES = [ 'image' ];
 
+const allowedVideoTypes = [
+	{
+		name: 'MP4',
+		type: 'video/mp4',
+	},
+	{
+		name: 'OGV',
+		type: 'video/ogg',
+	},
+	{
+		name: 'WebM',
+		type: 'video/webm',
+	},
+];
+
 class VideoEdit extends Component {
 	constructor() {
 		super( ...arguments );
@@ -43,6 +65,8 @@ class VideoEdit extends Component {
 		// without setting the actual value outside of the edit UI
 		this.state = {
 			editing: ! this.props.attributes.src,
+			modalContent: '',
+			isOpen: false,
 		};
 
 		this.videoPlayer = createRef();
@@ -127,10 +151,10 @@ class VideoEdit extends Component {
 		} );
 	}
 
-	addSubtitle() {
+	addSubtitle( media ) {
 		const { attributes: { subtitles }, setAttributes } = this.props;
 		setAttributes( {
-			subtitles: [ ...subtitles, {} ],
+			subtitles: [ ...subtitles, { src: media.url, kind: 'subtitles' } ],
 		} );
 	}
 
@@ -147,9 +171,9 @@ class VideoEdit extends Component {
 		return this.props.attributes.sources.find( ( source ) => type === source.type );
 	}
 
-	removeSource( url ) {
+	removeSource( src ) {
 		const { setAttributes, attributes } = this.props;
-		const filteredSources = attributes.sources.filter( ( source ) => source.url !== url );
+		const filteredSources = attributes.sources.filter( ( source ) => source.src !== src );
 		setAttributes( {
 			sources: filteredSources,
 		} );
@@ -205,11 +229,8 @@ class VideoEdit extends Component {
 			sources,
 			subtitles,
 		} = this.props.attributes;
-		const { setAttributes, isSelected, className, noticeOperations, noticeUI } = this.props;
-		// const { editing } = this.state;
-		const switchToEditing = () => {
-			this.setState( { editing: true } );
-		};
+		const { availableLanguages, setAttributes, isSelected, className, noticeOperations, noticeUI } = this.props;
+		const { modalContent, isOpen } = this.state;
 		const onSelectVideo = ( media ) => {
 			if ( ! media || ! media.url ) {
 				// in this case there was an error and we should continue in the editing state
@@ -236,16 +257,178 @@ class VideoEdit extends Component {
 			);
 		}
 
+		const MyModal = (
+			<div>
+				{ isOpen && (
+					<Modal
+						title="This is my modal"
+						onRequestClose={ () => this.setState( { isOpen: false } ) }
+						shouldCloseOnClickOutside={ false }
+					>
+						{ modalContent === 'sources' && (
+							<div>
+								{
+									<div>
+										<p>{ __( 'Add alternate formats to ensure your video can be played on any browser or device.' ) }</p>
+										{
+											allowedVideoTypes.map( ( format ) => {
+												return (
+													<MediaUpload
+														key={ format.type }
+														title={ 'Add Video Source' }
+														onSelect={ this.addSource }
+														type={ format.type }
+														render={ ( { open } ) => (
+															<Button
+																isDefault
+																onClick={ open }
+																disabled={ this.videoSourceTypeExists( format.type ) }
+															>
+																{ __( 'Add' ) } { format.name }
+															</Button>
+														) }
+													/>
+												);
+											} )
+										}
+									</div>
+
+								}
+
+								{ sources.map( ( source ) => {
+									return (
+										<div key={ source.src }>
+											{ source.src.substring( source.src.lastIndexOf( '/' ) + 1 ) }{ ' ' }
+											<Button
+												isLink
+												className="is-destructive"
+												onClick={ () => this.removeSource( source.src ) }
+											>{ __( 'Remove video source' ) }</Button>
+										</div>
+									);
+								} ) }
+
+							</div>
+						) }
+
+						{ modalContent === 'tracks' && (
+							<div>
+								<p>{ __( 'Add tracks to your video to ensure everyone can understand your content.' ) }</p>
+								{ subtitles.map( ( track, index ) => {
+									return (
+										<PanelBody key={ track.src } title={ track.src.substring( track.src.lastIndexOf( '/' ) + 1 ) } initialOpen={ false }>
+
+											<SelectControl
+												label={ __( 'Language' ) }
+												value={ track.srclang }
+												options={ availableLanguages }
+												onChange={ ( newValue ) => {
+													const label = availableLanguages.find( ( lang ) => lang.value === newValue ).label;
+													return this.setSubtitleAttributes( index, { srclang: newValue, label } );
+												} }
+											/>
+											{ track.srclang && (
+												<div>
+													<TextControl
+														type="text"
+														className="core-blocks-subtitle__srclang"
+														label={ __( 'srclang' ) }
+														value={ track.srclang }
+														placeholder="en"
+														help={ __( 'Valid BCP 47 language tag' ) }
+														onChange={ ( newValue ) => this.setSubtitleAttributes( index, { srclang: newValue } ) }
+													/>
+													<TextControl
+														type="text"
+														className="core-blocks-subtitle__label"
+														label={ __( 'Label' ) }
+														value={ track.label }
+														placeholder="English"
+														onChange={ ( newValue ) => this.setSubtitleAttributes( index, { label: newValue } ) }
+													/>
+													<SelectControl
+														label={ __( 'Kind' ) }
+														value={ track.kind }
+														options={ [
+															{ value: 'subtitles', label: __( 'Subtitles' ) },
+															{ value: 'captions', label: __( 'Captions' ) },
+															{ value: 'descriptions', label: __( 'Descriptions' ) },
+															{ value: 'chapters', label: __( 'Chapters' ) },
+															{ value: 'metadata', label: __( 'Metadata' ) },
+														] }
+														onChange={ ( newValue ) => this.setSubtitleAttributes( index, { kind: newValue } ) }
+													/>
+												</div>
+											) }
+											<Button isLink className="is-destructive" onClick={ () => this.removeSubtitle( index ) }>Remove Video Track</Button>
+
+										</PanelBody>
+									);
+								} ) }
+								<MediaUpload
+									title={ 'Add Subtitle' }
+									onSelect={ this.addSubtitle }
+									render={ ( { open } ) => (
+										<Button
+											isDefault
+											onClick={ open }
+										>
+											{ __( 'Add Subtitle' ) }
+										</Button>
+									) }
+								/>
+							</div>
+						) }
+					</Modal>
+				) }
+			</div>
+		);
+
 		/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/onclick-has-role, jsx-a11y/click-events-have-key-events */
 		return (
 			<Fragment>
 				<BlockControls>
 					<Toolbar>
-						<IconButton
-							className="components-icon-button components-toolbar__control"
-							label={ __( 'Edit video' ) }
-							onClick={ switchToEditing }
-							icon="edit"
+						<Dropdown
+							contentClassName="editor-block-settings-menu__popover"
+							position="bottom right"
+							renderToggle={ ( { onToggle, menuIsOpen } ) => {
+								const toggleClassname = classnames( 'editor-block-settings-menu__toggle', {
+									'is-opened': menuIsOpen,
+								} );
+								const label = menuIsOpen ? __( 'Hide video options' ) : __( 'More video options' );
+
+								return (
+									<Toolbar controls={ [ {
+										icon: 'edit',
+										title: label,
+										onClick: () => {
+											onToggle();
+										},
+										className: toggleClassname,
+										extraProps: { 'aria-expanded': menuIsOpen },
+									} ] } />
+								);
+							} }
+							renderContent={ ( { } ) => (
+								<NavigableMenu className="editor-block-settings-menu__content">
+									<MenuItem
+										className="editor-block-settings-menu__control"
+										onClick={ () => this.setState( { modalContent: 'sources', isOpen: true } ) }
+										icon="media-video"
+									>
+										{ __( 'Add more formats' ) }
+									</MenuItem>
+									<MenuItem
+										className="editor-block-settings-menu__control"
+										onClick={ () => this.setState( { modalContent: 'tracks', isOpen: true } ) }
+										icon="admin-comments"
+									>
+										{ __( 'Add Subtitles' ) }
+									</MenuItem>
+
+								</NavigableMenu>
+							) }
 						/>
 					</Toolbar>
 				</BlockControls>
@@ -308,114 +491,7 @@ class VideoEdit extends Component {
 							</BaseControl>
 						</MediaUploadCheck>
 					</PanelBody>
-					<PanelBody title={ __( 'Sources' ) }>
-						{ /* { wp.media.view.settings.embedMimes.mp4 } */ }
-						{ sources.map( ( source ) => {
-							return (
-								<div key={ source.src }>
-									<TextControl
-										type="text"
-										label={ source.type }
-										value={ source.src }
-										disabled
-									/>
-									<Button
-										isLink
-										className="is-destructive"
-										onClick={ () => this.removeSource( source.src ) }
-									>{ __( 'Remove video source' ) }</Button>
-								</div>
-							);
-						} ) }
 
-						{ sources.length < 3 && ( <p>Add alternate sources for maximum HTML5 playback:</p> ) }
-						{ ! this.videoSourceTypeExists( 'video/mp4' ) && (
-							<MediaUpload
-								title={ 'Add Video Source' }
-								onSelect={ this.addSource }
-								type="video/mp4"
-								render={ ( { open } ) => (
-									<Button isDefault onClick={ open }>
-										mp4
-									</Button>
-								) }
-							/>
-						) }
-						{ ! this.videoSourceTypeExists( 'video/ogg' ) && (
-							<MediaUpload
-								title={ 'Add Video Source' }
-								onSelect={ this.addSource }
-								type="video/ogg"
-								render={ ( { open } ) => (
-									<Button isDefault onClick={ open }>
-										ovg
-									</Button>
-								) }
-							/>
-						) }
-						{ ! this.videoSourceTypeExists( 'video/webm' ) && (
-							<MediaUpload
-								title={ 'Add Video Source' }
-								onSelect={ this.addSource }
-								type="video/webm"
-								render={ ( { open } ) => (
-									<Button isDefault onClick={ open }>
-										webm
-									</Button>
-								) }
-							/>
-						) }
-
-					</PanelBody>
-					<PanelBody title={ __( 'Subtitles' ) }>
-						{ subtitles.map( ( subtitle, index ) => {
-							return (
-								<div key={ subtitle.src } className="subtitle-track">
-									<TextControl
-										type="text"
-										className="core-blocks-subtitle__srclang"
-										label={ __( 'srclang' ) }
-										value={ subtitle.srclang }
-										placeholder="en"
-										help={ __( 'Valid BCP 47 language tag' ) }
-										onChange={ ( newValue ) => this.setSubtitleAttributes( index, { srclang: newValue } ) }
-									/>
-									<TextControl
-										type="text"
-										className="core-blocks-subtitle__label"
-										label={ __( 'Label' ) }
-										value={ subtitle.label }
-										placeholder="English"
-										onChange={ ( newValue ) => this.setSubtitleAttributes( index, { label: newValue } ) }
-									/>
-									<div>
-										<SelectControl
-											label={ __( 'Source Type' ) }
-											value={ subtitle.kind }
-											options={ [
-												{ value: 'subtitles', label: __( 'Subtitles' ) },
-												{ value: 'captions', label: __( 'Captions' ) },
-												{ value: 'descriptions', label: __( 'Descriptions' ) },
-												{ value: 'chapters', label: __( 'Chapters' ) },
-												{ value: 'metadata', label: __( 'Metadata' ) },
-											] }
-											onChange={ ( newValue ) => this.setSubtitleAttributes( index, { kind: newValue } ) }
-										/>
-									</div>
-									<TextControl
-										type="text"
-										className="core-blocks-subtitle__src"
-										label={ __( 'Source' ) }
-										value={ subtitle.src }
-										onChange={ ( newValue ) => this.setSubtitleAttributes( index, { src: newValue } ) }
-									/>
-									<Button isDefault>Change File</Button>
-									<Button isLink className="is-destructive" onClick={ () => this.removeSubtitle( index ) }>Remove Video Track</Button>
-								</div>
-							);
-						} ) }
-						<Button isDefault onClick={ this.addSubtitle }>Add Subtitle</Button>
-					</PanelBody>
 				</InspectorControls>
 				<figure className={ className }>
 					{ /*
@@ -452,6 +528,7 @@ class VideoEdit extends Component {
 							} ) }
 						</video>
 					</Disabled>
+
 					{ ( ! RichText.isEmpty( caption ) || isSelected ) && (
 						<RichText
 							tagName="figcaption"
@@ -462,10 +539,16 @@ class VideoEdit extends Component {
 						/>
 					) }
 				</figure>
+				{ MyModal }
 			</Fragment>
 		);
 		/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/onclick-has-role, jsx-a11y/click-events-have-key-events */
 	}
 }
 
-export default withNotices( VideoEdit );
+export default compose( [
+	withSelect( ( select ) => ( {
+		availableLanguages: Object.values( select( 'core/block-editor' ).getEditorSettings().availableLanguages ),
+	} ) ),
+	withNotices,
+] )( VideoEdit );

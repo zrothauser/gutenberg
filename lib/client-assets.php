@@ -878,6 +878,18 @@ function gutenberg_editor_scripts_and_styles( $hook ) {
 		);
 	}
 
+	require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+	$available_translations = wp_get_available_translations();
+	$available_translations = array_map(
+		function ($local){
+			return [
+				'value' => reset($local['iso']),
+				'label' => $local['english_name'],
+			];
+		},
+		$available_translations
+	);
+
 	$editor_settings = array(
 		'alignWide'              => $align_wide || ! empty( $gutenberg_theme_support[0]['wide-images'] ), // Backcompat. Use `align-wide` outside of `gutenberg` array.
 		'availableTemplates'     => $available_templates,
@@ -894,6 +906,7 @@ function gutenberg_editor_scripts_and_styles( $hook ) {
 		'styles'                 => $styles,
 		'imageSizes'             => gutenberg_get_available_image_sizes(),
 		'richEditingEnabled'     => user_can_richedit(),
+		'availableLanguages'     => (array) $available_translations,
 
 		// Ideally, we'd remove this and rely on a REST API endpoint.
 		'postLock'               => $lock_details,
