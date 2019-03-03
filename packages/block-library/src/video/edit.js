@@ -76,8 +76,8 @@ class VideoEdit extends Component {
 		this.videoSourceTypeExists = this.videoSourceTypeExists.bind( this );
 		this.onSelectPoster = this.onSelectPoster.bind( this );
 		this.onRemovePoster = this.onRemovePoster.bind( this );
-		this.setSubtitleAttributes = this.setSubtitleAttributes.bind( this );
-		this.addSubtitle = this.addSubtitle.bind( this );
+		this.setTrackAttributes = this.setTrackAttributes.bind( this );
+		this.addTrack = this.addTrack.bind( this );
 	}
 
 	componentDidMount() {
@@ -134,36 +134,36 @@ class VideoEdit extends Component {
 		this.setState( { editing: false } );
 	}
 
-	setSubtitleAttributes( index, attributes ) {
-		const { attributes: { subtitles }, setAttributes } = this.props;
-		if ( ! subtitles[ index ] ) {
+	setTrackAttributes( index, attributes ) {
+		const { attributes: { tracks }, setAttributes } = this.props;
+		if ( ! tracks[ index ] ) {
 			return;
 		}
 		setAttributes( {
-			subtitles: [
-				...subtitles.slice( 0, index ),
+			tracks: [
+				...tracks.slice( 0, index ),
 				{
-					...subtitles[ index ],
+					...tracks[ index ],
 					...attributes,
 				},
-				...subtitles.slice( index + 1 ),
+				...tracks.slice( index + 1 ),
 			],
 		} );
 	}
 
-	addSubtitle( media ) {
-		const { attributes: { subtitles }, setAttributes } = this.props;
+	addTrack( media ) {
+		const { attributes: { tracks }, setAttributes } = this.props;
 		setAttributes( {
-			subtitles: [ ...subtitles, { src: media.url, kind: 'subtitles' } ],
+			tracks: [ ...tracks, { src: media.url, kind: 'subtitles' } ],
 		} );
 	}
 
-	removeSubtitle( index ) {
-		const { attributes: { subtitles }, setAttributes } = this.props;
-		const tempSubtitles = [ ...subtitles ];
-		tempSubtitles.splice( index, 1 );
+	removeTrack( index ) {
+		const { attributes: { tracks }, setAttributes } = this.props;
+		const newTracks = [ ...tracks ];
+		newTracks.splice( index, 1 );
 		setAttributes( {
-			subtitles: tempSubtitles,
+			tracks: newTracks,
 		} );
 	}
 
@@ -228,7 +228,7 @@ class VideoEdit extends Component {
 			poster,
 			preload,
 			sources,
-			subtitles,
+			tracks,
 		} = this.props.attributes;
 		const { availableLanguages, setAttributes, isSelected, className, noticeOperations, noticeUI } = this.props;
 		const { modalHeadline, modalContent } = this.state;
@@ -315,7 +315,7 @@ class VideoEdit extends Component {
 						{ modalContent === 'tracks' && (
 							<div>
 								<p>{ __( 'Add tracks to your video to ensure everyone can understand your content.' ) }</p>
-								{ subtitles.map( ( track, index ) => {
+								{ tracks.map( ( track, index ) => {
 									return (
 										<PanelBody key={ track.src } title={ track.src.substring( track.src.lastIndexOf( '/' ) + 1 ) } initialOpen={ false }>
 
@@ -325,27 +325,27 @@ class VideoEdit extends Component {
 												options={ availableLanguages }
 												onChange={ ( newValue ) => {
 													const label = availableLanguages.find( ( lang ) => lang.value === newValue ).label;
-													return this.setSubtitleAttributes( index, { srclang: newValue, label } );
+													return this.setTrackAttributes( index, { srclang: newValue, label } );
 												} }
 											/>
 											{ track.srclang && (
 												<div>
 													<TextControl
 														type="text"
-														className="core-blocks-subtitle__srclang"
+														className="core-blocks-track__srclang"
 														label={ __( 'srclang' ) }
 														value={ track.srclang }
 														placeholder="en"
 														help={ __( 'Valid BCP 47 language tag' ) }
-														onChange={ ( newValue ) => this.setSubtitleAttributes( index, { srclang: newValue } ) }
+														onChange={ ( newValue ) => this.setTrackAttributes( index, { srclang: newValue } ) }
 													/>
 													<TextControl
 														type="text"
-														className="core-blocks-subtitle__label"
+														className="core-blocks-track__label"
 														label={ __( 'Label' ) }
 														value={ track.label }
 														placeholder="English"
-														onChange={ ( newValue ) => this.setSubtitleAttributes( index, { label: newValue } ) }
+														onChange={ ( newValue ) => this.setTrackAttributes( index, { label: newValue } ) }
 													/>
 													<SelectControl
 														label={ __( 'Kind' ) }
@@ -357,24 +357,24 @@ class VideoEdit extends Component {
 															{ value: 'chapters', label: __( 'Chapters' ) },
 															{ value: 'metadata', label: __( 'Metadata' ) },
 														] }
-														onChange={ ( newValue ) => this.setSubtitleAttributes( index, { kind: newValue } ) }
+														onChange={ ( newValue ) => this.setTrackAttributes( index, { kind: newValue } ) }
 													/>
 												</div>
 											) }
-											<Button isLink className="is-destructive" onClick={ () => this.removeSubtitle( index ) }>Remove Video Track</Button>
+											<Button isLink className="is-destructive" onClick={ () => this.removeTrack( index ) }>Remove Video Track</Button>
 
 										</PanelBody>
 									);
 								} ) }
 								<MediaUpload
-									title={ 'Add Subtitle' }
-									onSelect={ this.addSubtitle }
+									title={ 'Add Track' }
+									onSelect={ this.addTrack }
 									render={ ( { open } ) => (
 										<Button
 											isDefault
 											onClick={ open }
 										>
-											{ __( 'Add Subtitle' ) }
+											{ __( 'Add Track' ) }
 										</Button>
 									) }
 								/>
@@ -425,7 +425,7 @@ class VideoEdit extends Component {
 										onClick={ () => this.setState( { modalContent: 'tracks', modalHeadline: __( 'Track Settings' ) } ) }
 										icon="admin-comments"
 									>
-										{ __( 'Edit Subtitles' ) }
+										{ __( 'Edit Tracks' ) }
 									</MenuItem>
 
 								</NavigableMenu>
@@ -517,14 +517,14 @@ class VideoEdit extends Component {
 								);
 							} ) }
 
-							{ subtitles.map( ( subtitle ) => {
+							{ tracks.map( ( track ) => {
 								return (
 									<track
-										key={ subtitle.src }
-										srcLang={ subtitle.srclang }
-										label={ subtitle.label }
-										kind={ subtitle.kind }
-										src={ subtitle.src }
+										key={ track.src }
+										srcLang={ track.srclang }
+										label={ track.label }
+										kind={ track.kind }
+										src={ track.src }
 									/>
 								);
 							} ) }

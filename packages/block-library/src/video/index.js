@@ -85,7 +85,7 @@ export const settings = {
 				},
 			},
 		},
-		subtitles: {
+		tracks: {
 			type: 'array',
 			default: [],
 			source: 'query',
@@ -139,7 +139,7 @@ export const settings = {
 	edit,
 
 	save( { attributes } ) {
-		const { autoplay, caption, controls, loop, muted, poster, preload, sources, subtitles } = attributes;
+		const { autoplay, caption, controls, loop, muted, poster, preload, sources, tracks } = attributes;
 		return (
 			<figure>
 				{ !! sources.length &&
@@ -160,14 +160,14 @@ export const settings = {
 							/>
 						);
 					} ) }
-					{ subtitles.map( ( subtitle ) => {
+					{ tracks.map( ( track ) => {
 						return (
 							<track
-								key={ subtitle.src }
-								srcLang={ subtitle.srclang }
-								label={ subtitle.label }
-								kind={ subtitle.kind }
-								src={ subtitle.src }
+								key={ track.src }
+								srcLang={ track.srclang }
+								label={ track.label }
+								kind={ track.kind }
+								src={ track.src }
 							/>
 						);
 					} ) }
