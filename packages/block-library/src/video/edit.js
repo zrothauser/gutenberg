@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { getBlobByURL, isBlobURL } from '@wordpress/blob';
 import {
 	BaseControl,
 	Button,
@@ -10,13 +10,13 @@ import {
 	PanelBody,
 	SelectControl,
 	TextControl,
-	Toolbar,
 	ToggleControl,
+	Toolbar,
 	withNotices,
 } from '@wordpress/components';
-import { Component, Fragment, createRef } from '@wordpress/element';
 import {
 	BlockControls,
+	BlockIcon,
 	InspectorControls,
 	MediaPlaceholder,
 	MediaUpload,
@@ -24,12 +24,14 @@ import {
 	RichText,
 	mediaUpload,
 } from '@wordpress/editor';
-import { getBlobByURL, isBlobURL } from '@wordpress/blob';
+import { Component, Fragment, createRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { createUpgradedEmbedBlock } from '../embed/util';
+import icon from './icon';
 
 const ALLOWED_MEDIA_TYPES = [ 'video' ];
 const VIDEO_POSTER_ALLOWED_MEDIA_TYPES = [ 'image' ];
@@ -221,7 +223,7 @@ class VideoEdit extends Component {
 		if ( ! sources.length ) {
 			return (
 				<MediaPlaceholder
-					icon="media-video"
+					icon={ <BlockIcon icon={ icon } /> }
 					className={ className }
 					onSelect={ onSelectVideo }
 					onSelectURL={ this.addSource }

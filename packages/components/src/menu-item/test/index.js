@@ -9,8 +9,6 @@ import { noop } from 'lodash';
  */
 import { MenuItem } from '../';
 
-jest.mock( '../../button' );
-
 describe( 'MenuItem', () => {
 	it( 'should match snapshot when only label provided', () => {
 		const wrapper = shallow(
@@ -61,7 +59,6 @@ describe( 'MenuItem', () => {
 			</MenuItem>
 		);
 
-		expect( wrapper.prop( 'aria-label' ) ).not.toBeUndefined();
 		expect( wrapper ).toMatchSnapshot();
 	} );
 
