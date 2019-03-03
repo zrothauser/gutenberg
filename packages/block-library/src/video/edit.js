@@ -504,6 +504,7 @@ class VideoEdit extends Component {
 							loop={ loop }
 							muted={ muted }
 							poster={ poster }
+							ref={ this.videoPlayer }
 						>
 							{ sources.map( ( source ) => {
 								return (
