@@ -11,12 +11,15 @@ import {
 	BaseControl,
 	Button,
 	Disabled,
+	Dropdown,
 	PanelBody,
+	MenuItem,
 	Modal,
+	NavigableMenu,
 	SelectControl,
 	TextControl,
 	ToggleControl,
-	Toolbar, Dropdown, NavigableMenu, MenuItem,
+	Toolbar,
 	withNotices,
 } from '@wordpress/components';
 import {
@@ -172,8 +175,8 @@ class VideoEdit extends Component {
 	}
 
 	removeSource( src ) {
-		const { setAttributes, attributes } = this.props;
-		const filteredSources = attributes.sources.filter( ( source ) => source.src !== src );
+		const { attributes: { sources }, setAttributes } = this.props;
+		const filteredSources = sources.filter( ( source ) => source.src !== src );
 		setAttributes( {
 			sources: filteredSources,
 		} );
@@ -189,6 +192,7 @@ class VideoEdit extends Component {
 	}
 
 	getVideoMimeType( url ) {
+		// wp.media.view.settings.embedMimes
 		const fileType = url.split( '.' ).pop();
 		let mime = 'undefined';
 		switch ( fileType ) {
@@ -298,13 +302,13 @@ class VideoEdit extends Component {
 
 								{ sources.map( ( source ) => {
 									return (
-										<div key={ source.src }>
+										<div key={ source.src } className="source-file">
 											{ source.src.substring( source.src.lastIndexOf( '/' ) + 1 ) }{ ' ' }
 											<Button
 												isLink
 												className="is-destructive"
 												onClick={ () => this.removeSource( source.src ) }
-											>{ __( 'Remove video source' ) }</Button>
+											>{ __( 'Remove file' ) }</Button>
 										</div>
 									);
 								} ) }
@@ -361,7 +365,7 @@ class VideoEdit extends Component {
 													/>
 												</div>
 											) }
-											<Button isLink className="is-destructive" onClick={ () => this.removeTrack( index ) }>Remove Video Track</Button>
+											<Button isLink className="is-destructive" onClick={ () => this.removeTrack( index ) }>Remove Track</Button>
 
 										</PanelBody>
 									);
