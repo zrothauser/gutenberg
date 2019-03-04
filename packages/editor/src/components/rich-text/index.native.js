@@ -528,7 +528,7 @@ export class RichText extends Component {
 					onBackspace={ this.onBackspace }
 					onPaste={ this.onPaste }
 					activeFormats={ this.getActiveFormatNames( record ) }
-					onContentSizeChange={ this.onContentSizeChange }
+					// onContentSizeChange={ this.onContentSizeChange }
 					onCaretVerticalPositionChange={ this.props.onCaretVerticalPositionChange }
 					onSelectionChange={ this.onSelectionChange }
 					isSelected={ isSelected }
@@ -536,6 +536,7 @@ export class RichText extends Component {
 					colour={ 'black' }
 					maxImagesWidth={ 200 }
 					style={ style }
+					multiline={ true }
 					fontFamily={ this.props.fontFamily || styles[ 'editor-rich-text' ].fontFamily }
 					fontSize={ this.props.fontSize }
 					fontWeight={ this.props.fontWeight }
