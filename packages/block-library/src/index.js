@@ -2,6 +2,8 @@
  * WordPress dependencies
  */
 import '@wordpress/core-data';
+import '@wordpress/block-editor';
+import '@wordpress/editor';
 import {
 	registerBlockType,
 	setDefaultBlockName,
@@ -54,6 +56,16 @@ import * as tagCloud from './tag-cloud';
 
 import * as classic from './classic';
 
+/**
+ * Function to register core blocks provided by the block editor.
+ *
+ * @example
+ * ```js
+ * import { registerCoreBlocks } from '@wordpress/block-library';
+ *
+ * registerCoreBlocks();
+ * ```
+ */
 export const registerCoreBlocks = () => {
 	[
 		// Common blocks are grouped at the top to prioritize their display
