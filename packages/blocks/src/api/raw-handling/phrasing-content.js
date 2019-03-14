@@ -1,28 +1,72 @@
 /**
  * External dependencies
  */
-import { omit } from 'lodash';
+import { omit, without } from 'lodash';
 
+/**
+ * All text-level semantic elements.
+ */
 const phrasingContentSchema = {
-	strong: {},
-	em: {},
-	del: {},
-	ins: {},
+	// https://html.spec.whatwg.org/multipage/text-level-semantics.html
 	a: { attributes: [ 'href', 'target', 'rel' ] },
+	em: {},
+	strong: {},
+	small: {},
+	s: {},
+	// cite: {},
+	q: { attributes: [ 'cite' ] },
+	dfn: { attributes: [ 'title' ] },
+	// abbr: { attributes: [ 'title' ] }, Not visible.
+	// data: { attributes: [ 'value' ] }, Not visible.
+	// time: { attributes: [ 'datetime' ] }, Not visible.
 	code: {},
-	abbr: { attributes: [ 'title' ] },
+	var: {},
+	samp: {},
+	kbd: {},
 	sub: {},
 	sup: {},
+	// i: {},
+	// b: {},
+	// u: {}, Used for misspelling. Shouldn't be copied over.
+	mark: {},
+	// bdi: { attributes: [ 'dir' ] }, Not visible.
+	// bdo: { attributes: [ 'dir' ] }, Not visible.
 	br: {},
+	// wbr: {}, Not visible.
+	// https://html.spec.whatwg.org/multipage/edits.html
+	ins: {
+		// We shouldn't copy potentially sensitive information which is not
+		// visible to the user.
+		// attributes: [ 'cite', 'datetime' ],
+	},
+	del: {
+		// We shouldn't copy potentially sensitive information which is not
+		// visible to the user.
+		// attributes: [ 'cite', 'datetime' ],
+	},
+	// Text elements.
 	'#text': {},
 };
 
 // Recursion is needed.
 // Possible: strong > em > strong.
 // Impossible: strong > strong.
-[ 'strong', 'em', 'del', 'ins', 'a', 'code', 'abbr', 'sub', 'sup' ].forEach( ( tag ) => {
+without( Object.keys( phrasingContentSchema ), '#text', 'br' ).forEach( ( tag ) => {
 	phrasingContentSchema[ tag ].children = omit( phrasingContentSchema, tag );
 } );
+
+// Add ruby: rt and rp can only be contained by ruby.
+const rubyContentSchema = {
+	...phrasingContentSchema,
+	ruby: {},
+	rt: { children: phrasingContentSchema },
+	rp: { children: phrasingContentSchema },
+};
+
+rubyContentSchema.ruby.children = rubyContentSchema;
+phrasingContentSchema.ruby = {
+	children: rubyContentSchema,
+};
 
 /**
  * Get schema of possible paths for phrasing content.
