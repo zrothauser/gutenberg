@@ -254,10 +254,14 @@ function cleanNodeList( nodeList, doc, schema, inline ) {
 							node.parentNode.nodeName === 'BODY' &&
 							isPhrasingContent( node )
 						) {
-							cleanNodeList( node.childNodes, doc, schema, inline );
+							const parentClone = node.parentNode.cloneNode();
+							cleanNodeList( parentClone.childNodes, doc, schema, inline );
 
-							if ( Array.from( node.childNodes ).some( ( child ) => ! isPhrasingContent( child ) ) ) {
+							if ( Array.from( parentClone.childNodes ).some( ( child ) => ! isPhrasingContent( child ) ) ) {
+								cleanNodeList( node.childNodes, doc, schema, inline );
 								unwrap( node );
+							} else {
+								cleanNodeList( node.childNodes, doc, children, inline );
 							}
 						} else {
 							cleanNodeList( node.childNodes, doc, children, inline );

@@ -59,8 +59,8 @@ without( Object.keys( phrasingContentSchema ), '#text', 'br' ).forEach( ( tag ) 
 const rubyContentSchema = {
 	...phrasingContentSchema,
 	ruby: {},
-	rt: { children: phrasingContentSchema },
-	rp: { children: phrasingContentSchema },
+	rt: { children: { ...phrasingContentSchema } },
+	rp: { children: { ...phrasingContentSchema } },
 };
 
 rubyContentSchema.ruby.children = rubyContentSchema;
@@ -90,5 +90,5 @@ export function getPhrasingContentSchema() {
  */
 export function isPhrasingContent( node ) {
 	const tag = node.nodeName.toLowerCase();
-	return getPhrasingContentSchema().hasOwnProperty( tag ) || tag === 'span';
+	return rubyContentSchema.hasOwnProperty( tag ) || tag === 'span';
 }
