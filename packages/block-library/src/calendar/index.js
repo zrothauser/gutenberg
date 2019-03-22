@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import edit from './edit';
+import transforms from './transforms';
 
 export const name = 'core/calendar';
 
@@ -20,4 +21,5 @@ export const settings = {
 		align: true,
 	},
 	edit,
+	transforms,
 };
