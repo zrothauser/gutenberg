@@ -1,7 +1,10 @@
 /**
  * External dependencies
  */
-import { map } from 'lodash';
+import {
+	filter,
+	map,
+} from 'lodash';
 
 /**
  * WordPress dependencies
@@ -48,6 +51,10 @@ class LegacyWidgetEdit extends Component {
 			hasPermissionsToManageWidgets,
 			setAttributes,
 		} = this.props;
+		const visibleLegacyWidgets = filter(
+			availableLegacyWidgets,
+			( { isHidden } ) => ! isHidden
+		);
 		const { isPreview } = this.state;
 		const { identifier, isCallbackWidget } = attributes;
 		const widgetObject = identifier && availableLegacyWidgets[ identifier ];
@@ -56,7 +63,7 @@ class LegacyWidgetEdit extends Component {
 
 			if ( ! hasPermissionsToManageWidgets ) {
 				placeholderContent = __( 'You don\'t have permissions to use widgets on this site.' );
-			} else if ( availableLegacyWidgets.length === 0 ) {
+			} else if ( visibleLegacyWidgets.length === 0 ) {
 				placeholderContent = __( 'There are no widgets available.' );
 			} else {
 				placeholderContent = (
@@ -69,7 +76,7 @@ class LegacyWidgetEdit extends Component {
 							isCallbackWidget: availableLegacyWidgets[ value ].isCallbackWidget,
 						} ) }
 						options={ [ { value: 'none', label: 'Select widget' } ].concat(
-							map( availableLegacyWidgets, ( widget, key ) => {
+							map( visibleLegacyWidgets, ( widget, key ) => {
 								return {
 									value: key,
 									label: widget.name,
