@@ -126,3 +126,23 @@ function gutenberg_legacy_widget_settings( $settings ) {
 	return $settings;
 }
 add_filter( 'block_editor_settings', 'gutenberg_legacy_widget_settings' );
+
+/**
+ * Overwrites the template WordPress would use to render the currrent request,
+ * to a widget preview template if widgetPreview parameter was passed in the url.
+ *
+ * @param string $template Original template.
+ *
+ * @return string The original or the path of widget-preview-template.php file.
+ */
+function change_post_template_to_widget_preview( $template ) {
+	if (
+		isset( $_GET['widgetPreview'] ) &&
+		current_user_can( 'edit_theme_options' )
+	) {
+		add_filter( 'show_admin_bar', '__return_false' );
+		return dirname( __FILE__ ) . '/widget-preview-template.php';
+	}
+	return $template;
+}
+add_filter( 'template_include', 'change_post_template_to_widget_preview' );

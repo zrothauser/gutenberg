@@ -21,7 +21,8 @@ function render_block_legacy_widget( $attributes ) {
 	$identifier = $attributes['identifier'];
 	if (
 		isset( $attributes['isCallbackWidget'] ) &&
-		$attributes['isCallbackWidget']
+		$attributes['isCallbackWidget'] &&
+		'false' !== $attributes['isCallbackWidget']
 	) {
 		global $wp_registered_widgets;
 		if ( ! isset( $wp_registered_widgets[ $identifier ] ) ) {

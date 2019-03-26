@@ -17,18 +17,17 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
-
-/**
- * Internal dependencies
- */
 import {
 	BlockControls,
 	BlockIcon,
 	InspectorControls,
-	ServerSideRender,
 } from '@wordpress/editor';
 
+/**
+ * Internal dependencies
+ */
 import WidgetEditHandler from './WidgetEditHandler';
+import WidgetPreview from './WidgetPreview';
 
 class LegacyWidgetEdit extends Component {
 	constructor() {
@@ -173,9 +172,8 @@ class LegacyWidgetEdit extends Component {
 	renderWidgetPreview() {
 		const { attributes } = this.props;
 		return (
-			<ServerSideRender
+			<WidgetPreview
 				className="wp-block-legacy-widget__preview"
-				block="core/legacy-widget"
 				attributes={ attributes }
 			/>
 		);
