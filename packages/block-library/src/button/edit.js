@@ -169,6 +169,7 @@ class ButtonEdit extends Component {
 				</InspectorControls>
 				{ isSelected && (
 					<URLPopover
+						focusOnMount={ false }
 						position={ popoverPosition }
 						renderSettings={ () => (
 							<ToggleControl
