@@ -7,5 +7,9 @@
 	],
 	"transform": {
 		"^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest"
-	}
+	},
+	"reporters": [
+		"default",
+		"<rootDir>/test/e2e/support/performance-reporter.js"
+	]
 }
