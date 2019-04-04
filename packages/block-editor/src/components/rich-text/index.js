@@ -342,7 +342,21 @@ export class RichText extends Component {
 		} );
 
 		if ( typeof content === 'string' ) {
+			const { activeFormats = [] } = this.state;
 			const recordToInsert = create( { html: content } );
+
+			// If there are active formats, merge them with the pasted formats.
+			if ( activeFormats.length ) {
+				let index = recordToInsert.formats.length;
+
+				while ( index-- ) {
+					recordToInsert.formats[ index ] = [
+						...activeFormats,
+						...( recordToInsert.formats[ index ] || [] ),
+					];
+				}
+			}
+
 			this.onChange( insert( record, recordToInsert ) );
 		} else if ( this.onSplit ) {
 			if ( ! content.length ) {
