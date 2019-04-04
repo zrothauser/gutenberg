@@ -1,61 +1,95 @@
 /**
  * WordPress dependencies
  */
-import { Path, SVG, Dropdown, IconButton } from '@wordpress/components';
+import { Path, SVG, Dropdown, IconButton, NavigableMenu, MenuItem } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { PlainText } from '@wordpress/block-editor';
+import { BlockMover, PlainText } from '@wordpress/block-editor';
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 
 export const name = 'core/navigation-menu-item';
 
-function MenuItemInput( { attributes, setAttributes } ) {
-	return (
-		<Dropdown
-			className="menu-item-input"
-			contentClassName="menu-item-input__dropdown"
-			position="bottom right"
-			renderToggle={ ( { isOpen, onToggle } ) => (
-				<Fragment>
-					<PlainText
-						className="menu-item-input__field"
-						value={ attributes.label }
-						onChange={ ( label ) => setAttributes( { label } ) }
-						aria-label={ __( 'Navigation Label' ) }
-						maxRows={ 1 }
-					/>
-					<IconButton
-						icon="arrow-down-alt2"
-						label="More"
-						onClick={ onToggle }
-						aria-expanded={ isOpen }
-					/>
-				</Fragment>
-			) }
-			renderContent={ () => (
-				<div>
-				This is the content of the popover.
-				</div>
-			) }
-		/>
-	);
-}
-
 class NavigationMenuItemEdit extends Component {
 	render() {
-		const { attributes, setAttributes, isSelected } = this.props;
+		const { attributes, clientId, setAttributes, isSelected } = this.props;
+		const blockElementId = `block-${ clientId }`;
 		if ( isSelected ) {
 			return (
-				<MenuItemInput
-					{ ...this.props }
-				/>
+				<div className="menu-item">
+					<BlockMover
+						blockElementId={ blockElementId }
+						clientIds={ clientId }
+						isDraggable={ true }
+						onDragStart={ () => {} }
+						onDragEnd={ () => {} }
+					/>
+					<div className="menu-item-input">
+						<PlainText
+							className="menu-item-input__field"
+							value={ attributes.label }
+							onChange={ ( label ) => setAttributes( { label } ) }
+							aria-label={ __( 'Navigation Label' ) }
+							maxRows={ 1 }
+						/>
+						<Dropdown
+							className="menu-item-input__dropdown"
+							contentClassName="menu-item-input__dropdown-content"
+							position="bottom left"
+							renderToggle={ ( { isOpen, onToggle } ) => (
+								<IconButton
+									icon={ isOpen ? 'arrow-up-alt2' : 'arrow-down-alt2' }
+									label="More"
+									onClick={ onToggle }
+									aria-expanded={ isOpen }
+								/>
+							) }
+							renderContent={ () => (
+								<NavigableMenu>
+									<MenuItem
+										className="navigation-menu-item__link-menu-item"
+										icon="admin-links"
+									>
+										{ attributes.destination }
+									</MenuItem>
+									<div className="navigation-menu-item__separator" />
+									<MenuItem
+										icon="arrow-up-alt2"
+									>
+										{ __( 'Move to start of menu' ) }
+									</MenuItem>
+									<MenuItem
+										icon="arrow-down-alt2"
+									>
+										{ __( 'Move to end of menu' ) }
+									</MenuItem>
+									<MenuItem
+										icon="arrow-left-alt2"
+									>
+										{ __( 'Nest underneath…' ) }
+									</MenuItem>
+									<MenuItem
+										icon="leftright"
+									>
+										{ __( 'Move to position…' ) }
+									</MenuItem>
+									<div className="navigation-menu-item__separator" />
+									<MenuItem
+										icon="trash"
+									>
+										{ __( 'Remove from menu' ) }
+									</MenuItem>
+								</NavigableMenu>
+							) }
+						/>
+					</div>
+				</div>
 			);
 		}
 		return (
-			<a className="menu-item-item" href={ attributes.destination }>
+			<span className="menu-item-item">
 				{ attributes.label }
-			</a>
+			</span>
 		);
 	}
 }
