@@ -16,6 +16,8 @@ import {
 	PanelBody,
 	TextControl,
 	ToggleControl,
+	IconButton,
+	ExternalLink,
 } from '@wordpress/components';
 import {
 	URLInput,
@@ -26,6 +28,11 @@ import {
 	withColors,
 	PanelColorSettings,
 } from '@wordpress/block-editor';
+
+/**
+ * Internal dependencies
+ */
+import LinkPopover from './link-popover';
 
 const { getComputedStyle } = window;
 
@@ -50,6 +57,10 @@ class ButtonEdit extends Component {
 		this.bindRef = this.bindRef.bind( this );
 		this.onSetLinkRel = this.onSetLinkRel.bind( this );
 		this.onToggleOpenInNewTab = this.onToggleOpenInNewTab.bind( this );
+
+		this.state = {
+			isEditingURL: false,
+		};
 	}
 
 	bindRef( node ) {
@@ -90,9 +101,10 @@ class ButtonEdit extends Component {
 			fallbackBackgroundColor,
 			fallbackTextColor,
 			setAttributes,
-			isSelected,
 			className,
 		} = this.props;
+
+		const { isEditingURL } = this.state;
 
 		const {
 			text,
@@ -131,6 +143,27 @@ class ButtonEdit extends Component {
 					} }
 					keepPlaceholderOnFocus
 				/>
+				<div className="wp-block-button__link-editor">
+					<span>
+						<IconButton
+							icon="admin-links"
+							onClick={ () => this.setState( { isEditingURL: ! isEditingURL } ) }
+							label={ __( 'Edit Link' ) }
+						>
+							{ __( 'Edit Link' ) }
+						</IconButton>
+						{ isEditingURL && (
+							<LinkPopover
+								url={ url }
+								position={ popoverPosition }
+								onClose={ () => this.setState( { isEditingURL: false } ) }
+								onSubmit={ ( value ) => setAttributes( { url: value } ) }
+								onToggleOpenInNewTab={ this.onToggleOpenInNewTab }
+								linkTarget={ linkTarget }
+							/>
+						) }
+					</span>
+				</div>
 				<InspectorControls>
 					<PanelColorSettings
 						title={ __( 'Color Settings' ) }
@@ -167,28 +200,6 @@ class ButtonEdit extends Component {
 						/>
 					</PanelBody>
 				</InspectorControls>
-				{ isSelected && (
-					<URLPopover
-						focusOnMount={ false }
-						position={ popoverPosition }
-						renderSettings={ () => (
-							<ToggleControl
-								label={ __( 'Open in New Tab' ) }
-								onChange={ this.onToggleOpenInNewTab }
-								checked={ linkTarget === '_blank' }
-							/>
-						) }
-					>
-						<form
-							className="editor-format-toolbar__link-container-content"
-							onSubmit={ ( event ) => event.preventDefault() }>
-							<URLInput
-								value={ url }
-								onChange={ ( value ) => setAttributes( { url: value } ) }
-							/>
-						</form>
-					</URLPopover>
-				) }
 			</div>
 		);
 	}
