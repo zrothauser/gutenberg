@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import classnames from 'classnames';
-
-/**
  * WordPress dependencies
  */
 import { Path, SVG } from '@wordpress/components';
@@ -13,7 +8,7 @@ import { InnerBlocks } from '@wordpress/block-editor';
 /**
  * Internal dependencies
  */
-import edit from './edit';
+import edit from './navigation-menu-edit';
 
 export const name = 'core/navigation-menu';
 
@@ -40,9 +35,9 @@ export const settings = {
 
 	save() {
 		return (
-			<div>
+			<ul>
 				<InnerBlocks.Content />
-			</div>
+			</ul>
 		);
 	},
 };

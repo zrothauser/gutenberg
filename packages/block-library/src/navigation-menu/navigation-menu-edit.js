@@ -5,11 +5,18 @@ import { Component } from '@wordpress/element';
 import {
 	InnerBlocks,
 } from '@wordpress/block-editor';
-import MenuItemInserter from './menu-item-inserter'
+
+/**
+ * Internal dependencies
+ */
+import MenuItemInserter from './menu-item-inserter';
 
 class NavigationMenu extends Component {
 	render() {
-		const { isSelected, clientId } = this.props;
+		const {
+			clientId,
+			isSelected,
+		} = this.props;
 		return (
 			<div className="wp-block-navigation-menu">
 				<InnerBlocks

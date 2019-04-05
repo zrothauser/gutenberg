@@ -31,7 +31,7 @@ class MenuItemInserter extends Component {
 		const { currentSearchInput, isUrlInput } = this.state;
 		return (
 			<Dropdown
-				className="block-menu-item-inserter"
+				className="wp-block-navigation-menu__inserter"
 				position="bottom center"
 				renderToggle={ ( { isOpen, onToggle } ) => (
 					<IconButton
@@ -42,16 +42,15 @@ class MenuItemInserter extends Component {
 					/>
 				) }
 				renderContent={ () => (
-					<div className="block-menu-item-inserter__content">
+					<div className="wp-block-navigation-menu__inserter-content">
 						<TextControl
 							value={ currentSearchInput }
 							label={ __( 'Search or paste a link' ) }
 							onChange={ this.onChangeSearchInput }
 						/>
 						{ isUrlInput && (
-							<NavigableMenu className="block-menu-item-inserter__content-menu">
+							<NavigableMenu>
 								<MenuItem
-									className="block-menu-item-inserter__content-menu-item"
 									onClick={ () => {
 										insertMenuItem( {
 											destination: currentSearchInput,
@@ -69,6 +68,7 @@ class MenuItemInserter extends Component {
 		);
 	}
 }
+
 export default compose( [
 	withDispatch( ( dispatch, props, { select } ) => {
 		return {
