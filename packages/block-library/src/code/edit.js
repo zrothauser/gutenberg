@@ -20,30 +20,6 @@ import {
 import { BlockControls, PlainText } from '@wordpress/block-editor';
 
 class CodeEdit extends Component {
-	getIndentation() {
-		const {
-			content,
-		} = this.props.attributes;
-		const lines = content.split( '\n' );
-		const indentTypes = {
-			tabs: [],
-			spaces: [],
-		};
-		const indents = lines.reduce( ( indent, line ) => {
-			if ( line.startsWith( '\t' ) ) {
-				indentTypes.tabs.push( null );
-			}
-			if ( line.startsWith( ' ' ) ) {
-				indentTypes.spaces.push( null );
-			}
-			return indentTypes;
-		} );
-		if ( indents.tabs.length < indents.spaces.length ) {
-			return 'space';
-		}
-		return 'tab';
-	}
-
 	layoutControls() {
 		return [
 			{
@@ -56,12 +32,7 @@ class CodeEdit extends Component {
 
 	indentCode() {
 		const el = this.textarea;
-		const indentation = this.getIndentation();
-		if ( indentation === 'tab' ) {
-			insertTextAtCursor( el, '\t' );
-		} else {
-			insertTextAtCursor( el, '\s' );
-		}
+		insertTextAtCursor( el, '\t' );
 	}
 
 	render() {
