@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import insertTextAtCursor from 'insert-text-at-cursor';
+
+/**
  * WordPress dependencies
  */
 import {
@@ -15,94 +20,70 @@ import {
 import { BlockControls, PlainText } from '@wordpress/block-editor';
 
 class CodeEdit extends Component {
-	constructor( props ) {
-		super( props );
+	getIndentation() {
 		const {
-			attributes,
-		} = props;
-		this.state = {
-			content: attributes.content,
+			content,
+		} = this.props.attributes;
+		const lines = content.split( '\n' );
+		const indentTypes = {
+			tabs: [],
+			spaces: [],
 		};
-		this.layoutControls = [
+		const indents = lines.reduce( ( indent, line ) => {
+			if ( line.startsWith( '\t' ) ) {
+				indentTypes.tabs.push( null );
+			}
+			if ( line.startsWith( ' ' ) ) {
+				indentTypes.spaces.push( null );
+			}
+			return indentTypes;
+		} );
+		if ( indents.tabs.length < indents.spaces.length ) {
+			return 'space';
+		}
+		return 'tab';
+	}
+
+	layoutControls() {
+		return [
 			{
 				icon: 'arrow-right-alt',
-				title: __( 'Indent code' ),
+				title: __( 'Indent current line' ),
 				onClick: () => this.indentCode(),
-			},
-			{
-				icon: 'arrow-left-alt',
-				title: __( 'Unindent code' ),
-				onClick: () => this.unIndentCode(),
 			},
 		];
 	}
 
-	getIndentation( content ) {
-		const lines = content.split( '\n' );
-		return lines.reduce( ( line, indent ) => {
-			if ( line.startsWith( '\t' ) ) {
-				indent = 'tab';
-			}
-			if ( line.startsWith( ' ' ) ) {
-				indent = 'space';
-			}
-			return indent;
-		} );
-	}
-
 	indentCode() {
-		const identation = this.getIndentation( this.state.content );
-		const splitContent = this.state.content.split( '\n' );
-		const newContent = splitContent.map( ( line ) => {
-			if ( identation === 'tab' ) {
-				return `\t${ line }`;
-			}
-			if ( identation === 'space' ) {
-				return `  ${ line }`;
-			}
-			return line;
-		} ).join( '\n' );
-
-		this.setState( {
-			content: newContent,
-		} );
-	}
-
-	unIndentCode() {
-		const identation = this.getIndentation( this.state.content );
-		const splitContent = this.state.content.split( '\n' );
-		const newContent = splitContent.map( ( line ) => {
-			if ( identation === 'tab' ) {
-				return `${ line }`.replace( '\t', '' );
-			}
-			if ( identation === 'space' ) {
-				return line.replace( '  ', '' );
-			}
-			return line;
-		} ).join( '\n' );
-
-		this.setState( {
-			content: newContent,
-		} );
+		const el = this.textarea;
+		const indentation = this.getIndentation();
+		if ( indentation === 'tab' ) {
+			insertTextAtCursor( el, '\t' );
+		} else {
+			insertTextAtCursor( el, '\s' );
+		}
 	}
 
 	render() {
 		const {
+			attributes,
 			className,
+			setAttributes,
 		} = this.props;
 
 		return (
 			<div className={ className }>
 				<BlockControls>
-					<Toolbar controls={ this.layoutControls } />
+					<Toolbar controls={ this.layoutControls() } />
 				</BlockControls>
 				<PlainText
-					value={ this.state.content }
+					value={ attributes.content }
 					onChange={ ( content ) => {
-						this.setState( { content } );
+						setAttributes( { content } );
 					} }
 					placeholder={ __( 'Write code…' ) }
 					aria-label={ __( 'Code' ) }
+					innerRef={ ( ref ) => this.textarea = ref }
 				/>
 			</div>
 		);
