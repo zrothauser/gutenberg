@@ -1,28 +1,51 @@
 /**
+ * External dependencies
+ */
+import { get } from 'lodash';
+
+/**
  * WordPress dependencies
  */
-import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
 import {
+	compose,
+	withState,
+} from '@wordpress/compose';
+import {
+	withDispatch,
+	withSelect,
+} from '@wordpress/data';
+import {
+	Button,
 	Dropdown,
 	IconButton,
 	MenuItem,
 	NavigableMenu,
 	TextControl,
+	BaseControl,
 } from '@wordpress/components';
-import { useState, useMemo, useCallback } from '@wordpress/element';
+import { useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
 import { isURL } from '@wordpress/url';
 
-function MenuItemInserter( { insertMenuItem } ) {
-	const [ searchInput, setSearchInput ] = useState( '' );
-	const isUrlInput = useMemo( () => isURL( searchInput ), [ searchInput ] );
+function MenuItemInserter( {
+	insertMenuItem,
+	isUrlInput,
+	pageResults,
+	searchInput,
+	setState,
+} ) {
 	const onMenuItemClick = useCallback( () => {
 		insertMenuItem( {
 			destination: searchInput,
 		} );
 	}, [ insertMenuItem, searchInput ] );
+	const onTextControlChange = useCallback( ( newInput ) => {
+		setState( {
+			searchInput: newInput,
+			isUrlInput: isURL( newInput ),
+		} );
+	}, [ setState ] );
 
 	return (
 		<Dropdown
@@ -40,8 +63,9 @@ function MenuItemInserter( { insertMenuItem } ) {
 				<div className="wp-block-navigation-menu__inserter-content">
 					<TextControl
 						value={ searchInput }
-						label={ __( 'Search or paste a link' ) }
-						onChange={ setSearchInput }
+						label={ __( 'Search for a page' ) }
+						help={ __( 'You can also paste a URL here.' ) }
+						onChange={ onTextControlChange }
 					/>
 					{ isUrlInput && (
 						<NavigableMenu>
@@ -53,6 +77,26 @@ function MenuItemInserter( { insertMenuItem } ) {
 							</MenuItem>
 						</NavigableMenu>
 					) }
+					{ pageResults && !! pageResults.length && (
+						<BaseControl>
+							<BaseControl.VisualLabel>
+								{ __( 'Search Results' ) }
+							</BaseControl.VisualLabel>
+							{ pageResults.map( ( page ) => {
+								return (
+									<div key={ page.id }>
+										<span>
+											{ get( page, [ 'title', 'rendered' ] ) }
+										</span>
+										<Button>
+											{ __( 'Add to menu' ) }
+										</Button>
+									</div>
+								);
+							} ) }
+						</BaseControl>
+					) }
+
 				</div>
 			) }
 		/>
@@ -80,6 +124,22 @@ export default compose( [
 					props.rootClientId
 				);
 			},
+		};
+	} ),
+	withState( {
+		searchInput: '',
+		isUrlInput: false,
+	} ),
+	withSelect( ( select, props ) => {
+		if ( props.isUrlInput || ! props.searchInput ) {
+			return;
+		}
+		const { getEntityRecords } = select( 'core' );
+		const pagesQuery = {
+			search: props.searchInput,
+		};
+		return {
+			pageResults: getEntityRecords( 'postType', 'page', pagesQuery ),
 		};
 	} ),
 ] )( MenuItemInserter );
