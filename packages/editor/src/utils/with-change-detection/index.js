@@ -1,20 +1,43 @@
 /**
  * External dependencies
  */
-import { includes } from 'lodash';
+import { includes, overSome } from 'lodash';
+
+/**
+ * Default options for withChangeDetection reducer enhancer. Refer to
+ * withChangeDetection documentation for options explanation.
+ *
+ * @see withChangeDetection
+ *
+ * @type {Object}
+ */
+const DEFAULT_OPTIONS = {
+	resetTypes: [],
+	ignoreTypes: [],
+	isIgnored: () => false,
+};
 
 /**
  * Higher-order reducer creator for tracking changes to state over time. The
  * returned reducer will include a `isDirty` property on the object reflecting
  * whether the original reference of the reducer has changed.
  *
- * @param {?Object} options             Optional options.
- * @param {?Array}  options.ignoreTypes Action types upon which to skip check.
- * @param {?Array}  options.resetTypes  Action types upon which to reset dirty.
+ * @param {?Object}   options             Optional options.
+ * @param {?Array}    options.ignoreTypes Action types to skip check.
+ * @param {?Function} options.isIgnored   Function, given action object,
+ *                                        returning true if to skip check.
+ * @param {?Array}    options.resetTypes  Action types to reset dirty.
  *
  * @return {Function} Higher-order reducer.
  */
-const withChangeDetection = ( options = {} ) => ( reducer ) => {
+const withChangeDetection = ( options ) => ( reducer ) => {
+	options = { ...DEFAULT_OPTIONS, ...options };
+
+	const isIgnored = overSome( [
+		options.isIgnored,
+		( action ) => includes( options.ignoreTypes, action.type ),
+	] );
+
 	return ( state, action ) => {
 		let nextState = reducer( state, action );
 
@@ -39,9 +62,7 @@ const withChangeDetection = ( options = {} ) => ( reducer ) => {
 			nextState = { ...nextState };
 		}
 
-		const isIgnored = includes( options.ignoreTypes, action.type );
-
-		if ( isIgnored ) {
+		if ( isIgnored( action ) ) {
 			// Preserve the original value if ignored.
 			nextState.isDirty = state.isDirty;
 		} else {

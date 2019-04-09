@@ -4,6 +4,7 @@
 
 - Refactor setupEditor effects to action-generator using controls ([#14513](https://github.com/WordPress/gutenberg/pull/14513))
 - Remove redux-multi dependency (no longer needed/used with above refactor)
+- Add `isIgnored` function predicate support to `withChangeDetection`
 
 ## 9.1.0 (2019-03-06)
 
