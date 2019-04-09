@@ -167,6 +167,26 @@ describe( 'Change detection', () => {
 		] );
 
 		await assertIsDirty( false );
+
+		await page.reload();
+
+		// Regression Test: Verify that non-modifying behaviors (e.g. selecting
+		// a block) does not incur dirtiness.
+		//
+		// See: https://github.com/WordPress/gutenberg/issues/14766
+
+		// While in a typical user session, the issue manifests itself in the
+		// result of selecting the first block, the easiest way to represent
+		// that in these tests is to artifically receive the reusable blocks
+		// which would be fetched as a result of the block selection.
+		//
+		// TODO: Reusable blocks fetching should be reimplemented using core-
+		// data resolvers, at which point this can be updated to a combination
+		// of (1) selecting the block and (2) checking for resolution finished
+		// via the `hasFinishedResolution` selector.
+		await page.evaluate( () => window.wp.data.dispatch( 'core/editor' ).__experimentalReceiveReusableBlocks( [] ) );
+
+		await assertIsDirty( false );
 	} );
 
 	it( 'Should not save if all changes saved', async () => {

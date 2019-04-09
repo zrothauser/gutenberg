@@ -1,5 +1,9 @@
 ## 9.1.1 (Unreleased)
 
+### Bug Fixes
+
+- Resolved issue where reusable blocks fetching would wrongly mark the post as having unsaved changes.
+
 ### Internal
 
 - Refactor setupEditor effects to action-generator using controls ([#14513](https://github.com/WordPress/gutenberg/pull/14513))

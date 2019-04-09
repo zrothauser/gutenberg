@@ -145,6 +145,12 @@ export const editor = flow( [
 	// editor initialization firing post reset as an effect.
 	blocks: withChangeDetection( {
 		resetTypes: [ 'SETUP_EDITOR_STATE', 'REQUEST_POST_UPDATE_START' ],
+		isIgnored: ( action ) => {
+			return (
+				action.type === 'RESET_EDITOR_BLOCKS' &&
+				action.shouldCreateUndoLevel === false
+			);
+		},
 	} )( ( state = { value: [] }, action ) => {
 		switch ( action.type ) {
 			case 'RESET_EDITOR_BLOCKS':
