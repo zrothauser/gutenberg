@@ -84,6 +84,16 @@ class GalleryEdit extends Component {
 		};
 	}
 
+	onDeselectImage( index ) {
+		return () => {
+			if ( this.state.selectedImage === index ) {
+				this.setState( {
+					selectedImage: null,
+				} );
+			}
+		};
+	}
+
 	onRemoveImage( index ) {
 		return () => {
 			const images = filter( this.props.attributes.images, ( img, i ) => index !== i );
@@ -259,6 +269,7 @@ class GalleryEdit extends Component {
 									isSelected={ isSelected && this.state.selectedImage === index }
 									onRemove={ this.onRemoveImage( index ) }
 									onSelect={ this.onSelectImage( index ) }
+									onDeselect={ this.onDeselectImage( index ) }
 									setAttributes={ ( attrs ) => this.setImageAttributes( index, attrs ) }
 									caption={ img.caption }
 									aria-label={ ariaLabel }
