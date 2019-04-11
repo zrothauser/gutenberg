@@ -9,34 +9,28 @@ import {
 } from '@wordpress/components';
 import {
 	URLInput,
-	URLPopover,
 } from '@wordpress/block-editor';
 import { prependHTTP, safeDecodeURI, filterURLForDisplay } from '@wordpress/url';
 import { useState } from '@wordpress/element';
 
-const stopKeyPropagation = ( event ) => event.stopPropagation();
-
-function LinkEditor( { url, onChange, onKeyDown, onSubmit, autocompleteRef } ) {
+function LinkEditor( { url, onChange, onSubmit, autocompleteRef } ) {
 	return (
-		// Disable reason: KeyPress must be suppressed so the block doesn't hide the toolbar
-		/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 		<form
 			className="editor-format-toolbar__link-container-content block-editor-format-toolbar__link-container-content"
-			onKeyPress={ stopKeyPropagation }
-			onKeyDown={ onKeyDown }
 			onSubmit={ ( event ) => {
 				event.preventDefault();
 				onSubmit();
 			} }
 		>
 			<URLInput
+				/* eslint-disable-next-line jsx-a11y/no-autofocus */
+				autoFocus={ false }
 				value={ url }
 				onChange={ onChange }
 				autocompleteRef={ autocompleteRef }
 			/>
 			<IconButton icon="editor-break" label={ __( 'Apply' ) } type="submit" />
 		</form>
-		/* eslint-enable jsx-a11y/no-noninteractive-element-interactions */
 	);
 }
 
@@ -57,27 +51,47 @@ const LinkViewerURL = ( { url } ) => {
 
 const LinkViewer = ( { url, onEditLink } ) => {
 	return (
-		// Disable reason: KeyPress must be suppressed so the block doesn't hide the toolbar
-		/* eslint-disable jsx-a11y/no-static-element-interactions */
 		<div
 			className="editor-format-toolbar__link-container-content block-editor-format-toolbar__link-container-content"
-			onKeyPress={ stopKeyPropagation }
 		>
 			<LinkViewerURL url={ prependHTTP( url ) } />
 			<IconButton icon="edit" label={ __( 'Edit' ) } onClick={ onEditLink } />
 		</div>
-		/* eslint-enable jsx-a11y/no-static-element-interactions */
 	);
 };
 
-export default function LinkPopover( { url, onSubmit, position, linkTarget, onToggleOpenInNewTab, onClose } ) {
+const URLInline = ( { children, renderSettings } ) => {
+	const [ isSettingsExpanded, setIsSettingsExpanded ] = useState( false );
+
+	return (
+		<div className="block-editor-url-popover block-editor-url-inline">
+			<div className="editor-url-popover__row block-editor-url-popover__row">
+				{ children }
+				{ !! renderSettings && (
+					<IconButton
+						className="editor-url-popover__settings-toggle block-editor-url-popover__settings-toggle"
+						icon="arrow-down-alt2"
+						label={ __( 'Link Settings' ) }
+						onClick={ () => setIsSettingsExpanded( ! isSettingsExpanded ) }
+						aria-expanded={ isSettingsExpanded }
+					/>
+				) }
+			</div>
+			{ isSettingsExpanded && !! renderSettings && (
+				<div className="editor-url-popover__row block-editor-url-popover__row editor-url-popover__settings block-editor-url-popover__settings">
+					{ renderSettings() }
+				</div>
+			) }
+		</div>
+	);
+};
+
+export default function LinkThing( { url, onSubmit, linkTarget, onToggleOpenInNewTab } ) {
 	const [ editedURL, setEditedURL ] = useState( url || '' );
 	const [ isShowingLinkEditor, setIsShowingLinkEditor ] = useState( url ? false : true );
 
 	return (
-		<URLPopover
-			position={ position }
-			onClose={ onClose }
+		<URLInline
 			renderSettings={ () => (
 				<ToggleControl
 					label={ __( 'Open in New Tab' ) }
@@ -103,6 +117,6 @@ export default function LinkPopover( { url, onSubmit, position, linkTarget, onTo
 					onEditLink={ () => setIsShowingLinkEditor( true ) }
 				/>
 			) }
-		</URLPopover>
+		</URLInline>
 	);
 }

@@ -55,3 +55,11 @@ $blocks-button__height: 56px;
 		border: 2px solid currentcolor;
 	}
 }
+
+.block-editor-url-inline {
+	margin-top: 10px;
+	border: $border-width solid $light-gray-500;
+	color: $dark-gray-500;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 13px;
+}
