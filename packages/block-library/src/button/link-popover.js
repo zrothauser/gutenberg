@@ -6,6 +6,7 @@ import {
 	ToggleControl,
 	IconButton,
 	ExternalLink,
+	BaseControl,
 } from '@wordpress/components';
 import {
 	URLInput,
@@ -22,14 +23,15 @@ function LinkEditor( { url, onChange, onSubmit, autocompleteRef } ) {
 				onSubmit();
 			} }
 		>
-			<URLInput
-				/* eslint-disable-next-line jsx-a11y/no-autofocus */
-				autoFocus={ false }
-				value={ url }
-				onChange={ onChange }
-				autocompleteRef={ autocompleteRef }
-			/>
-			<IconButton icon="editor-break" label={ __( 'Apply' ) } type="submit" />
+			<BaseControl label={ __( 'Link' ) }>
+				<URLInput
+					/* eslint-disable-next-line jsx-a11y/no-autofocus */
+					autoFocus={ false }
+					value={ url }
+					onChange={ onChange }
+					autocompleteRef={ autocompleteRef }
+				/>
+			</BaseControl>
 		</form>
 	);
 }
@@ -88,7 +90,6 @@ const URLInline = ( { children, renderSettings } ) => {
 
 export default function LinkThing( { url, onSubmit, linkTarget, onToggleOpenInNewTab } ) {
 	const [ editedURL, setEditedURL ] = useState( url || '' );
-	const [ isShowingLinkEditor, setIsShowingLinkEditor ] = useState( url ? false : true );
 
 	return (
 		<URLInline
@@ -100,23 +101,15 @@ export default function LinkThing( { url, onSubmit, linkTarget, onToggleOpenInNe
 				/>
 			) }
 		>
-			{ isShowingLinkEditor ? (
-				<LinkEditor
-					url={ editedURL || url }
-					onChange={ ( value ) => {
-						setEditedURL( value );
-					} }
-					onSubmit={ () => {
-						onSubmit( editedURL );
-						setIsShowingLinkEditor( false );
-					} }
-				/>
-			) : (
-				<LinkViewer
-					url={ url }
-					onEditLink={ () => setIsShowingLinkEditor( true ) }
-				/>
-			) }
+			<LinkEditor
+				url={ editedURL || url }
+				onChange={ ( value ) => {
+					setEditedURL( value );
+				} }
+				onSubmit={ () => {
+					onSubmit( editedURL );
+				} }
+			/>
 		</URLInline>
 	);
 }
