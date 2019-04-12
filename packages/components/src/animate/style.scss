@@ -1,5 +1,6 @@
 .components-animate__appear {
-	animation: components-animate__appear-animation 0.1s cubic-bezier(0, 0, 0.2, 1) 0s;
+	animation: components-animate__appear-animation 200ms cubic-bezier(0.1, 0.82, 0.25, 1);
+	transform-origin: center center;
 	animation-fill-mode: forwards;
 	@include reduce-motion;
 
@@ -20,11 +21,12 @@
 }
 
 @keyframes components-animate__appear-animation {
-	from {
-		transform: translateY(-2em) scaleY(0) scaleX(0);
+	0%,
+	20% {
+		transform: scale(0, 0);
 	}
-	to {
-		transform: translateY(0%) scaleY(1) scaleX(1);
+	100% {
+		transform: scale(1, 1);
 	}
 }
 
