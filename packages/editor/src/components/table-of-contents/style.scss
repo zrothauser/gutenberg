@@ -1,20 +1,29 @@
+.table-of-contents__tab-panel {
+	.components-tab-panel__tabs {
+		border-bottom: 1px solid $light-gray-500;
+	}
+
+	.components-tab-panel__tab-content {
+		padding: 16px;
+
+		hr {
+			margin: 10px -16px 0;
+		}
+	}
+}
+
 .table-of-contents__popover.components-popover:not(.is-mobile) .components-popover__content {
 	min-width: 380px;
 }
 
 .table-of-contents__popover {
 	.components-popover__content {
-		padding: 16px;
-
 		@include break-small {
 			max-height: calc(100vh - 120px);
 			overflow-y: auto;
 		}
 	}
 
-	hr {
-		margin: 10px -16px 0;
-	}
 }
 
 .table-of-contents__counts {

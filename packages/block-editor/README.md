@@ -116,6 +116,10 @@ Undocumented declaration.
 
 Undocumented declaration.
 
+<a name="BlockNavigation" href="#BlockNavigation">#</a> **BlockNavigation**
+
+Undocumented declaration.
+
 <a name="BlockNavigationDropdown" href="#BlockNavigationDropdown">#</a> **BlockNavigationDropdown**
 
 Undocumented declaration.

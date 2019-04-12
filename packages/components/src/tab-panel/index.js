@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { partial, noop, find } from 'lodash';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies
@@ -74,7 +75,12 @@ class TabPanel extends Component {
 					className="components-tab-panel__tabs"
 				>
 					{ tabs.map( ( tab ) => (
-						<TabButton className={ `${ tab.className } ${ tab.name === selected ? activeClass : '' }` }
+						<TabButton
+							className={ classnames(
+								'components-tab-panel__tabs-item',
+								tab.className,
+								tab.name === selected ? activeClass : ''
+							) }
 							tabId={ instanceId + '-' + tab.name }
 							aria-controls={ instanceId + '-' + tab.name + '-view' }
 							selected={ tab.name === selected }
