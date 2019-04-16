@@ -165,18 +165,16 @@ class ButtonEdit extends Component {
 					</PanelBody>
 				</InspectorControls>
 				{ isSelected && (
-					<form
-						className="editor-format-toolbar__url-inline"
-						onSubmit={ ( event ) => event.preventDefault() }>
-						<BaseControl label={ __( 'Link' ) }>
-							<URLInput
-								value={ url }
-								onChange={ ( value ) => setAttributes( { url: value } ) }
-								/* eslint-disable-next-line jsx-a11y/no-autofocus */
-								autoFocus={ false }
-							/>
-						</BaseControl>
-					</form>
+					<BaseControl
+						label={ __( 'Link' ) }
+						className="wp-block-button__inline-link">
+						<URLInput
+							value={ url }
+							onChange={ ( value ) => setAttributes( { url: value } ) }
+							/* eslint-disable-next-line jsx-a11y/no-autofocus */
+							autoFocus={ false }
+						/>
+					</BaseControl>
 				) }
 			</div>
 		);
