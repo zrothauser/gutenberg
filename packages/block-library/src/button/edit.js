@@ -160,6 +160,11 @@ class ButtonEdit extends Component {
 						/>
 					</PanelColorSettings>
 					<PanelBody title={ __( 'Link Settings' ) }>
+						<ToggleControl
+							label={ __( 'Open in New Tab' ) }
+							onChange={ this.onToggleOpenInNewTab }
+							checked={ linkTarget === '_blank' }
+						/>
 						<TextControl
 							label={ __( 'Link Rel' ) }
 							value={ rel || '' }
@@ -171,13 +176,6 @@ class ButtonEdit extends Component {
 					<URLPopover
 						focusOnMount={ false }
 						position={ popoverPosition }
-						renderSettings={ () => (
-							<ToggleControl
-								label={ __( 'Open in New Tab' ) }
-								onChange={ this.onToggleOpenInNewTab }
-								checked={ linkTarget === '_blank' }
-							/>
-						) }
 					>
 						<form
 							className="editor-format-toolbar__link-container-content"
