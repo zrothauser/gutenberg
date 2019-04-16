@@ -118,6 +118,15 @@ export class RichText extends Component {
 		this.isTouched = false;
 	}
 
+	getContent( myProps ) {
+		const currentProps = myProps === undefined ? this.props : myProps;
+		// falback to obj props
+		if ( currentProps.value && currentProps.value.text ) {
+			return currentProps.value.text;
+		}
+		return currentProps.value;
+	}
+
 	/**
 	 * Get the current record (value and selection) from props and state.
 	 *
@@ -126,7 +135,7 @@ export class RichText extends Component {
 	getRecord() {
 		const { formatPlaceholder, start, end } = this.state;
 
-		let value = this.props.value === undefined ? null : this.props.value;
+		let value = this.getContent() === undefined ? null : this.getContent();
 
 		// Since we get the text selection from Aztec we need to be in sync with the HTML `value`
 		// Removing leading white spaces using `trim()` should make sure this is the case.
@@ -225,7 +234,7 @@ export class RichText extends Component {
 		this.setState( {
 			formatPlaceholder: record.formatPlaceholder,
 		} );
-		if ( newContent && newContent !== this.props.value ) {
+		if ( newContent && newContent !== this.getContent() ) {
 			this.props.onChange( newContent );
 			if ( record.needsSelectionUpdate && record.start && record.end ) {
 				this.forceSelectionUpdate( record.start, record.end );
@@ -271,7 +280,7 @@ export class RichText extends Component {
 		this.lastEventCount = event.nativeEvent.eventCount;
 		const contentWithoutRootTag = this.removeRootTagsProduceByAztec( unescapeSpaces( event.nativeEvent.text ) );
 		this.lastContent = contentWithoutRootTag;
-		this.props.onChange( this.lastContent );
+		this.props.onChange( this.lastContent, { start: this.state.start, end: this.state.end } );
 	}
 
 	/**
@@ -481,11 +490,11 @@ export class RichText extends Component {
 		// we don't want to refresh aztec as no content can have changed from this event
 		// let's update lastContent to prevent that in shouldComponentUpdate
 		this.lastContent = this.removeRootTagsProduceByAztec( unescapeSpaces( text ) );
-		this.props.onChange( this.lastContent );
+		this.props.onChange( this.lastContent, { start: realStart, end: realEnd } );
 	}
 
 	isEmpty() {
-		return isEmpty( this.formatToValue( this.props.value ) );
+		return isEmpty( this.formatToValue( this.getContent() ) );
 	}
 
 	/**
@@ -567,8 +576,8 @@ export class RichText extends Component {
 		// into two blocks
 		if ( nextTextContent.startsWith( this.savedContent ) ) {
 			let length = this.savedContent.length;
-			if ( length === 0 && nextTextContent !== this.props.value ) {
-				length = this.props.value.length;
+			if ( length === 0 && nextTextContent !== this.getContent() ) {
+				length = this.getContent().length;
 			}
 
 			this.forceSelectionUpdate( length, length );
@@ -597,7 +606,7 @@ export class RichText extends Component {
 		// we need to make sure the native is updated as well
 		if ( ( typeof nextProps.value !== 'undefined' ) &&
 			( typeof this.lastContent !== 'undefined' ) &&
-			nextProps.value !== this.lastContent ) {
+			this.getContent( nextProps ) !== this.lastContent ) {
 			this.lastEventCount = undefined; // force a refresh on the native side
 		}
 
@@ -652,6 +661,9 @@ export class RichText extends Component {
 		if ( this.needsSelectionUpdate ) {
 			this.needsSelectionUpdate = false;
 			selection = { start: this.state.start, end: this.state.end };
+		} else {
+			// restore the selection from props if necessary
+			selection = this.props.value && this.props.value.selection ? { start: this.props.value.selection.start, end: this.props.value.selection.end } : null;
 		}
 
 		return (

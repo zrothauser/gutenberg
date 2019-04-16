@@ -92,21 +92,25 @@ class ParagraphEdit extends Component {
 		const {
 			placeholder,
 			content,
+			selection,
 		} = attributes;
+
+		const myValue = { text: content, selection };
 
 		return (
 			<View>
 				<RichText
 					tagName="p"
-					value={ content }
+					value={ myValue }
 					isSelected={ this.props.isSelected }
 					onFocus={ this.props.onFocus } // always assign onFocus as a props
 					onBlur={ this.props.onBlur } // always assign onBlur as a props
 					onCaretVerticalPositionChange={ this.props.onCaretVerticalPositionChange }
 					style={ style }
-					onChange={ ( nextContent ) => {
+					onChange={ ( nextContent, selection ) => {
 						setAttributes( {
 							content: nextContent,
+							selection: selection,
 						} );
 					} }
 					onSplit={ this.splitBlock }
