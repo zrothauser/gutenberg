@@ -16,10 +16,10 @@ import {
 	PanelBody,
 	TextControl,
 	ToggleControl,
+	BaseControl,
 } from '@wordpress/components';
 import {
 	URLInput,
-	URLPopover,
 	RichText,
 	ContrastChecker,
 	InspectorControls,
@@ -100,15 +100,7 @@ class ButtonEdit extends Component {
 			title,
 			linkTarget,
 			rel,
-			align,
 		} = attributes;
-
-		let popoverPosition = 'bottom right';
-		if ( 'center' === align ) {
-			popoverPosition = 'bottom center';
-		} else if ( 'right' === align ) {
-			popoverPosition = 'bottom left';
-		}
 
 		return (
 			<div className={ className } title={ title } ref={ this.bindRef }>
@@ -173,19 +165,18 @@ class ButtonEdit extends Component {
 					</PanelBody>
 				</InspectorControls>
 				{ isSelected && (
-					<URLPopover
-						focusOnMount={ false }
-						position={ popoverPosition }
-					>
-						<form
-							className="editor-format-toolbar__link-container-content"
-							onSubmit={ ( event ) => event.preventDefault() }>
+					<form
+						className="editor-format-toolbar__url-inline"
+						onSubmit={ ( event ) => event.preventDefault() }>
+						<BaseControl label={ __( 'Link' ) }>
 							<URLInput
 								value={ url }
 								onChange={ ( value ) => setAttributes( { url: value } ) }
+								/* eslint-disable-next-line jsx-a11y/no-autofocus */
+								autoFocus={ false }
 							/>
-						</form>
-					</URLPopover>
+						</BaseControl>
+					</form>
 				) }
 			</div>
 		);
