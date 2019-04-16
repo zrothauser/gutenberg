@@ -2,39 +2,28 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Fragment } from '@wordpress/element';
 import { createBlock } from '@wordpress/blocks';
-import {
-	RichText,
-	BlockControls,
-	AlignmentToolbar,
-} from '@wordpress/block-editor';
-import { SVG, Path } from '@wordpress/components';
+import { RichText } from '@wordpress/block-editor';
 
-export const name = 'core/verse';
+/**
+ * Internal dependencies
+ */
+import edit from './edit';
+import icon from './icon';
+import metadata from './block.json';
+
+const { name } = metadata;
+
+export { metadata, name };
 
 export const settings = {
 	title: __( 'Verse' ),
 
 	description: __( 'Insert poetry. Use special spacing formats. Or quote song lyrics.' ),
 
-	icon: <SVG viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><Path fill="none" d="M21 11.01L3 11V13H21V11.01ZM3 16H17V18H3V16ZM15 6H3V8.01L15 8V6Z" /></SVG>,
-
-	category: 'formatting',
+	icon,
 
 	keywords: [ __( 'poetry' ) ],
-
-	attributes: {
-		content: {
-			type: 'string',
-			source: 'html',
-			selector: 'pre',
-			default: '',
-		},
-		textAlign: {
-			type: 'string',
-		},
-	},
 
 	transforms: {
 		from: [
@@ -55,35 +44,7 @@ export const settings = {
 		],
 	},
 
-	edit( { attributes, setAttributes, className, mergeBlocks } ) {
-		const { textAlign, content } = attributes;
-
-		return (
-			<Fragment>
-				<BlockControls>
-					<AlignmentToolbar
-						value={ textAlign }
-						onChange={ ( nextAlign ) => {
-							setAttributes( { textAlign: nextAlign } );
-						} }
-					/>
-				</BlockControls>
-				<RichText
-					tagName="pre"
-					value={ content }
-					onChange={ ( nextContent ) => {
-						setAttributes( {
-							content: nextContent,
-						} );
-					} }
-					style={ { textAlign } }
-					placeholder={ __( 'Write…' ) }
-					wrapperClassName={ className }
-					onMerge={ mergeBlocks }
-				/>
-			</Fragment>
-		);
-	},
+	edit,
 
 	save( { attributes } ) {
 		const { textAlign, content } = attributes;

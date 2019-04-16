@@ -1115,7 +1115,7 @@ export const canInsertBlockType = createSelector(
  *                                            the number of inserts that have occurred.
  */
 function getInsertUsage( state, id ) {
-	return state.preferences.insertUsage[ id ] || null;
+	return get( state.preferences.insertUsage, [ id ], null );
 }
 
 /**
@@ -1385,6 +1385,24 @@ export function getSettings( state ) {
  */
 export function isLastBlockChangePersistent( state ) {
 	return state.blocks.isPersistentChange;
+}
+
+/**
+ * Returns true if the most recent block change is be considered ignored, or
+ * false otherwise. An ignored change is one not to be committed by
+ * BlockEditorProvider, neither via `onChange` nor `onInput`.
+ *
+ * @param {Object} state Block editor state.
+ *
+ * @return {boolean} Whether the most recent block change was ignored.
+ */
+export function __unstableIsLastBlockChangeIgnored( state ) {
+	// TODO: Removal Plan: Changes incurred by RECEIVE_BLOCKS should not be
+	// ignored if in-fact they result in a change in blocks state. The current
+	// need to ignore changes not a result of user interaction should be
+	// accounted for in the refactoring of reusable blocks as occurring within
+	// their own separate block editor / state (#7119).
+	return state.blocks.isIgnoredChange;
 }
 
 /**
