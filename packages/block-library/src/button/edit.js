@@ -173,6 +173,7 @@ class ButtonEdit extends Component {
 							onChange={ ( value ) => setAttributes( { url: value } ) }
 							/* eslint-disable-next-line jsx-a11y/no-autofocus */
 							autoFocus={ false }
+							className="has-border"
 						/>
 					</BaseControl>
 				) }
