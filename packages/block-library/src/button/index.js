@@ -1,69 +1,25 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { omit, pick } from 'lodash';
 
 /**
  * WordPress dependencies
  */
-import { G, Path, SVG } from '@wordpress/components';
 import { __, _x } from '@wordpress/i18n';
-import {
-	RichText,
-	getColorClassName,
-} from '@wordpress/block-editor';
+import { RichText } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
  */
 import edit from './edit';
+import icon from './icon';
+import metadata from './block.json';
+import save from './save';
 
-const blockAttributes = {
-	url: {
-		type: 'string',
-		source: 'attribute',
-		selector: 'a',
-		attribute: 'href',
-	},
-	title: {
-		type: 'string',
-		source: 'attribute',
-		selector: 'a',
-		attribute: 'title',
-	},
-	text: {
-		type: 'string',
-		source: 'html',
-		selector: 'a',
-	},
-	backgroundColor: {
-		type: 'string',
-	},
-	textColor: {
-		type: 'string',
-	},
-	customBackgroundColor: {
-		type: 'string',
-	},
-	customTextColor: {
-		type: 'string',
-	},
-	linkTarget: {
-		type: 'string',
-		source: 'attribute',
-		selector: 'a',
-		attribute: 'target',
-	},
-	linkRel: {
-		type: 'string',
-		source: 'attribute',
-		selector: 'a',
-		attribute: 'rel',
-	},
-};
+const { name, attributes: blockAttributes } = metadata;
 
-export const name = 'core/button';
+export { metadata, name };
 
 const colorsMigration = ( attributes ) => {
 	return omit( {
@@ -75,74 +31,20 @@ const colorsMigration = ( attributes ) => {
 
 export const settings = {
 	title: __( 'Button' ),
-
 	description: __( 'Prompt visitors to take action with a button-style link.' ),
-
-	icon: <SVG viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><Path fill="none" d="M0 0h24v24H0V0z" /><G><Path d="M19 6H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H5V8h14v8z" /></G></SVG>,
-
-	category: 'layout',
-
+	icon,
 	keywords: [ __( 'link' ) ],
-
-	attributes: blockAttributes,
-
 	supports: {
 		align: true,
 		alignWide: false,
 	},
-
 	styles: [
 		{ name: 'default', label: _x( 'Default', 'block style' ), isDefault: true },
 		{ name: 'outline', label: __( 'Outline' ) },
 		{ name: 'squared', label: _x( 'Squared', 'block style' ) },
 	],
-
 	edit,
-
-	save( { attributes } ) {
-		const {
-			url,
-			text,
-			title,
-			backgroundColor,
-			textColor,
-			customBackgroundColor,
-			customTextColor,
-			linkTarget,
-			linkRel,
-		} = attributes;
-
-		const textClass = getColorClassName( 'color', textColor );
-		const backgroundClass = getColorClassName( 'background-color', backgroundColor );
-
-		const buttonClasses = classnames( 'wp-block-button__link', {
-			'has-text-color': textColor || customTextColor,
-			[ textClass ]: textClass,
-			'has-background': backgroundColor || customBackgroundColor,
-			[ backgroundClass ]: backgroundClass,
-		} );
-
-		const buttonStyle = {
-			backgroundColor: backgroundClass ? undefined : customBackgroundColor,
-			color: textClass ? undefined : customTextColor,
-		};
-
-		return (
-			<div>
-				<RichText.Content
-					tagName="a"
-					className={ buttonClasses }
-					href={ url }
-					title={ title }
-					style={ buttonStyle }
-					value={ text }
-					target={ linkTarget }
-					rel={ linkRel }
-				/>
-			</div>
-		);
-	},
-
+	save,
 	deprecated: [ {
 		attributes: {
 			...pick( blockAttributes, [ 'url', 'title', 'text' ] ),
