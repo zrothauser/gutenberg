@@ -490,7 +490,7 @@ export class RichText extends Component {
 		// we don't want to refresh aztec as no content can have changed from this event
 		// let's update lastContent to prevent that in shouldComponentUpdate
 		this.lastContent = this.removeRootTagsProduceByAztec( unescapeSpaces( text ) );
-		this.props.onChange( this.lastContent, { start: realStart, end: realEnd } );
+		this.props.onChange( this.lastContent );
 	}
 
 	isEmpty() {
