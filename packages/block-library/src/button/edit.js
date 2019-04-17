@@ -10,7 +10,10 @@ import { __ } from '@wordpress/i18n';
 import {
 	Component,
 } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
+import {
+	compose,
+	withInstanceId,
+} from '@wordpress/compose';
 import {
 	withFallbackStyles,
 	PanelBody,
@@ -92,6 +95,7 @@ class ButtonEdit extends Component {
 			setAttributes,
 			isSelected,
 			className,
+			instanceId,
 		} = this.props;
 
 		const {
@@ -101,6 +105,8 @@ class ButtonEdit extends Component {
 			linkTarget,
 			rel,
 		} = attributes;
+
+		const id = `wp-block-button__inline-link-${ instanceId }`;
 
 		return (
 			<div className={ className } title={ title } ref={ this.bindRef }>
@@ -167,13 +173,15 @@ class ButtonEdit extends Component {
 				{ isSelected && (
 					<BaseControl
 						label={ __( 'Link' ) }
-						className="wp-block-button__inline-link">
+						className="wp-block-button__inline-link"
+						id={ id }>
 						<URLInput
 							value={ url }
 							onChange={ ( value ) => setAttributes( { url: value } ) }
 							/* eslint-disable-next-line jsx-a11y/no-autofocus */
 							autoFocus={ false }
 							className="has-border"
+							id={ id }
 						/>
 					</BaseControl>
 				) }
@@ -183,6 +191,7 @@ class ButtonEdit extends Component {
 }
 
 export default compose( [
+	withInstanceId,
 	withColors( 'backgroundColor', { textColor: 'color' } ),
 	applyFallbackStyles,
 ] )( ButtonEdit );
