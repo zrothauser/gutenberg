@@ -22,6 +22,7 @@ class ParagraphEdit extends Component {
 		super( props );
 		this.splitBlock = this.splitBlock.bind( this );
 		this.onReplace = this.onReplace.bind( this );
+		this.onChange = this.onChange.bind( this );
 	}
 
 	/**
@@ -81,6 +82,14 @@ class ParagraphEdit extends Component {
 		) ) );
 	}
 
+
+	onChange( newText, newSelection ) {
+		this.props.setAttributes( {
+			content: newText,
+			selection: newSelection === undefined ? this.props.attributes.selection : newSelection,
+		} );
+	}
+	
 	render() {
 		const {
 			attributes,
@@ -107,12 +116,7 @@ class ParagraphEdit extends Component {
 					onBlur={ this.props.onBlur } // always assign onBlur as a props
 					onCaretVerticalPositionChange={ this.props.onCaretVerticalPositionChange }
 					style={ style }
-					onChange={ ( nextContent, selection ) => {
-						setAttributes( {
-							content: nextContent,
-							selection: selection,
-						} );
-					} }
+					onChange={ this.onChange }
 					onSplit={ this.splitBlock }
 					onMerge={ mergeBlocks }
 					onReplace={ this.onReplace }
