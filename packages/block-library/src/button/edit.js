@@ -93,7 +93,6 @@ class ButtonEdit extends Component {
 			fallbackBackgroundColor,
 			fallbackTextColor,
 			setAttributes,
-			isSelected,
 			className,
 			instanceId,
 		} = this.props;
@@ -129,6 +128,19 @@ class ButtonEdit extends Component {
 					} }
 					keepPlaceholderOnFocus
 				/>
+				<BaseControl
+					label={ __( 'Link' ) }
+					className="wp-block-button__inline-link"
+					id={ id }>
+					<URLInput
+						value={ url }
+						onChange={ ( value ) => setAttributes( { url: value } ) }
+						/* eslint-disable-next-line jsx-a11y/no-autofocus */
+						autoFocus={ false }
+						className="has-border"
+						id={ id }
+					/>
+				</BaseControl>
 				<InspectorControls>
 					<PanelColorSettings
 						title={ __( 'Color Settings' ) }
@@ -170,21 +182,6 @@ class ButtonEdit extends Component {
 						/>
 					</PanelBody>
 				</InspectorControls>
-				{ isSelected && (
-					<BaseControl
-						label={ __( 'Link' ) }
-						className="wp-block-button__inline-link"
-						id={ id }>
-						<URLInput
-							value={ url }
-							onChange={ ( value ) => setAttributes( { url: value } ) }
-							/* eslint-disable-next-line jsx-a11y/no-autofocus */
-							autoFocus={ false }
-							className="has-border"
-							id={ id }
-						/>
-					</BaseControl>
-				) }
 			</div>
 		);
 	}
