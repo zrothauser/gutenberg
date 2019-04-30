@@ -105,7 +105,7 @@ class ButtonEdit extends Component {
 			rel,
 		} = attributes;
 
-		const id = `wp-block-button__inline-link-${ instanceId }`;
+		const linkId = `wp-block-button__inline-link-${ instanceId }`;
 
 		return (
 			<div className={ className } title={ title } ref={ this.bindRef }>
@@ -131,12 +131,12 @@ class ButtonEdit extends Component {
 				<BaseControl
 					label={ __( 'Link' ) }
 					className="wp-block-button__inline-link"
-					id={ id }>
+					id={ linkId }>
 					<URLInput
 						value={ url }
 						onChange={ ( value ) => setAttributes( { url: value } ) }
 						className="has-border"
-						id={ id }
+						id={ linkId }
 					/>
 				</BaseControl>
 				<InspectorControls>
