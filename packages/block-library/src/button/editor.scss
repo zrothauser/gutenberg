@@ -82,7 +82,8 @@
 	height: 0;
 	overflow: hidden;
 
-	.is-selected & {
+	.is-selected &,
+	.is-typing & {
 		height: 100%;
 		overflow: visible;
 		margin-top: $grid-size-large;
