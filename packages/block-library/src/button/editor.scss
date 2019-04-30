@@ -81,6 +81,10 @@
 	color: $dark-gray-500;
 	height: 0;
 	overflow: hidden;
+	width: 100%;
+	@include break-small() {
+		width: 300px;
+	}
 
 	.is-selected &,
 	.is-typing & {
