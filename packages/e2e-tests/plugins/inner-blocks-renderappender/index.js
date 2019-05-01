@@ -25,7 +25,7 @@
 	function emptyBlockAppender() {
 		return (
 			el( 'div', { className: 'my-dynamic-blocks-appender' },
-				el( 'span', {}, 'Empty Blocks Appender' ),
+				el( 'span', { className: 'empty-blocks-appender' }, 'Empty Blocks Appender' ),
 				el( InnerBlocks.ButtonBlockAppender )
 			)
 		);
@@ -34,7 +34,7 @@
 	function singleBlockAppender() {
 		return (
 			el( 'div', { className: 'my-dynamic-blocks-appender' },
-				el( 'span', {}, 'Single Blocks Appender' ),
+				el( 'span', { className: 'single-blocks-appender' }, 'Single Blocks Appender' ),
 				el( InnerBlocks.ButtonBlockAppender )
 			)
 		);
@@ -43,7 +43,7 @@
 	function multipleBlockAppender() {
 		return (
 			el( 'div', { className: 'my-dynamic-blocks-appender' },
-				el( 'span', {}, 'Multiple Blocks Appender' ),
+				el( 'span', { className: 'multiple-blocks-appender' }, 'Multiple Blocks Appender' ),
 			)
 		);
 	}

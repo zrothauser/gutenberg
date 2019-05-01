@@ -53,7 +53,7 @@ describe( 'RenderAppender prop of InnerBlocks ', () => {
 		expect(
 			await page.evaluate(
 				( el ) => ( el.innerText ),
-				await page.$( `${ dynamicAppenderSelector } > span` ) )
+				await page.$( `${ dynamicAppenderSelector } > span.empty-blocks-appender` ) )
 		).toEqual( 'Empty Blocks Appender' );
 		const blockAppenderButtonSelector = `${ dynamicAppenderSelector } .block-editor-button-block-appender`;
 		await page.click( blockAppenderButtonSelector );
@@ -68,7 +68,7 @@ describe( 'RenderAppender prop of InnerBlocks ', () => {
 		expect(
 			await page.evaluate(
 				( el ) => ( el.innerText ),
-				await page.$( `${ dynamicAppenderSelector } > span` ) )
+				await page.$( `${ dynamicAppenderSelector } > span.single-blocks-appender` ) )
 		).toEqual( 'Single Blocks Appender' );
 		expect(
 			await page.$( blockAppenderButtonSelector )
@@ -77,7 +77,7 @@ describe( 'RenderAppender prop of InnerBlocks ', () => {
 		expect(
 			await page.evaluate(
 				( el ) => ( el.innerText ),
-				await page.$( `${ dynamicAppenderSelector } > span` ) )
+				await page.$( `${ dynamicAppenderSelector } > span.multiple-blocks-appender` ) )
 		).toEqual( 'Multiple Blocks Appender' );
 		expect(
 			await page.$( blockAppenderButtonSelector )
