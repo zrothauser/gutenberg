@@ -107,7 +107,7 @@
 			content: "";
 			position: absolute;
 			border: $border-width solid transparent;
-			border-left: none;
+			//border-left: none;
 			box-shadow: none;
 			transition: border-color 0.1s linear, box-shadow 0.1s linear;
 			pointer-events: none;
@@ -128,31 +128,81 @@
 
 		> .block-editor-block-list__block-edit::before {
 			// Use opacity to work in various editor styles.
-			border-color: $dark-opacity-light-800;
-			box-shadow: inset $block-left-border-width 0 0 0 $dark-gray-500;
+			border-color: $dark-opacity-200;
+			//box-shadow: inset $block-left-border-width 0 0 0 $dark-gray-500;
 
 			.is-dark-theme & {
-				border-color: $light-opacity-light-800;
-				box-shadow: inset $block-left-border-width 0 0 0 $light-gray-600;
+				border-color: $light-opacity-200;
+				//box-shadow: inset $block-left-border-width 0 0 0 $light-gray-600;
 			}
 
 			// Switch to outset borders on larger screens.
-			@include break-small() {
+			/*@include break-small() {
 				box-shadow: -$block-left-border-width 0 0 0 $dark-gray-500;
 
 				.is-dark-theme & {
 					box-shadow: -$block-left-border-width 0 0 0 $light-gray-600;
 				}
+			}*/
+		}
+	}
+
+	// Add extra padding and border to nested blocks.
+	&.is-selected,
+	&.has-child-selected {
+		.block-editor-inner-blocks {
+			padding-left: $block-padding;
+			padding-right: $block-padding;
+
+			// todo, try making this wider to accommodate the padding
+			width: calc(100% + #{ $block-padding * 2 });
+			margin-left: -$block-padding;
+		}
+	}
+
+	&.has-child-selected {
+		> .block-editor-block-list__block-edit::before {
+			// Use opacity to work in various editor styles.
+			border-color: $dark-opacity-100;
+			border-style: dashed;
+			border-width: 1px;
+
+			// todo, try making this wider to accommodate the padding
+			/*left: -$block-padding * 2;
+			right: -$block-padding * 2;
+			will-change: transform; */
+			/*transform: translateX( #{-$block-padding} );
+			width: calc( 100% + #{ $block-padding * 2 } ); */
+			/*margin-left: -$block-padding;
+			margin-right: -$block-padding;*/
+
+			transform: scaleX(1.1);
+
+			// Animate the transition.
+			transition: transform 0.2s ease-in-out;
+
+			.is-dark-theme & {
+				border-color: $light-opacity-100;
+			}
+		}
+
+		&.is-hovered > .block-editor-block-list__block-edit::before {
+			border-color: $dark-opacity-200;
+			border-style: solid;
+			border-width: 1px;
+
+			.is-dark-theme & {
+				border-color: $light-opacity-200;
 			}
 		}
 	}
 
 	// Hover style.
 	&.is-hovered > .block-editor-block-list__block-edit::before {
-		box-shadow: -$block-left-border-width 0 0 0 $dark-opacity-light-500;
+		box-shadow: inset $block-left-border-width 0 0 0 $dark-opacity-light-500;
 
 		.is-dark-theme & {
-			box-shadow: -$block-left-border-width 0 0 0 $light-opacity-light-400;
+			box-shadow: inset $block-left-border-width 0 0 0 $light-opacity-light-400;
 		}
 	}
 
@@ -963,7 +1013,7 @@
 
 		// This prevents floats from messing up the position of the block toolbar on floats-adjacent blocks when selected.
 		position: absolute;
-		left: $border-width;
+		left: $border-width + 3px; // Match the width of the thicker left box shadow.
 		top: $border-width;
 	}
 }

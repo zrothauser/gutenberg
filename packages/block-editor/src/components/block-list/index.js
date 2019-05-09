@@ -209,7 +209,7 @@ class BlockList extends Component {
 					return (
 						<AsyncModeProvider
 							key={ 'block-' + clientId }
-							value={ ! isBlockInSelection }
+							value={ false && ! isBlockInSelection }
 						>
 							<BlockListBlock
 								clientId={ clientId }
