@@ -133,10 +133,12 @@ class ButtonEdit extends Component {
 					className="wp-block-button__inline-link"
 					id={ linkId }>
 					<URLInput
+						className="wp-block-button__inline-link-input"
 						value={ url }
 						onChange={ ( value ) => setAttributes( { url: value } ) }
-						className="has-border"
 						id={ linkId }
+						isFullWidth
+						hasBorder
 					/>
 				</BaseControl>
 				<InspectorControls>
