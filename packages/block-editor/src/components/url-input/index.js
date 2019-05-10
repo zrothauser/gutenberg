@@ -223,6 +223,12 @@ class URLInput extends Component {
 		this.inputRef.current.focus();
 	}
 
+	static getDerivedStateFromProps( { showSuggestionsOverride }, { showSuggestions } ) {
+		return {
+			showSuggestions: showSuggestionsOverride !== undefined ? showSuggestionsOverride : showSuggestions,
+		};
+	}
+
 	render() {
 		const { value = '', autoFocus = true, instanceId, className, id, isFullWidth, hasBorder } = this.props;
 		const { showSuggestions, suggestions, selectedSuggestion, loading } = this.state;

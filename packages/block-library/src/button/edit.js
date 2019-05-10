@@ -95,6 +95,7 @@ class ButtonEdit extends Component {
 			setAttributes,
 			className,
 			instanceId,
+			isSelected,
 		} = this.props;
 
 		const {
@@ -135,8 +136,9 @@ class ButtonEdit extends Component {
 					<URLInput
 						className="wp-block-button__inline-link-input"
 						value={ url }
-						onChange={ ( value ) => setAttributes( { url: value } ) }
 						id={ linkId }
+						onChange={ ( value ) => setAttributes( { url: value } ) }
+						showSuggestionsOverride={ ! isSelected ? false : undefined }
 						isFullWidth
 						hasBorder
 					/>
