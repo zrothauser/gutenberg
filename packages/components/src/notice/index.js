@@ -17,7 +17,7 @@ import { Button, IconButton } from '../';
 
 function Notice( {
 	className,
-	status,
+	status = 'info',
 	children,
 	onRemove = noop,
 	isDismissible = true,
