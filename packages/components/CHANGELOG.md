@@ -4,6 +4,10 @@
 
 - Added a new `HorizontalRule` component.
 
+### Enhancements
+
+- The `Notice` component will speak its message.
+
 ### Bug Fixes
 
 - Fixed display of reset button when using RangeControl `allowReset` prop.
