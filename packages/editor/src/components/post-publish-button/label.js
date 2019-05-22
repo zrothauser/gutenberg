@@ -29,8 +29,6 @@ export function PublishButtonLabel( {
 
 	if ( ! hasPublishAction ) {
 		return __( 'Submit for Review' );
-	} else if ( ! isPublished && 'private' === visibility ) {
-		return __( 'Publish Privately' );
 	} else if ( isBeingScheduled && 'private' !== visibility ) {
 		return __( 'Schedule' );
 	} else if ( isPublished ) {
