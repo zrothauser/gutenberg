@@ -18,7 +18,7 @@ import {
 	EditorHistoryUndo,
 } from '@wordpress/editor';
 
-const HeaderToolbar = ( { hasFixedToolbar, showIconLabel, isLargeViewport, showInserter, isTextModeEnabled } ) => {
+const HeaderToolbar = ( { hasFixedToolbar, showIconLabels, isLargeViewport, showInserter, isTextModeEnabled } ) => {
 	const toolbarAriaLabel = hasFixedToolbar ?
 		/* translators: accessibility text for the editor toolbar when Top Toolbar is on */
 		__( 'Document and block tools' ) :
@@ -52,7 +52,7 @@ const HeaderToolbar = ( { hasFixedToolbar, showIconLabel, isLargeViewport, showI
 export default compose( [
 	withSelect( ( select ) => ( {
 		hasFixedToolbar: select( 'core/edit-post' ).isFeatureActive( 'fixedToolbar' ),
-		showIconLabel: select( 'core/edit-post' ).isFeatureActive( 'showIconLabel' ),
+		showIconLabels: select( 'core/edit-post' ).isFeatureActive( 'showIconLabels' ),
 		// This setting (richEditingEnabled) should not live in the block editor's setting.
 		showInserter: select( 'core/edit-post' ).getEditorMode() === 'visual' && select( 'core/editor' ).getEditorSettings().richEditingEnabled,
 		isTextModeEnabled: select( 'core/edit-post' ).getEditorMode() === 'text',

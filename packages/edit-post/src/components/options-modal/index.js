@@ -97,7 +97,7 @@ export default compose(
 	withDispatch( ( dispatch ) => {
 		return {
 			closeModal: () => dispatch( 'core/edit-post' ).closeModal(),
-			toggleIconLabels: () => dispatch( 'core/edit-post' ).toggleFeature( 'showIconLabel' ),
+			toggleIconLabels: () => dispatch( 'core/edit-post' ).toggleFeature( 'showIconLabels' ),
 		};
 	} )
 )( OptionsModal );
