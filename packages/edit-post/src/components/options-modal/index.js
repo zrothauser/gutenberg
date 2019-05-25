@@ -75,7 +75,6 @@ export function OptionsModal( { isModalActive, isViewable, closeModal, toggleIco
 			<MetaBoxesSection title={ __( 'Advanced Panels' ) } />
 			<Section title={ __( 'Icon Labels' ) }>
 				<CheckboxControl
-					className="edit-post-options-modal__option"
 					label="Show Icon Labels"
 					onChange={ toggleIconLabels }
 				/>
