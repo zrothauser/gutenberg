@@ -200,7 +200,10 @@
 		"test-unit-php": "docker-compose run --rm wordpress_phpunit phpunit",
 		"test-unit-php-multisite": "docker-compose run -e WP_MULTISITE=1 --rm wordpress_phpunit phpunit",
 		"playground:build": "npm run build:packages && parcel build playground/src/index.html -d playground/dist",
-		"playground:start": "concurrently \"npm run dev:packages\" \"parcel playground/src/index.html -d playground/dist\""
+		"playground:start": "concurrently \"npm run dev:packages\" \"parcel playground/src/index.html -d playground/dist\"",
+		"server-start": "docker run -it --name gutenberg-server --detach --rm --publish 3000:3000 --volume $PWD:/var/www/html/wp-content/plugins/gutenberg noisysocks/gutenberg-development-environment",
+		"server-stop": "docker stop gutenberg-server",
+		"server-attach": "docker exec -it gutenberg-server bash"
 	},
 	"lint-staged": {
 		"packages/*/package.json": [
