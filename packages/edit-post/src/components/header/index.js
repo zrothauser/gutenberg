@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
@@ -24,6 +29,7 @@ import shortcuts from '../../keyboard-shortcuts';
 function Header( {
 	closeGeneralSidebar,
 	hasActiveMetaboxes,
+	showIconLabels,
 	isEditorSidebarOpened,
 	isPublishSidebarOpened,
 	isSaving,
@@ -67,6 +73,7 @@ function Header( {
 					<IconButton
 						icon="admin-generic"
 						label={ __( 'Settings' ) }
+						className={ classnames( 'admin-settings', { 'show-icon-label': showIconLabels } ) }
 						onClick={ toggleGeneralSidebar }
 						isToggled={ isEditorSidebarOpened }
 						aria-expanded={ isEditorSidebarOpened }
@@ -77,7 +84,7 @@ function Header( {
 					</DotTip>
 				</div>
 				<PinnedPlugins.Slot />
-				<MoreMenu />
+				<MoreMenu showIconLabel={ showIconLabels } />
 			</div>
 		</div>
 	);
@@ -86,6 +93,7 @@ function Header( {
 export default compose(
 	withSelect( ( select ) => ( {
 		hasActiveMetaboxes: select( 'core/edit-post' ).hasMetaBoxes(),
+		showIconLabels: select( 'core/edit-post' ).isFeatureActive( 'showIconLabels' ),
 		isEditorSidebarOpened: select( 'core/edit-post' ).isEditorSidebarOpened(),
 		isPublishSidebarOpened: select( 'core/edit-post' ).isPublishSidebarOpened(),
 		isSaving: select( 'core/edit-post' ).isSavingMetaBoxes(),

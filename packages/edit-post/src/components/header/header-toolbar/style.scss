@@ -20,6 +20,15 @@
 			display: flex;
 		}
 	}
+	&.show-icon-labels {
+		button[aria-label] {
+			display: block;
+			&::after {
+				display: block;
+				content: attr(aria-label);
+			}
+		}
+	}
 }
 
 // Block toolbar when fixed to the top of the screen.

@@ -8,6 +8,7 @@ export const PREFERENCES_DEFAULTS = {
 	},
 	features: {
 		fixedToolbar: false,
+		showIconLabels: false,
 	},
 	pinnedPluginItems: {},
 	hiddenBlockTypes: [],

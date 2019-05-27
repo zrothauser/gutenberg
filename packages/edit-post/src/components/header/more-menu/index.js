@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
@@ -16,7 +21,7 @@ import WritingMenu from '../writing-menu';
 const ariaClosed = __( 'Show more tools & options' );
 const ariaOpen = __( 'Hide more tools & options' );
 
-const MoreMenu = () => (
+const MoreMenu = ( { showIconLabel } ) => (
 	<Dropdown
 		className="edit-post-more-menu"
 		contentClassName="edit-post-more-menu__content"
@@ -26,6 +31,7 @@ const MoreMenu = () => (
 				icon="ellipsis"
 				label={ isOpen ? ariaOpen : ariaClosed }
 				labelPosition="bottom"
+				className={ classnames( { 'show-icon-label': showIconLabel } ) }
 				onClick={ onToggle }
 				aria-expanded={ isOpen }
 			/>

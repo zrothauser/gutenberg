@@ -18,6 +18,15 @@
 	.components-button svg {
 		transform: rotate(90deg);
 	}
+	button[aria-label] {
+		&.show-icon-label {
+			display: block;
+			&::after {
+				display: block;
+				content: attr(aria-label);
+			}
+		}
+	}
 }
 
 .edit-post-more-menu__content .components-popover__content {

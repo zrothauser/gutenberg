@@ -66,6 +66,20 @@
 .edit-post-header__settings {
 	display: inline-flex;
 	align-items: center;
+	button.admin-settings[aria-label] {
+		&.show-icon-label {
+			color: $white;
+			background: $dark-gray-500;
+			&:hover {
+				color: $white;
+				background: $dark-gray-600;
+			}
+			&::after {
+				display: inline-block;
+				content: attr(aria-label);
+			}
+		}
+	}
 }
 
 .edit-post-header .components-button {

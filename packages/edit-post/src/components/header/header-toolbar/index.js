@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
  * WordPress dependencies
  */
 import { compose } from '@wordpress/compose';
@@ -27,7 +32,7 @@ const HeaderToolbar = ( { hasFixedToolbar, showIconLabels, isLargeViewport, show
 
 	return (
 		<NavigableToolbar
-			className="edit-post-header-toolbar"
+			className={ classnames( 'edit-post-header-toolbar', { 'show-icon-labels': showIconLabels } ) }
 			aria-label={ toolbarAriaLabel }
 		>
 			<div>
