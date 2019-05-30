@@ -2,16 +2,18 @@
  * WordPress dependencies
  */
 import {
+	activatePlugin,
 	clickBlockAppender,
-	createNewPost,
-	createEmbeddingMatcher,
-	createURLMatcher,
-	setUpResponseMocking,
-	createJSONResponse,
-	getEditedPostContent,
 	clickButton,
+	createEmbeddingMatcher,
+	createJSONResponse,
+	createNewPost,
+	createURLMatcher,
+	deactivatePlugin,
+	getEditedPostContent,
 	insertBlock,
 	publishPost,
+	setUpResponseMocking,
 } from '@wordpress/e2e-test-utils';
 
 const MOCK_EMBED_WORDPRESS_SUCCESS_RESPONSE = {
@@ -227,6 +229,21 @@ describe( 'Embedding content', () => {
 		await page.keyboard.press( 'Enter' );
 		// The twitter block should appear correctly.
 		await page.waitForSelector( 'figure.wp-block-embed-twitter' );
+	} );
+
+	it( 'embed blocks should work inside blocks with locking all', async () => {
+		await activatePlugin( 'gutenberg-test-innerblocks-locking-all-embed' );
+		await createNewPost();
+		await insertBlock( 'Test Inner Blocks Locking All Embed' );
+		const embedInputSelector = '.components-placeholder__input[aria-label="Embed URL"]';
+		await page.waitForSelector( embedInputSelector );
+		await page.click( embedInputSelector );
+		// This URL can't be embedded, but without the trailing slash, it can.
+		await page.keyboard.type( 'https://twitter.com/notnownikki' );
+		await page.keyboard.press( 'Enter' );
+		// The twitter block should appear correctly.
+		await page.waitForSelector( 'figure.wp-block-embed' );
+		await deactivatePlugin( 'gutenberg-test-innerblocks-locking-all-embed' );
 	} );
 
 	it( 'should allow the user to try embedding a failed URL again', async () => {
