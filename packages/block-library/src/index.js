@@ -30,6 +30,7 @@ import * as columns from './columns';
 import * as column from './column';
 import * as cover from './cover';
 import * as embed from './embed';
+import * as fancyImage from './fancy-image';
 import * as file from './file';
 import * as html from './html';
 import * as mediaText from './media-text';
@@ -94,6 +95,7 @@ export const registerCoreBlocks = () => {
 		embed,
 		...embed.common,
 		...embed.others,
+		fancyImage,
 		file,
 		group,
 		window.wp && window.wp.oldEditor ? classic : null, // Only add the classic block in WP Context
