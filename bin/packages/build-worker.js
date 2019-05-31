@@ -8,6 +8,7 @@ const babel = require( '@babel/core' );
 const makeDir = require( 'make-dir' );
 const sass = require( 'node-sass' );
 const postcss = require( 'postcss' );
+const crypto = require( 'crypto' );
 
 /**
  * Internal dependencies
@@ -20,6 +21,8 @@ const getBabelConfig = require( './get-babel-config' );
  * @type {string}
  */
 const PACKAGES_DIR = path.resolve( __dirname, '../../packages' );
+
+const CACHE_DIR = path.resolve( __dirname, '../../node_modules/.cache/build' );
 
 /**
  * Mapping of JavaScript environments to corresponding build output.
@@ -44,6 +47,8 @@ const readFile = promisify( fs.readFile );
  * @type {Function}
  */
 const writeFile = promisify( fs.writeFile );
+
+const exists = promisify( fs.exists );
 
 /**
  * Promisified sass.render.
@@ -77,6 +82,29 @@ function getBuildPath( file, buildFolder ) {
 	return path.resolve( pkgBuildPath, relativeToSrcPath );
 }
 
+function md5( text ) {
+	const hash = crypto.createHash( 'md5' );
+	hash.update( text, 'utf8' );
+	return hash.digest( 'hex' );
+}
+
+async function memoize( hash, resolver ) {
+	const file = path.resolve( CACHE_DIR, hash );
+
+	if ( await exists( file ) ) {
+		const contents = await readFile( file );
+		return JSON.parse( contents );
+	}
+
+	const object = await resolver();
+
+	const contents = JSON.stringify( object );
+	await makeDir( path.dirname( file ) );
+	await writeFile( file, contents );
+
+	return object;
+}
+
 /**
  * Object of build tasks per file extension.
  *
@@ -92,51 +120,68 @@ const BUILD_TASK_BY_EXTENSION = {
 			readFile( file, 'utf8' ),
 		] );
 
-		const builtSass = await renderSass( {
-			file,
-			includePaths: [ path.resolve( __dirname, '../../assets/stylesheets' ) ],
-			data: (
-				[
-					'colors',
-					'breakpoints',
-					'variables',
-					'mixins',
-					'animations',
-					'z-index',
-				].map( ( imported ) => `@import "${ imported }";` ).join( ' ' )	+
-				contents
-			),
-		} );
+		const { css, rtlCSS } = await memoize( md5( contents ), async () => {
+			const builtSass = await renderSass( {
+				file,
+				includePaths: [ path.resolve( __dirname, '../../assets/stylesheets' ) ],
+				data: (
+					[
+						'colors',
+						'breakpoints',
+						'variables',
+						'mixins',
+						'animations',
+						'z-index',
+					].map( ( imported ) => `@import "${ imported }";` ).join( ' ' )	+
+					contents
+				),
+			} );
 
-		const result = await postcss( require( './post-css-config' ) ).process( builtSass.css, {
-			from: 'src/app.css',
-			to: 'dest/app.css',
-		} );
+			const result = await postcss( require( './post-css-config' ) ).process( builtSass.css, {
+				from: 'src/app.css',
+				to: 'dest/app.css',
+			} );
 
-		const resultRTL = await postcss( [ require( 'rtlcss' )() ] ).process( result.css, {
-			from: 'src/app.css',
-			to: 'dest/app.css',
+			const resultRTL = await postcss( [ require( 'rtlcss' )() ] ).process( result.css, {
+				from: 'src/app.css',
+				to: 'dest/app.css',
+			} );
+
+			return { css: result.css, rtlCSS: resultRTL.css };
 		} );
 
 		await Promise.all( [
-			writeFile( outputFile, result.css ),
-			writeFile( outputFileRTL, resultRTL.css ),
+			writeFile( outputFile, css ),
+			writeFile( outputFileRTL, rtlCSS ),
 		] );
 	},
 
 	async '.js'( file ) {
 		for ( const [ environment, buildDir ] of Object.entries( JS_ENVIRONMENTS ) ) {
 			const destPath = getBuildPath( file, buildDir );
-			const babelOptions = getBabelConfig( environment, file.replace( PACKAGES_DIR, '@wordpress' ) );
 
-			const [ , transformed ] = await Promise.all( [
+			const [ , contents ] = await Promise.all( [
 				makeDir( path.dirname( destPath ) ),
-				babel.transformFileAsync( file, babelOptions ),
+				readFile( file ),
 			] );
 
+			const { map, code } = await memoize( md5( contents ), async () => {
+				const babelOptions = getBabelConfig(
+					environment,
+					file.replace( PACKAGES_DIR, '@wordpress' )
+				);
+
+				const transformed = await babel.transformFileAsync( file, babelOptions );
+
+				return {
+					map: JSON.stringify( transformed.map ),
+					code: transformed.code + '\n//# sourceMappingURL=' + path.basename( destPath ),
+				};
+			} );
+
 			await Promise.all( [
-				writeFile( destPath + '.map', JSON.stringify( transformed.map ) ),
-				writeFile( destPath, transformed.code + '\n//# sourceMappingURL=' + path.basename( destPath ) + '.map' ),
+				writeFile( destPath + '.map', map ),
+				writeFile( destPath, code ),
 			] );
 		}
 	},
