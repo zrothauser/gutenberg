@@ -3,13 +3,11 @@
  */
 import classnames from 'classnames';
 import {
-	compact,
 	get,
 	isEmpty,
 	map,
 	last,
 	pick,
-	findKey,
 } from 'lodash';
 
 /**
@@ -106,7 +104,7 @@ class ImageEdit extends Component {
 		this.onImageClick = this.onImageClick.bind( this );
 		this.onSelectImage = this.onSelectImage.bind( this );
 		this.onSelectURL = this.onSelectURL.bind( this );
-		this.updateImageURL = this.updateImageURL.bind( this );
+		this.updateImage = this.updateImage.bind( this );
 		this.updateWidth = this.updateWidth.bind( this );
 		this.updateHeight = this.updateHeight.bind( this );
 		this.updateDimensions = this.updateDimensions.bind( this );
@@ -116,7 +114,6 @@ class ImageEdit extends Component {
 		this.onSetLinkDestination = this.onSetLinkDestination.bind( this );
 		this.onSetNewTab = this.onSetNewTab.bind( this );
 		this.getFilename = this.getFilename.bind( this );
-		this.getImageSizeByURL = this.getImageSizeByURL.bind( this );
 		this.toggleIsEditing = this.toggleIsEditing.bind( this );
 		this.onUploadError = this.onUploadError.bind( this );
 		this.onImageError = this.onImageError.bind( this );
@@ -163,7 +160,6 @@ class ImageEdit extends Component {
 				captionFocused: false,
 			} );
 		}
-		this.updateImageURL( url );
 	}
 
 	onUploadError( message ) {
@@ -296,12 +292,19 @@ class ImageEdit extends Component {
 		this.props.setAttributes( { ...extraUpdatedAttributes, align: nextAlign } );
 	}
 
-	updateImageURL( url ) {
+	updateImage( sizeSlug ) {
+		const { image } = this.props;
+
+		const url = get( image, [ 'media_details', 'sizes', sizeSlug, 'source_url' ] );
+		if ( ! url ) {
+			return null;
+		}
+
 		this.props.setAttributes( {
 			url,
 			width: undefined,
 			height: undefined,
-			sizeSlug: this.getImageSizeByURL( url ),
+			sizeSlug,
 		} );
 	}
 
@@ -347,24 +350,8 @@ class ImageEdit extends Component {
 	}
 
 	getImageSizeOptions() {
-		const { imageSizes, image } = this.props;
-		return compact( map( imageSizes, ( { name, slug } ) => {
-			const sizeUrl = get( image, [ 'media_details', 'sizes', slug, 'source_url' ] );
-			if ( ! sizeUrl ) {
-				return null;
-			}
-			return {
-				value: sizeUrl,
-				label: name,
-			};
-		} ) );
-	}
-
-	getImageSizeByURL( url ) {
-		const { image } = this.props;
-		const imageSizes = get( image, [ 'media_details', 'sizes' ] );
-		const imageSize = findKey( imageSizes, { source_url: url } );
-		return imageSize;
+		const { imageSizes } = this.props;
+		return map( imageSizes, ( { name, slug } ) => ( { value: slug, label: name } ) );
 	}
 
 	render() {
@@ -492,7 +479,7 @@ class ImageEdit extends Component {
 							label={ __( 'Image Size' ) }
 							value={ url }
 							options={ imageSizeOptions }
-							onChange={ this.updateImageURL }
+							onChange={ this.updateImage }
 						/>
 					) }
 					{ isResizable && (
