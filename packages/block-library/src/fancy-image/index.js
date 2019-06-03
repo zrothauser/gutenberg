@@ -18,8 +18,15 @@ export { metadata, name };
 export const settings = {
 	title: __( 'Fancy Image' ),
 	description: __( 'Insert an artwork image with a custom caption.' ),
+	attributes: {
+		anchor: {
+			type: 'string',
+			source: 'text',
+		},
+	},
 	supports: {
 		align: [ 'wide', 'full' ],
+		anchor: true,
 	},
 	icon,
 	keywords: [
