@@ -1,5 +1,10 @@
-export default function FancyImageSave() {
+
+export default function FancyImageSave( { attributes } ) {
+	const {
+		src,
+		alt,
+	} = attributes;
 	return (
-		<div>Hello</div>
+		<img alt={ alt } src={ src } />
 	);
 }
