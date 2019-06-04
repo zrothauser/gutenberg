@@ -20,11 +20,11 @@ export function initializeEditor() {
 
 	// disable Code and More blocks for the release
 	// eslint-disable-next-line no-undef
-	if ( typeof __DEV__ === 'undefined' || ! __DEV__ ) {
-		unregisterBlockType( 'core/code' );
-		unregisterBlockType( 'core/more' );
-		unregisterBlockType( 'core/video' );
-		unregisterBlockType( 'core/quote' );
-	}
+	// if ( typeof __DEV__ === 'undefined' || ! __DEV__ ) {
+	// 	unregisterBlockType( 'core/code' );
+	// 	unregisterBlockType( 'core/more' );
+	// 	unregisterBlockType( 'core/video' );
+	// 	unregisterBlockType( 'core/quote' );
+	// }
 }
 
