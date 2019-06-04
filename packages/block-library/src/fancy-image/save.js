@@ -4,6 +4,7 @@ export default function FancyImageSave( { attributes } ) {
 		src,
 		alt,
 	} = attributes;
+
 	return (
 		<img alt={ alt } src={ src } />
 	);
