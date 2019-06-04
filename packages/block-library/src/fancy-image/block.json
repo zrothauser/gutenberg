@@ -22,6 +22,10 @@
 			"type": "string",
 			"source": "html",
 			"selector": "figcaption"
+		},
+		"anchor": {
+			"type": "string",
+			"source": "text"
 		}
 	}
 }
