@@ -18,10 +18,15 @@
 			"attribute": "alt",
 			"default": ""
 		},
-		"caption": {
+		"captionTitle": {
 			"type": "string",
 			"source": "html",
-			"selector": "figcaption"
+			"selector": "figcaption p:first-child"
+		},
+		"captionMeta": {
+			"type": "string",
+			"source": "html",
+			"selector": "figcaption p:last-child"
 		},
 		"anchor": {
 			"type": "string",
