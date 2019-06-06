@@ -14,6 +14,7 @@ import {
 	BlockIcon,
 	MediaPlaceholder,
 	BlockControls,
+	InspectorControls,
 } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import {
@@ -25,6 +26,9 @@ import {
 	Rect,
 	Path,
 	Toolbar,
+	PanelBody,
+	TextareaControl,
+	ExternalLink,
 } from '@wordpress/components';
 
 /**
@@ -133,7 +137,30 @@ export default function FancyImageEdit( { attributes, setAttributes } ) {
 					setIsEditing={ setIsEditing }
 				/>
 			</BlockControls>
-			<img src={ src } alt={ alt } />
+			<figure>
+				<img src={ src } alt={ alt } />
+				<figcaption>
+					<p>Untitled</p>
+					<p>2019, mixed media, dimensions variable.</p>
+				</figcaption>
+			</figure>
+			<InspectorControls>
+				<PanelBody title={ __( 'Image Settings' ) } >
+					<TextareaControl
+						label={ __( 'Alt Text (Alternative Text)' ) }
+						value={ alt }
+						onChange={ ( newAlt ) => setAttributes( { alt: newAlt } ) }
+						help={
+							<>
+								<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
+									{ __( 'Describe the purpose of the image' ) }
+								</ExternalLink>
+								{ __( 'Leave empty if the image is purely decorative.' ) }
+							</>
+						}
+					/>
+				</PanelBody>
+			</InspectorControls>
 		</>
 	);
 }
