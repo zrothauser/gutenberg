@@ -2,10 +2,9 @@
  * External dependencies
  */
 const { promisify } = require( 'util' );
-const fs = require( 'fs' );
+const fs = require( 'fs-extra' );
 const path = require( 'path' );
 const babel = require( '@babel/core' );
-const makeDir = require( 'make-dir' );
 const sass = require( 'node-sass' );
 const postcss = require( 'postcss' );
 
@@ -30,20 +29,6 @@ const JS_ENVIRONMENTS = {
 	main: 'build',
 	module: 'build-module',
 };
-
-/**
- * Promisified fs.readFile.
- *
- * @type {Function}
- */
-const readFile = promisify( fs.readFile );
-
-/**
- * Promisified fs.writeFile.
- *
- * @type {Function}
- */
-const writeFile = promisify( fs.writeFile );
 
 /**
  * Promisified sass.render.
@@ -74,7 +59,8 @@ function getBuildPath( file, buildFolder ) {
 	const pkgSrcPath = path.resolve( PACKAGES_DIR, pkgName, 'src' );
 	const pkgBuildPath = path.resolve( PACKAGES_DIR, pkgName, buildFolder );
 	const relativeToSrcPath = path.relative( pkgSrcPath, file );
-	return path.resolve( pkgBuildPath, relativeToSrcPath );
+	const buildPath = path.resolve( pkgBuildPath, relativeToSrcPath );
+	return path.relative( PACKAGES_DIR, buildPath );
 }
 
 /**
@@ -87,11 +73,7 @@ const BUILD_TASK_BY_EXTENSION = {
 		const outputFile = getBuildPath( file.replace( '.scss', '.css' ), 'build-style' );
 		const outputFileRTL = getBuildPath( file.replace( '.scss', '-rtl.css' ), 'build-style' );
 
-		const [ , contents ] = await Promise.all( [
-			makeDir( path.dirname( outputFile ) ),
-			readFile( file, 'utf8' ),
-		] );
-
+		const contents = await fs.readFile( file, 'utf8' );
 		const builtSass = await renderSass( {
 			file,
 			includePaths: [ path.resolve( __dirname, '../../assets/stylesheets' ) ],
@@ -118,27 +100,26 @@ const BUILD_TASK_BY_EXTENSION = {
 			to: 'dest/app.css',
 		} );
 
-		await Promise.all( [
-			writeFile( outputFile, result.css ),
-			writeFile( outputFileRTL, resultRTL.css ),
-		] );
+		return {
+			[ outputFile ]: result.css,
+			[ outputFileRTL ]: resultRTL.css,
+		};
 	},
 
 	async '.js'( file ) {
+		const built = {};
+
 		for ( const [ environment, buildDir ] of Object.entries( JS_ENVIRONMENTS ) ) {
 			const destPath = getBuildPath( file, buildDir );
 			const babelOptions = getBabelConfig( environment, file.replace( PACKAGES_DIR, '@wordpress' ) );
 
-			const [ , transformed ] = await Promise.all( [
-				makeDir( path.dirname( destPath ) ),
-				babel.transformFileAsync( file, babelOptions ),
-			] );
+			const transformed = await babel.transformFileAsync( file, babelOptions );
 
-			await Promise.all( [
-				writeFile( destPath + '.map', JSON.stringify( transformed.map ) ),
-				writeFile( destPath, transformed.code + '\n//# sourceMappingURL=' + path.basename( destPath ) + '.map' ),
-			] );
+			built[ destPath + '.map' ] = JSON.stringify( transformed.map );
+			built[ destPath ] = transformed.code + '\n//# sourceMappingURL=' + path.basename( destPath ) + '.map';
 		}
+
+		return built;
 	},
 };
 
@@ -146,14 +127,13 @@ module.exports = async ( file, callback ) => {
 	const extension = path.extname( file );
 	const task = BUILD_TASK_BY_EXTENSION[ extension ];
 
-	if ( ! task ) {
-		return;
-	}
-
-	try {
-		await task( file );
-		callback();
-	} catch ( error ) {
-		callback( error );
+	if ( task ) {
+		try {
+			callback( null, await task( file ) );
+		} catch ( error ) {
+			callback( error );
+		}
+	} else {
+		callback( null, {} );
 	}
 };

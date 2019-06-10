@@ -3,13 +3,14 @@
 /**
  * External dependencies
  */
+const crypto = require( 'crypto' );
+const fs = require( 'fs-extra' );
 const path = require( 'path' );
 const glob = require( 'fast-glob' );
 const ProgressBar = require( 'progress' );
 const workerFarm = require( 'worker-farm' );
-const { Readable, Transform } = require( 'stream' );
-
-const files = process.argv.slice( 2 );
+const { Readable, Writable, Transform } = require( 'stream' );
+const memoize = require( 'memize' );
 
 /**
  * Path to packages directory.
@@ -17,6 +18,37 @@ const files = process.argv.slice( 2 );
  * @type {string}
  */
 const PACKAGES_DIR = path.resolve( __dirname, '../../packages' );
+
+const { BUILD_CACHE_TARGET = 'node_modules/.cache/gutenbuild' } = process.env;
+
+const BUILD_CACHE_PATH = path.resolve( process.cwd(), BUILD_CACHE_TARGET );
+
+const BUILD_CONFIGURATION_FILES = [
+	// path.resolve( __dirname, './build.js' ),
+	// path.resolve( __dirname, './build-worker.js' ),
+	path.resolve( __dirname, './get-babel-config.js' ),
+	path.resolve( __dirname, './get-packages.js' ),
+	path.resolve( __dirname, './post-css-config.js' ),
+	path.resolve( __dirname, '../../babel.config.js' ),
+	path.resolve( __dirname, '../../package-lock.json' ),
+	path.resolve( __dirname, '../../assets/stylesheets/_colors.scss' ),
+	path.resolve( __dirname, '../../assets/stylesheets/_breakpoints.scss' ),
+	path.resolve( __dirname, '../../assets/stylesheets/_variables.scss' ),
+	path.resolve( __dirname, '../../assets/stylesheets/_mixins.scss' ),
+	path.resolve( __dirname, '../../assets/stylesheets/_animations.scss' ),
+	path.resolve( __dirname, '../../assets/stylesheets/_z-index.scss' ),
+];
+
+function getFilesChecksum( files ) {
+	return files.reduce(
+		( hash, file ) => hash.update( fs.readFileSync( file ) ),
+		crypto.createHash( 'md5' )
+	).digest( 'hex' );
+}
+
+const getPackageChecksum = memoize( ( file ) => getFilesChecksum( [
+	path.resolve( PACKAGES_DIR, getPackageName( file ), 'package.json' ),
+] ) );
 
 /**
  * Get the package name for a specified file
@@ -68,9 +100,11 @@ let onFileComplete = () => {};
 
 let stream;
 
-if ( files.length ) {
+const buildFiles = process.argv.slice( 2 );
+
+if ( buildFiles.length ) {
 	stream = new Readable( { encoding: 'utf8' } );
-	files.forEach( ( file ) => stream.push( file ) );
+	buildFiles.forEach( ( file ) => stream.push( file ) );
 	stream.push( null );
 	stream = stream.pipe( createStyleEntryTransform() );
 } else {
@@ -100,7 +134,7 @@ if ( files.length ) {
 	stream
 		.pause()
 		.on( 'data', ( file ) => {
-			bar.total = files.push( file );
+			bar.total = buildFiles.push( file );
 		} );
 
 	onFileComplete = () => {
@@ -110,29 +144,82 @@ if ( files.length ) {
 
 const worker = workerFarm( require.resolve( './build-worker' ) );
 
+const buildConfigurationChecksum = getFilesChecksum( BUILD_CONFIGURATION_FILES );
+
 let ended = false,
 	complete = 0;
 
-stream
-	.on( 'data', ( file ) => worker( file, ( error ) => {
-		onFileComplete();
+const build = new Transform( {
+	objectMode: true,
+	async transform( file, encoding, callback ) {
+		const checksum = crypto
+			.createHash( 'md5' )
+			.update( buildConfigurationChecksum )
+			.update( getPackageChecksum( file ) )
+			.update( getFilesChecksum( [ file ] ) )
+			.digest( 'hex' );
 
-		if ( error ) {
-			// If an error occurs, the process can't be ended immediately since
-			// other workers are likely pending. Optimally, it would end at the
-			// earliest opportunity (after the current round of workers has had
-			// the chance to complete), but this is not made directly possible
-			// through `worker-farm`. Instead, ensure at least that when the
-			// process does exit, it exits with a non-zero code to reflect the
-			// fact that an error had occurred.
-			process.exitCode = 1;
+		let cached;
+		try {
+			cached = await fs.readdir( path.resolve( BUILD_CACHE_PATH, checksum ) );
+		} catch ( error ) {}
 
-			console.error( error );
+		if ( ! Array.isArray( cached ) ) {
+			cached = [];
+
+			await new Promise( ( resolve, reject ) => {
+				worker( file, async ( error, built ) => {
+					if ( error ) {
+						// If an error occurs, the process can't be ended immediately since
+						// other workers are likely pending. Optimally, it would end at the
+						// earliest opportunity (after the current round of workers has had
+						// the chance to complete), but this is not made directly possible
+						// through `worker-farm`. Instead, ensure at least that when the
+						// process does exit, it exits with a non-zero code to reflect the
+						// fact that an error had occurred.
+						process.exitCode = 1;
+
+						console.error( error );
+						reject( error );
+					} else {
+						for ( const [ relativeDestination, contents ] of Object.entries( built ) ) {
+							const absoluteDestination = path.resolve( BUILD_CACHE_PATH, checksum, relativeDestination );
+							await fs.mkdirp( path.dirname( absoluteDestination ) );
+							await fs.writeFile( absoluteDestination, contents );
+							cached.push( [ checksum, relativeDestination ] );
+						}
+
+						resolve();
+					}
+				} );
+			} );
 		}
 
-		if ( ended && ++complete === files.length ) {
+		cached = await fs.readdir( path.resolve( BUILD_CACHE_PATH, checksum ) );
+		cached.forEach( ( entry ) => this.push( [ checksum, entry ] ) );
+		if ( ended && ++complete === buildFiles.length ) {
 			workerFarm.end( worker );
 		}
-	} ) )
+
+		onFileComplete();
+		callback();
+	},
+} );
+
+const write = new Writable( {
+	objectMode: true,
+	async write( [ checksum, relativePath ], encoding, callback ) {
+		await fs.copy(
+			path.resolve( BUILD_CACHE_PATH, checksum, relativePath ),
+			path.resolve( PACKAGES_DIR, relativePath ),
+		);
+
+		callback();
+	},
+} );
+
+stream
+	.pipe( build )
 	.on( 'end', () => ended = true )
-	.resume();
+	.resume()
+	.pipe( write );
