@@ -20,13 +20,15 @@
 		},
 		"captionTitle": {
 			"type": "string",
+			"default": "Untitled",
 			"source": "html",
-			"selector": "figcaption p:first-child"
+			"selector": ".wp-block-fancy-image__title"
 		},
 		"captionMeta": {
 			"type": "string",
+			"default": "Mixed media, dimensions variable.",
 			"source": "html",
-			"selector": "figcaption p:last-child"
+			"selector": ".wp-block-fancy-image__meta"
 		},
 		"anchor": {
 			"type": "string",

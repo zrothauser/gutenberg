@@ -15,6 +15,7 @@ import {
 	MediaPlaceholder,
 	BlockControls,
 	InspectorControls,
+	RichText,
 } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import {
@@ -88,7 +89,7 @@ function ToggleEditingToolbarButton( { isEditing, setIsEditing } ) {
 }
 
 export default function FancyImageEdit( { attributes, setAttributes } ) {
-	const { id, src, alt } = attributes;
+	const { id, src, alt, captionMeta, captionTitle } = attributes;
 	const [ isEditing, setIsEditing ] = useState( ! src );
 	const labels = {
 		title: ! src ? __( 'Fancy Image' ) : __( 'Edit fancy image' ),
@@ -140,8 +141,28 @@ export default function FancyImageEdit( { attributes, setAttributes } ) {
 			<figure>
 				<img src={ src } alt={ alt } />
 				<figcaption>
-					<p>Untitled</p>
-					<p>2019, mixed media, dimensions variable.</p>
+					<RichText
+						tagName="p"
+						className="wp-block-fancy-image__title"
+						placeholder={ __( 'Write caption title…' ) }
+						value={ captionTitle }
+						// unstableOnFocus={ this.onFocusCaption }
+						onChange={ ( value ) => setAttributes( { captionTitle: value } ) }
+						// isSelected={ this.state.captionFocused }
+						inlineToolbar
+					/>
+
+					<RichText
+						tagName="p"
+						placeholder={ __( 'Write caption meta…' ) }
+						className="wp-block-fancy-image__meta"
+						value={ captionMeta }
+						// unstableOnFocus={ this.onFocusCaption }
+						onChange={ ( value ) => setAttributes( { captionMeta: value } ) }
+						// isSelected={ this.state.captionFocused }
+						inlineToolbar
+					/>
+
 				</figcaption>
 			</figure>
 			<InspectorControls>

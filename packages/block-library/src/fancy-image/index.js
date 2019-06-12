@@ -10,6 +10,7 @@ import metadata from './block.json';
 import icon from './icon';
 import edit from './edit';
 import save from './save';
+import transforms from './transforms';
 
 const { name } = metadata;
 
@@ -23,6 +24,7 @@ export const settings = {
 		anchor: true,
 	},
 	icon,
+	transforms,
 	keywords: [
 		'img', // "img" is not translated as it is intended to reflect the HTML <img> tag.
 		__( 'Art' ),
