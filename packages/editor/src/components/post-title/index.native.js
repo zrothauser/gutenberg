@@ -14,6 +14,7 @@ import { withDispatch } from '@wordpress/data';
 import { withFocusOutside } from '@wordpress/components';
 import { withInstanceId, compose } from '@wordpress/compose';
 import { __, sprintf } from '@wordpress/i18n';
+import { getDefaultBlockName, createBlock } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -26,6 +27,7 @@ class PostTitle extends Component {
 
 		this.onSelect = this.onSelect.bind( this );
 		this.onUnselect = this.onUnselect.bind( this );
+		this.onReplace = this.onReplace.bind( this );
 		this.titleViewRef = null;
 
 		this.state = {
@@ -57,6 +59,31 @@ class PostTitle extends Component {
 
 	onUnselect() {
 		this.setState( { isSelected: false } );
+	}
+
+	onReplace( blocks ) {
+		if ( ! Array.isArray( blocks ) ) {
+			return;
+		}
+		blocks = this.removeUndefinedBlocks( blocks );
+		this.updateTitleFromPastedContent( blocks );
+
+		blocks.shift();
+
+		this.props.insertBlocks( blocks );
+	}
+
+	removeUndefinedBlocks( blocks ) {
+		return blocks.filter( ( block ) => {
+			return block !== undefined;
+		});
+	}
+
+	updateTitleFromPastedContent( blocks ) {
+		if ( blocks.length ) {
+			let title = blocks[ 0 ].attributes.content;
+			this.props.onUpdate( title );
+		}
 	}
 
 	render() {
@@ -101,8 +128,13 @@ class PostTitle extends Component {
 					} }
 					placeholder={ decodedPlaceholder }
 					value={ title }
-					onSplit={ () => { } }
+					onSplit={ ( content ) => {
+						return createBlock( getDefaultBlockName(), {
+							content,
+						} );
+					 } }
 					onEnter={ this.props.onEnterPress }
+					onReplace={ this.onReplace }
 					disableEditingMenu={ true }
 					setRef={ ( ref ) => {
 						this.titleViewRef = ref;
@@ -118,6 +150,7 @@ const applyWithDispatch = withDispatch( ( dispatch ) => {
 	const {
 		undo,
 		redo,
+		insertBlocks,
 	} = dispatch( 'core/editor' );
 
 	const {
@@ -128,6 +161,9 @@ const applyWithDispatch = withDispatch( ( dispatch ) => {
 	return {
 		onEnterPress() {
 			insertDefaultBlock( undefined, undefined, 0 );
+		},
+		insertBlocks( blocks ) {
+			insertBlocks( blocks, 0 );
 		},
 		onUndo: undo,
 		onRedo: redo,
