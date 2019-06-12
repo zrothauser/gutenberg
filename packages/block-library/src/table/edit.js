@@ -14,6 +14,7 @@ import {
 	PanelColorSettings,
 	createCustomColorsHOC,
 	BlockIcon,
+	AlignmentToolbar,
 } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import {
@@ -32,6 +33,8 @@ import {
 import {
 	createTable,
 	updateCellContent,
+	updateCellAttribute,
+	getCellAttribute,
 	insertRow,
 	deleteRow,
 	insertColumn,
@@ -164,6 +167,37 @@ export class TableEdit extends Component {
 			columnIndex,
 			content,
 		} ) );
+	}
+
+	onChangeCellAlignment( value ) {
+		const { selectedCell } = this.state;
+
+		if ( ! selectedCell ) {
+			return;
+		}
+
+		const { attributes, setAttributes } = this.props;
+		const { section, rowIndex, columnIndex } = selectedCell;
+
+		setAttributes( updateCellAttribute( attributes, {
+			section,
+			rowIndex,
+			columnIndex,
+			attributeName: 'align',
+			value,
+		} ) );
+	}
+
+	getCellAlignment() {
+		const { selectedCell } = this.state;
+
+		if ( ! selectedCell ) {
+			return;
+		}
+
+		const { attributes } = this.props;
+
+		return getCellAttribute( attributes, { ...selectedCell, attributeName: 'align' } );
 	}
 
 	/**
@@ -363,7 +397,7 @@ export class TableEdit extends Component {
 			<Tag>
 				{ rows.map( ( { cells }, rowIndex ) => (
 					<tr key={ rowIndex }>
-						{ cells.map( ( { content, tag: CellTag, scope }, columnIndex ) => {
+						{ cells.map( ( { content, tag: CellTag, scope, align }, columnIndex ) => {
 							const isSelected = selectedCell && (
 								type === selectedCell.section &&
 								rowIndex === selectedCell.rowIndex &&
@@ -376,7 +410,10 @@ export class TableEdit extends Component {
 								columnIndex,
 							};
 
-							const cellClasses = classnames( { 'is-selected': isSelected } );
+							const cellClasses = classnames( {
+								'is-selected': isSelected,
+								[ `has-text-align-${ align }` ]: align,
+							} );
 
 							return (
 								<CellTag
@@ -466,6 +503,11 @@ export class TableEdit extends Component {
 							controls={ this.getTableControls() }
 						/>
 					</Toolbar>
+					<AlignmentToolbar
+						value={ this.getCellAlignment() }
+						onChange={ ( nextAlign ) => this.onChangeCellAlignment( nextAlign ) }
+						isCollapsed={ true }
+					/>
 				</BlockControls>
 				<InspectorControls>
 					<PanelBody title={ __( 'Table Settings' ) } className="blocks-table-settings">
