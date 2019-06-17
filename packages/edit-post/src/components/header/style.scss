@@ -67,7 +67,7 @@
 	display: inline-flex;
 	align-items: center;
 	button.admin-settings[aria-label] {
-		&.show-icon-label {
+		&.has-text-label {
 			color: $white;
 			background: $dark-gray-500;
 			&:hover {

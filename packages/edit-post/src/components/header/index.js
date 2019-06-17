@@ -73,7 +73,7 @@ function Header( {
 					<IconButton
 						icon="admin-generic"
 						label={ __( 'Settings' ) }
-						className={ classnames( 'admin-settings', { 'show-icon-label': showIconLabels } ) }
+						className={ classnames( 'admin-settings', { 'has-text-label': showIconLabels } ) }
 						onClick={ toggleGeneralSidebar }
 						isToggled={ isEditorSidebarOpened }
 						aria-expanded={ isEditorSidebarOpened }
