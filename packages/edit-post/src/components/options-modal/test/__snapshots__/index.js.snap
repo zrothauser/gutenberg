@@ -60,7 +60,7 @@ exports[`OptionsModal should match snapshot when the modal is active 1`] = `
   <Section
     title="Icon Labels"
   >
-    <WithInstanceId(CheckboxControl)
+    <WithSelect(WithDispatch(BaseOption))
       label="Show Icon Labels"
     />
   </Section>
