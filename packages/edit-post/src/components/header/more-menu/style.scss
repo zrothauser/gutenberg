@@ -6,6 +6,15 @@
 		width: auto;
 		padding: 8px 2px;
 	}
+	&.show-icon-label {
+		button[aria-label] {
+			display: block;
+			&::after {
+				display: block;
+				content: attr(aria-label);
+			}
+		}
+	}
 
 	@include break-small() {
 		margin-left: 4px;
@@ -17,15 +26,6 @@
 
 	.components-button svg {
 		transform: rotate(90deg);
-	}
-	button[aria-label] {
-		&.show-icon-label {
-			display: block;
-			&::after {
-				display: block;
-				content: attr(aria-label);
-			}
-		}
 	}
 }
 
