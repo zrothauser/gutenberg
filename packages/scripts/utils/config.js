@@ -9,7 +9,6 @@ const { basename } = require( 'path' );
 const { getArgsFromCLI, getFileArgsFromCLI, hasArgInCLI, hasFileArgInCLI } = require( './cli' );
 const { fromConfigRoot, hasProjectFile } = require( './file' );
 const { hasPackageProp } = require( './package' );
-const { exit } = require( './process' );
 
 const hasBabelConfig = () =>
 	hasProjectFile( '.babelrc' ) ||
@@ -82,54 +81,7 @@ const getWebpackArgs = ( additionalArgs = [] ) => {
 	return webpackArgs;
 };
 
-const supportedPlatforms = [ 'web', 'android', 'ios' ];
-
-const getPlatform = () => {
-	const platform = process.env.PLATFORM ? process.env.PLATFORM : 'web';
-
-	if ( platform && ! supportedPlatforms.includes( platform ) ) {
-		// eslint-disable-next-line no-console
-		console.log( 'Unsupported platform "' + platform + "'" );
-		exit( 1 );
-	}
-
-	return platform;
-};
-
-const getPlatformExtensions = ( platform ) => {
-	switch ( platform ) {
-		case 'web':
-			return [ '.web.js', '.js' ];
-		case 'android':
-			return [ '.android.js', '.native.js', '.js' ];
-		case 'ios':
-			return [ '.ios.js', '.native.js', '.js' ];
-		default:
-			// eslint-disable-next-line no-console
-			console.log( 'Unsupported platform "' + platform + "'" );
-			exit( 1 );
-	}
-};
-
-const getOutputExtension = ( platform ) => {
-	switch ( platform ) {
-		case 'web':
-			return '.js';
-		case 'android':
-			return '.android.js';
-		case 'ios':
-			return '.ios.js';
-		default:
-			// eslint-disable-next-line no-console
-			console.log( 'Unsupported platform "' + platform + "'" );
-			exit( 1 );
-	}
-};
-
 module.exports = {
-	getOutputExtension,
-	getPlatform,
-	getPlatformExtensions,
 	getWebpackArgs,
 	hasBabelConfig,
 	hasJestConfig,

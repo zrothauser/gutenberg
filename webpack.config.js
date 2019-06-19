@@ -13,12 +13,7 @@ const { basename, sep } = require( 'path' );
 const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-webpack-plugin' );
 const LibraryExportDefaultPlugin = require( '@wordpress/library-export-default-webpack-plugin' );
 const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
-const {
-	camelCaseDash,
-	getOutputExtension,
-	getPlatform,
-	getPlatformExtensions,
-} = require( '@wordpress/scripts/utils' );
+const { camelCaseDash } = require( '@wordpress/scripts/utils' );
 
 /**
  * Internal dependencies
@@ -29,8 +24,6 @@ const {
 	NODE_ENV: mode = 'development',
 	WP_DEVTOOL: devtool = ( mode === 'production' ? false : 'source-map' ),
 } = process.env;
-
-const platform = getPlatform();
 
 const WORDPRESS_NAMESPACE = '@wordpress/';
 
@@ -46,13 +39,10 @@ module.exports = {
 		return memo;
 	}, {} ),
 	output: {
-		filename: './build/[basename]/index' + getOutputExtension( platform ),
+		filename: './build/[basename]/index.js',
 		path: __dirname,
 		library: [ 'wp', '[name]' ],
 		libraryTarget: 'this',
-	},
-	resolve: {
-		extensions: getPlatformExtensions( platform ),
 	},
 	module: {
 		rules: compact( [
