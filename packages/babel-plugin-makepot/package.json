@@ -26,8 +26,8 @@
 		"build",
 		"build-module"
 	],
-	"main": "build/index.js",
-	"module": "build-module/index.js",
+	"main": "build/index",
+	"module": "build-module/index",
 	"dependencies": {
 		"@babel/runtime": "^7.4.4",
 		"gettext-parser": "^1.3.1",

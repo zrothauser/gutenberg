@@ -27,8 +27,8 @@
 		"build",
 		"build-module"
 	],
-	"main": "build/index.js",
-	"module": "build-module/index.js",
+	"main": "build/index",
+	"module": "build-module/index",
 	"dependencies": {
 		"axe-puppeteer": "^1.0.0"
 	},

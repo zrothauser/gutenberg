@@ -25,8 +25,8 @@ When creating a new package, you need to provide at least the following:
 		"bugs": {
 			"url": "https://github.com/WordPress/gutenberg/issues"
 		},
-		"main": "build/index.js",
-		"module": "build-module/index.js",
+		"main": "build/index",
+		"module": "build-module/index",
 		"react-native": "src/index",
 		"dependencies": {
 			"@babel/runtime": "^7.4.4"
