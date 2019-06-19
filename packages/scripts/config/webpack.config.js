@@ -13,10 +13,16 @@ const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extrac
 /**
  * Internal dependencies
  */
-const { hasBabelConfig } = require( '../utils' );
+const {
+	getOutputExtension,
+	getPlatform,
+	getPlatformExtensions,
+	hasBabelConfig,
+} = require( '../utils' );
 
 const isProduction = process.env.NODE_ENV === 'production';
 const mode = isProduction ? 'production' : 'development';
+const platform = getPlatform();
 
 const config = {
 	mode,
@@ -24,13 +30,14 @@ const config = {
 		index: path.resolve( process.cwd(), 'src', 'index.js' ),
 	},
 	output: {
-		filename: '[name].js',
+		filename: '[name]' + getOutputExtension( platform ),
 		path: path.resolve( process.cwd(), 'build' ),
 	},
 	resolve: {
 		alias: {
 			'lodash-es': 'lodash',
 		},
+		extensions: getPlatformExtensions( platform ),
 	},
 	module: {
 		rules: [

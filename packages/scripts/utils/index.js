@@ -10,6 +10,9 @@ const {
 	spawnScript,
 } = require( './cli' );
 const {
+	getOutputExtension,
+	getPlatform,
+	getPlatformExtensions,
 	getWebpackArgs,
 	hasBabelConfig,
 	hasJestConfig,
@@ -31,6 +34,9 @@ module.exports = {
 	getArgFromCLI,
 	getArgsFromCLI,
 	getFileArgsFromCLI,
+	getOutputExtension,
+	getPlatform,
+	getPlatformExtensions,
 	getWebpackArgs,
 	hasBabelConfig,
 	hasArgInCLI,
