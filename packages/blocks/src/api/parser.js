@@ -454,7 +454,7 @@ export function createBlockWithFallback( blockNode ) {
 	// provided source value with the serialized output before there are any modifications to
 	// the block. When both match, the block is marked as valid.
 	if ( ! isFallbackBlock ) {
-		block.isValid = isValidBlockContent( blockType, block.attributes, innerHTML );
+		// block.isValid = isValidBlockContent( blockType, block.attributes, innerHTML );
 	}
 
 	// Preserve original content for future use in case the block is parsed as

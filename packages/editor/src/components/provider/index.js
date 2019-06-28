@@ -9,7 +9,7 @@ import memize from 'memize';
  */
 import { compose } from '@wordpress/compose';
 import { Component } from '@wordpress/element';
-import { withDispatch, withSelect } from '@wordpress/data';
+import { withDispatch, withSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { BlockEditorProvider, transformStyles } from '@wordpress/block-editor';
 import apiFetch from '@wordpress/api-fetch';
@@ -20,6 +20,7 @@ import { decodeEntities } from '@wordpress/html-entities';
  * Internal dependencies
  */
 import withRegistryProvider from './with-registry-provider';
+import createUseBlockSources from './use-block-sources';
 import { mediaUpload } from '../../utils';
 import ReusableBlocksButtons from '../reusable-blocks-buttons';
 import ConvertToGroupButtons from '../convert-to-group-buttons';
@@ -39,6 +40,22 @@ const fetchLinkSuggestions = async ( search ) => {
 		title: decodeEntities( post.title ) || __( '(no title)' ),
 	} ) );
 };
+
+const useBlockSources = createUseBlockSources( [
+	() => {
+		const { editPost } = useDispatch( 'core/editor' );
+
+		return [ 'meta', {
+			onChange: ( key, value ) => editPost( { meta: { [ key ]: value } } ),
+		} ];
+	},
+] );
+
+function BlockEditorProviderWithSources( props ) {
+	const blocks = useBlockSources( props.value );
+
+	return <BlockEditorProvider { ...props } value={ blocks } />;
+}
 
 class EditorProvider extends Component {
 	constructor( props ) {
@@ -72,7 +89,7 @@ class EditorProvider extends Component {
 		}
 	}
 
-	getBlockEditorSettings( settings, meta, onMetaChange, reusableBlocks, hasUploadPermissions ) {
+	getBlockEditorSettings( settings, reusableBlocks, hasUploadPermissions ) {
 		return {
 			...pick( settings, [
 				'alignWide',
@@ -95,10 +112,6 @@ class EditorProvider extends Component {
 				'templateLock',
 				'titlePlaceholder',
 			] ),
-			__experimentalMetaSource: {
-				value: meta,
-				onChange: onMetaChange,
-			},
 			__experimentalReusableBlocks: reusableBlocks,
 			__experimentalMediaUpload: hasUploadPermissions ? mediaUpload : undefined,
 			__experimentalFetchLinkSuggestions: fetchLinkSuggestions,
@@ -136,8 +149,6 @@ class EditorProvider extends Component {
 			resetEditorBlocks,
 			isReady,
 			settings,
-			meta,
-			onMetaChange,
 			reusableBlocks,
 			resetEditorBlocksWithoutUndoLevel,
 			hasUploadPermissions,
@@ -148,11 +159,11 @@ class EditorProvider extends Component {
 		}
 
 		const editorSettings = this.getBlockEditorSettings(
-			settings, meta, onMetaChange, reusableBlocks, hasUploadPermissions
+			settings, reusableBlocks, hasUploadPermissions
 		);
 
 		return (
-			<BlockEditorProvider
+			<BlockEditorProviderWithSources
 				value={ blocks }
 				onInput={ resetEditorBlocksWithoutUndoLevel }
 				onChange={ resetEditorBlocks }
@@ -162,7 +173,7 @@ class EditorProvider extends Component {
 				{ children }
 				<ReusableBlocksButtons />
 				<ConvertToGroupButtons />
-			</BlockEditorProvider>
+			</BlockEditorProviderWithSources>
 		);
 	}
 }
@@ -173,7 +184,6 @@ export default compose( [
 		const {
 			__unstableIsEditorReady: isEditorReady,
 			getEditorBlocks,
-			getEditedPostAttribute,
 			__experimentalGetReusableBlocks,
 		} = select( 'core/editor' );
 		const { canUser } = select( 'core' );
@@ -181,7 +191,6 @@ export default compose( [
 		return {
 			isReady: isEditorReady(),
 			blocks: getEditorBlocks(),
-			meta: getEditedPostAttribute( 'meta' ),
 			reusableBlocks: __experimentalGetReusableBlocks(),
 			hasUploadPermissions: defaultTo( canUser( 'create', 'media' ), true ),
 		};
@@ -191,7 +200,6 @@ export default compose( [
 			setupEditor,
 			updatePostLock,
 			resetEditorBlocks,
-			editPost,
 			updateEditorSettings,
 		} = dispatch( 'core/editor' );
 		const { createWarningNotice } = dispatch( 'core/notices' );
@@ -206,9 +214,6 @@ export default compose( [
 				resetEditorBlocks( blocks, {
 					__unstableShouldCreateUndoLevel: false,
 				} );
-			},
-			onMetaChange( meta ) {
-				editPost( { meta } );
 			},
 		};
 	} ),

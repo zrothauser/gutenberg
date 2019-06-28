@@ -1154,6 +1154,10 @@ export function getEditorSettings( state ) {
 	return state.editorSettings;
 }
 
+export function getSources( state ) {
+	return state.sources;
+}
+
 /*
  * Backward compatibility
  */

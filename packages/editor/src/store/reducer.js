@@ -583,6 +583,27 @@ export function editorSettings( state = EDITOR_SETTINGS_DEFAULTS, action ) {
 	return state;
 }
 
+export function sources( state = {}, action ) {
+	switch ( action.type ) {
+		case 'RESET_SOURCE_VALUES':
+			return {
+				...state,
+				[ action.source ]: action.values,
+			};
+
+		case 'SET_SOURCE_VALUES':
+			return {
+				...state,
+				[ action.source ]: {
+					...state[ action.source ],
+					...action.values,
+				},
+			};
+	}
+
+	return state;
+}
+
 export default optimist( combineReducers( {
 	editor,
 	initialEdits,
@@ -596,4 +617,5 @@ export default optimist( combineReducers( {
 	postSavingLock,
 	isReady,
 	editorSettings,
+	sources,
 } ) );

@@ -59,7 +59,7 @@ export function* setupEditor( post, edits, template ) {
 		content = post.content.raw;
 	}
 
-	let blocks = parse( content );
+	let blocks = parse( content, { validate: false } );
 
 	// Apply a template for new posts only, if exists.
 	const isNewPost = post.status === 'auto-draft';
@@ -67,6 +67,7 @@ export function* setupEditor( post, edits, template ) {
 		blocks = synchronizeBlocksWithTemplate( blocks, template );
 	}
 
+	yield resetSourceValues( 'meta', post.meta );
 	yield resetEditorBlocks( blocks );
 	yield setupEditorState( post );
 }
@@ -79,7 +80,9 @@ export function* setupEditor( post, edits, template ) {
  *
  * @return {Object} Action object.
  */
-export function resetPost( post ) {
+export function* resetPost( post ) {
+	yield resetSourceValues( 'meta', post.meta );
+
 	return {
 		type: 'RESET_POST',
 		post,
@@ -228,7 +231,11 @@ export function setupEditorState( post ) {
  *
  * @return {Object} Action object.
  */
-export function editPost( edits ) {
+export function* editPost( edits ) {
+	if ( 'meta' in edits ) {
+		yield setSourceValues( 'meta', edits.meta );
+	}
+
 	return {
 		type: 'EDIT_POST',
 		edits,
@@ -749,6 +756,22 @@ export function updateEditorSettings( settings ) {
 	return {
 		type: 'UPDATE_EDITOR_SETTINGS',
 		settings,
+	};
+}
+
+export function resetSourceValues( source, values ) {
+	return {
+		type: 'RESET_SOURCE_VALUES',
+		source,
+		values,
+	};
+}
+
+export function setSourceValues( source, values ) {
+	return {
+		type: 'SET_SOURCE_VALUES',
+		source,
+		values,
 	};
 }
 
