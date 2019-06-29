@@ -102,7 +102,7 @@ export function replace( tag, text, callback ) {
 
 		// Make sure to return any of the extra brackets if they weren't used to
 		// escape the shortcode.
-		return result ? left + result + right : match;
+		return typeof result === 'string' ? left + result + right : match;
 	} );
 }
 
