@@ -6,7 +6,7 @@ import { dateI18n } from '@wordpress/date';
 import { withSelect } from '@wordpress/data';
 
 export function PostScheduleLabel( { date, isFloating } ) {
-	const formatWithTimezone = 'M j, Y g: i a T';
+	const formatWithTimezone = 'M j, Y g:i a T';
 
 	return date && ! isFloating ?
 		dateI18n( formatWithTimezone, date ) :
