@@ -26,6 +26,7 @@ import { compose } from '@wordpress/compose';
 import BlockAsyncModeProvider from './block-async-mode-provider';
 import BlockListBlock from './block';
 import BlockListAppender from '../block-list-appender';
+import Footnotes from '../footnotes';
 import { getBlockDOMNode } from '../../utils/dom';
 
 /**
@@ -241,6 +242,9 @@ class BlockList extends Component {
 					rootClientId={ rootClientId }
 					renderAppender={ renderAppender }
 				/>
+
+				{ rootClientId === '' && <Footnotes /> }
+
 			</div>
 		);
 	}
