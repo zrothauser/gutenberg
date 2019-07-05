@@ -34,6 +34,7 @@ export { default as URLInput } from './url-input';
 export { default as URLInputButton } from './url-input/button';
 export { default as URLPopover } from './url-popover';
 export { default as withColorContext } from './color-palette/with-color-context';
+export { withBlockEditContext } from './block-edit/context.js';
 
 /*
  * Content Related Components
