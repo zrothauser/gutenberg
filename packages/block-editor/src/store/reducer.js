@@ -656,6 +656,21 @@ export const blocks = flow(
 
 		return state;
 	},
+	footnotes( state = {}, action ) {
+		switch ( action.type ) {
+			case 'ADD_FOOTNOTES':
+				return {
+					...state,
+					[ action.clientId ]: [
+						...state[ action.clientId ] || [],
+						...action.footnotes,
+					],
+				};
+			case 'REMOVE_FOOTNOTES':
+				return omit( state, action.clientId );
+		}
+		return state;
+	},
 } );
 
 /**

@@ -679,6 +679,29 @@ export function updateSettings( settings ) {
 	};
 }
 
+export function addFootnotes( clientId, footnotes ) {
+	return {
+		type: 'ADD_FOOTNOTES',
+		clientId,
+		footnotes,
+	};
+}
+
+export function removeFootnotes( clientId ) {
+	return {
+		type: 'REMOVE_FOOTNOTES',
+		clientId,
+	};
+}
+
+export function* addFootnote() {
+	const order = yield select(
+		'core/block-editor',
+		'getBlockOrder',
+	);
+
+	return order;
+}
 /**
  * Returns an action object used in signalling that a temporary reusable blocks have been saved
  * in order to switch its temporary id with the real id.

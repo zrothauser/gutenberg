@@ -1,0 +1,24 @@
+{
+	"name": "core/footnotes",
+	"category": "common",
+	"attributes": {
+		"footnotes": {
+			"type": "array",
+			"default": [],
+			"source": "query",
+			"selector": "li",
+			"query": {
+				"id": {
+					"type": "string",
+					"source": "attribute",
+					"attribute": "id"
+				},
+				"content": {
+					"type": "string",
+					"source": "html",
+					"selector": "span"
+				}
+			}
+		}
+	}
+}
