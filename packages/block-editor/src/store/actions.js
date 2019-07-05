@@ -694,11 +694,13 @@ export function removeFootnotes( clientId ) {
 	};
 }
 
-export function* addFootnote() {
+export function* addFootnote( clientId, value ) {
 	const order = yield select(
 		'core/block-editor',
 		'getBlockOrder',
 	);
+
+	console.log( 'addFootnote', clientId, value, order );
 
 	return order;
 }
