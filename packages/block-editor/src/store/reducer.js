@@ -656,6 +656,7 @@ export const blocks = flow(
 
 		return state;
 	},
+
 	footnotes( state = {}, action ) {
 		switch ( action.type ) {
 			case 'ADD_FOOTNOTES':
@@ -666,8 +667,21 @@ export const blocks = flow(
 						...action.footnotes,
 					],
 				};
+
 			case 'REMOVE_FOOTNOTES':
 				return omit( state, action.clientId );
+
+			// The following types were sourced in the `order` reducer.
+			case 'RESET_BLOCKS':
+			case 'RECEIVE_BLOCKS':
+			case 'INSERT_BLOCKS':
+			case 'MOVE_BLOCK_TO_POSITION':
+			case 'MOVE_BLOCKS_UP':
+			case 'MOVE_BLOCKS_DOWN':
+			case 'REPLACE_BLOCKS':
+			case 'REMOVE_BLOCKS':
+				// TODO: Remap post content to footnotes state
+				break;
 		}
 		return state;
 	},
