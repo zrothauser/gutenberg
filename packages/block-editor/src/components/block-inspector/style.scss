@@ -6,7 +6,6 @@
 	text-align: center;
 }
 
-
 .block-editor-block-inspector__card {
 	display: flex;
 	align-items: flex-start;
@@ -28,7 +27,10 @@
 
 .block-editor-block-inspector__card-title {
 	font-weight: 500;
-	margin-bottom: 5px;
+	margin-top: 0;
+	&.editor-block-inspector__card-title {
+		margin-bottom: 5px;
+	}
 }
 
 .block-editor-block-inspector__card-description {
