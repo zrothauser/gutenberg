@@ -13,6 +13,7 @@ import {
 	isEqual,
 	isEmpty,
 	get,
+	partition,
 } from 'lodash';
 
 /**
@@ -381,6 +382,65 @@ const withSaveReusableBlock = ( reducer ) => ( state, action ) => {
 	return reducer( state, action );
 };
 
+export function footnotes( state = {}, action ) {
+	switch ( action.type ) {
+		case 'ADD_FOOTNOTES':
+			return {
+				...state,
+				[ action.clientId ]: [
+					...state[ action.clientId ] || [],
+					...action.footnotes,
+				],
+			};
+
+		case 'REMOVE_FOOTNOTES':
+			return omit( state, action.clientId );
+
+		// The following types were sourced in the `order` reducer.
+		case 'RESET_BLOCKS':
+		case 'RECEIVE_BLOCKS':
+		case 'INSERT_BLOCKS':
+		case 'MOVE_BLOCK_TO_POSITION':
+		case 'MOVE_BLOCKS_UP':
+		case 'MOVE_BLOCKS_DOWN':
+		case 'REPLACE_BLOCKS':
+		case 'REMOVE_BLOCKS': {
+			// TODO: Remap post content to footnotes state
+
+			const [ footnotesBlocks, rest ] = partition( action.blocks, ( { name } ) =>
+				name === 'core/footnotes'
+			);
+
+			const doc = document.implementation.createHTMLDocument( '' );
+
+			const notesToBlockIds = rest.reduce( ( acc, { clientId, originalContent } ) => {
+				doc.body.innerHTML = originalContent;
+				doc.querySelectorAll( 'a.note-anchor' )
+					.forEach( ( { id } ) => {
+						const noteId = id.replace( /-anchor$/, '' );
+						acc[ noteId ] = clientId;
+					} );
+				return acc;
+			}, {} );
+
+			return footnotesBlocks.reduce( ( acc, { attributes } ) => {
+				attributes.footnotes.forEach( ( { id, content } ) => {
+					if ( ! notesToBlockIds[ id ] ) {
+						return; // ???
+					}
+					const clientId = notesToBlockIds[ id ];
+					if ( ! acc[ clientId ] ) {
+						acc[ clientId ] = [];
+					}
+					acc[ clientId ].push( { noteId: id, value: content } );
+				} );
+				return acc;
+			}, {} );
+		}
+	}
+	return state;
+}
+
 /**
  * Reducer returning the blocks state.
  *
@@ -657,34 +717,7 @@ export const blocks = flow(
 		return state;
 	},
 
-	footnotes( state = {}, action ) {
-		switch ( action.type ) {
-			case 'ADD_FOOTNOTES':
-				return {
-					...state,
-					[ action.clientId ]: [
-						...state[ action.clientId ] || [],
-						...action.footnotes,
-					],
-				};
-
-			case 'REMOVE_FOOTNOTES':
-				return omit( state, action.clientId );
-
-			// The following types were sourced in the `order` reducer.
-			case 'RESET_BLOCKS':
-			case 'RECEIVE_BLOCKS':
-			case 'INSERT_BLOCKS':
-			case 'MOVE_BLOCK_TO_POSITION':
-			case 'MOVE_BLOCKS_UP':
-			case 'MOVE_BLOCKS_DOWN':
-			case 'REPLACE_BLOCKS':
-			case 'REMOVE_BLOCKS':
-				// TODO: Remap post content to footnotes state
-				break;
-		}
-		return state;
-	},
+	footnotes,
 } );
 
 /**

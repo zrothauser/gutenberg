@@ -28,6 +28,7 @@ import {
 	insertionPoint,
 	template,
 	blockListSettings,
+	footnotes,
 } from '../reducer';
 
 describe( 'state', () => {
@@ -235,6 +236,7 @@ describe( 'state', () => {
 				expect( state ).toEqual( {
 					isPersistentChange: true,
 					isIgnoredChange: false,
+					footnotes: {},
 					byClientId: {
 						clicken: {
 							clientId: 'chicken',
@@ -298,6 +300,7 @@ describe( 'state', () => {
 				expect( state ).toEqual( {
 					isPersistentChange: true,
 					isIgnoredChange: false,
+					footnotes: {},
 					byClientId: {
 						clicken: {
 							clientId: 'chicken',
@@ -390,6 +393,7 @@ describe( 'state', () => {
 				expect( state ).toEqual( {
 					isPersistentChange: true,
 					isIgnoredChange: false,
+					footnotes: {},
 					byClientId: {
 						clicken: {
 							clientId: 'chicken',
@@ -504,6 +508,7 @@ describe( 'state', () => {
 						clicken: [ newChildBlockId ],
 						[ newChildBlockId ]: [],
 					},
+					footnotes: {},
 				} );
 			} );
 		} );
@@ -515,6 +520,7 @@ describe( 'state', () => {
 				byClientId: {},
 				attributes: {},
 				order: {},
+				footnotes: {},
 				isPersistentChange: true,
 				isIgnoredChange: false,
 			} );
@@ -2216,6 +2222,88 @@ describe( 'state', () => {
 			} );
 
 			expect( state ).toEqual( {} );
+		} );
+	} );
+
+	describe( 'footnotes', () => {
+		it( 'should hydrate state from RESET_BLOCKS', () => {
+			const state = footnotes( {}, {
+				type: 'RESET_BLOCKS',
+				blocks: [
+					{
+						clientId: 'paragraph1',
+						name: 'core/paragraph',
+						attributes: {},
+						originalContent: '<p>A <a href="#note1" id="note1-anchor" class="note-anchor">paragraph</a>.<a href="#note2" id="note2-anchor" class="note-anchor"></a></p>',
+					},
+					{
+						clientId: 'footnote1',
+						name: 'core/footnotes',
+						attributes: {
+							footnotes: [
+								{
+									id: 'note1',
+									content: 'ABC',
+								},
+								{
+									id: 'note2',
+									content: 'DEF',
+								},
+							],
+						},
+						originalContent: '<ul class="wp-block-footnotes"><li id="note1"><span>ABC</span><a href="#note1-anchor">^</a></li></ul>',
+					},
+					{
+						clientId: 'nextpage1',
+						name: 'core/nextpage',
+						attributes: {},
+						originalContent: '<!--nextpage-->',
+					},
+					{
+						clientId: 'paragraph2',
+						name: 'core/paragraph',
+						attributes: {},
+						originalContent: '<p>A third paragraph.</p>',
+					},
+					{
+						clientId: 'paragraph3',
+						name: 'core/paragraph',
+						attributes: {},
+						originalContent: '<p>Lorem <a href="#note3" id="note3-anchor" class="note-anchor">ipsum</a></p>',
+					},
+					{
+						clientId: 'footnotes2',
+						name: 'core/footnotes',
+						attributes: {
+							footnotes: [
+								{
+									id: 'note3',
+									content: 'GHI',
+								},
+							],
+						},
+						originalContent: '<ul class="wp-block-footnotes"></ul>',
+					},
+				],
+			} );
+			expect( state ).toEqual( {
+				paragraph1: [
+					{
+						noteId: 'note1',
+						value: 'ABC',
+					},
+					{
+						noteId: 'note2',
+						value: 'DEF',
+					},
+				],
+				paragraph3: [
+					{
+						noteId: 'note3',
+						value: 'GHI',
+					},
+				],
+			} );
 		} );
 	} );
 } );
