@@ -6,21 +6,34 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { useState } from '@wordpress/element';
+// import { useState } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
+import RichText from '../rich-text';
+
+export function unkeyBy( obj, keyField ) {
+	return Object.keys( obj ).flatMap( ( key ) =>
+		obj[ key ].map( ( value ) => ( { [ keyField ]: key, ...value } ) )
+	);
+	// return map( obj, ( v, k ) => ( { [ key ]: k, ...v } ) );
+}
+
 export default function Footnotes() {
-	const [ notes, setNotes ] = useState( [ {
-		id: '1234',
-		isSelected: false,
-	} ] );
+	const { notes } = useSelect( ( select ) => ( {
+		notes: select( 'core/block-editor' ).getFootnotes(),
+	} ) );
+
+	// const [ notes, setNotes ] = useState( [ {
+	// 	id: '1234',
+	// 	isSelected: false,
+	// } ] );
 
 	// { /* This needs to become a slot/fill */ }
 	// { notes.length > 0 &&
-
-	if ( notes.length === 42 ) {
-		setNotes();
-	}
 
 	return (
 		<>
@@ -45,28 +58,30 @@ font-size: smaller;
 `,
 				} }
 			/>
-			{ notes.map( ( { id, isSelected }, index ) =>
-				<ol
-					key={ id }
+			{ unkeyBy( notes, 'clientId' ).map( ( { id: noteId, content, isSelected }, index ) => {
+				return <ol
+					key={ noteId }
 					start={ index + 1 }
 					className={ classnames( 'note-list', {
 						'is-selected': isSelected,
 					} ) }
 				>
-					<li id={ id }>
+					<li id={ noteId }>
 						<a
-							href={ `#${ id }-anchor` }
+							href={ `#${ noteId }-anchor` }
 							aria-label={ __( 'Back to content' ) }
 							onClick={ () => {
 								// This is a hack to get the target to focus.
 								// The attribute will later be removed when selection is set.
-								document.getElementById( `${ id }-anchor` ).contentEditable = 'false';
+								document.getElementById( `${ noteId }-anchor` ).contentEditable = 'false';
 							} }
 						>
 							↑
 						</a>
 						{ ' ' }
-						<input
+						<RichText.Content tagName="span" value={ content } />
+						{ ' ' }
+						{ /*<input
 							aria-label={ __( 'Note' ) }
 							value={ this.state.noteValues[ id ] }
 							onChange={ ( event ) => {
@@ -76,10 +91,10 @@ font-size: smaller;
 								} } );
 							} }
 							placeholder={ __( 'Note' ) }
-						/>
+						/> */ }
 					</li>
-				</ol>
-			) }
+				</ol>;
+			} ) }
 		</>
 	);
 }
