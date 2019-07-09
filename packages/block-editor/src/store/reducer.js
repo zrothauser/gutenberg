@@ -397,32 +397,36 @@ export function footnotes( state = {}, action ) {
 			return omit( state, action.clientId );
 
 		// The following types were sourced in the `order` reducer.
-		case 'RESET_BLOCKS':
-		case 'RECEIVE_BLOCKS':
-		case 'INSERT_BLOCKS':
-		case 'MOVE_BLOCK_TO_POSITION':
-		case 'MOVE_BLOCKS_UP':
-		case 'MOVE_BLOCKS_DOWN':
-		case 'REPLACE_BLOCKS':
-		case 'REMOVE_BLOCKS': {
-			// TODO: Remap post content to footnotes state
-
-			const [ footnotesBlocks, rest ] = partition( action.blocks, ( { name } ) =>
-				name === 'core/footnotes'
+		// case 'RECEIVE_BLOCKS':
+		// case 'INSERT_BLOCKS':
+		// case 'MOVE_BLOCK_TO_POSITION':
+		// case 'MOVE_BLOCKS_UP':
+		// case 'MOVE_BLOCKS_DOWN':
+		// case 'REPLACE_BLOCKS':
+		// case 'REMOVE_BLOCKS':
+		case 'RESET_BLOCKS': {
+			const [ footnotesBlocks, rest ] = partition(
+				action.blocks,
+				{ name: 'core/footnotes' }
 			);
 
+			// Temporarily map any inline markings -- which point to footnotes
+			// -- to the client IDs of the blocks in which they are
+			// found.
 			const doc = document.implementation.createHTMLDocument( '' );
-
 			const notesToBlockIds = rest.reduce( ( acc, { clientId, originalContent } ) => {
 				doc.body.innerHTML = originalContent;
-				doc.querySelectorAll( 'a.note-anchor' )
-					.forEach( ( { id } ) => {
-						const noteId = id.replace( /-anchor$/, '' );
-						acc[ noteId ] = clientId;
-					} );
+				doc.querySelectorAll( 'a.note-anchor' ).forEach( ( { id } ) => {
+					const noteId = id.replace( /-anchor$/, '' );
+					acc[ noteId ] = clientId;
+				} );
 				return acc;
 			}, {} );
 
+			// Traverse 'core/footnotes' blocks and cross-reference the
+			// footnotes within with the `notesToBlockIds` map. Build a map
+			// keyed on the clientIds of the blocks which contain markings for
+			// footnotes.
 			return footnotesBlocks.reduce( ( acc, { attributes } ) => {
 				attributes.footnotes.forEach( ( { id, content } ) => {
 					if ( ! notesToBlockIds[ id ] ) {
@@ -440,6 +444,12 @@ export function footnotes( state = {}, action ) {
 	}
 	return state;
 }
+
+// const tap = ( reducer ) => ( ...args ) => {
+// 	const r = reducer( ...args );
+// 	console.log( 'tap', r );
+// 	return r;
+// };
 
 /**
  * Reducer returning the blocks state.

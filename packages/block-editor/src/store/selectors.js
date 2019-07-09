@@ -1481,3 +1481,8 @@ function getPostMeta( state, key ) {
 function getReusableBlocks( state ) {
 	return get( state, [ 'settings', '__experimentalReusableBlocks' ], EMPTY_ARRAY );
 }
+
+// TODO move footnotes branch out of `blocks`, probably
+export function getFootnotes( state ) {
+	return get( state, 'blocks.footnotes', [] );
+}

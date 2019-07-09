@@ -2226,6 +2226,39 @@ describe( 'state', () => {
 	} );
 
 	describe( 'footnotes', () => {
+		it( 'should add to state via ADD_FOOTNOTES', () => {
+			const incomingFootnotes = [ { id: 'note1', content: 'ABC' } ];
+			const state = footnotes( {}, {
+				type: 'ADD_FOOTNOTES',
+				clientId: 123,
+				footnotes: incomingFootnotes,
+			} );
+			expect( state ).toEqual( {
+				123: incomingFootnotes,
+			} );
+		} );
+
+		it( 'should remove from state via REMOVE_FOOTNOTES', () => {
+			const state = footnotes(
+				{
+					123: [
+						{ id: 'note1', content: 'chicken' },
+					],
+					456: [
+						{ id: 'note2', content: 'broccoli' },
+						{ id: 'note3', content: 'apples' },
+					],
+				},
+				{
+					type: 'REMOVE_FOOTNOTES',
+					clientId: 456,
+				},
+			);
+			expect( state ).toEqual( {
+				123: [ { id: 'note1', content: 'chicken' } ],
+			} );
+		} );
+
 		it( 'should hydrate state from RESET_BLOCKS', () => {
 			const state = footnotes( {}, {
 				type: 'RESET_BLOCKS',
