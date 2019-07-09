@@ -243,7 +243,7 @@ class BlockList extends Component {
 					renderAppender={ renderAppender }
 				/>
 
-				{ rootClientId === '' && <Footnotes /> }
+				{ ! rootClientId && <Footnotes /> }
 
 			</div>
 		);
