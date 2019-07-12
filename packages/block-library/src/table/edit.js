@@ -506,7 +506,7 @@ export class TableEdit extends Component {
 					<AlignmentToolbar
 						value={ this.getCellAlignment() }
 						onChange={ ( nextAlign ) => this.onChangeCellAlignment( nextAlign ) }
-						isCollapsed={ true }
+						isCollapsed
 					/>
 				</BlockControls>
 				<InspectorControls>
