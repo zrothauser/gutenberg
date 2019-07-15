@@ -55,7 +55,7 @@ const BlockInspector = ( {
 				<BlockIcon icon={ blockType.icon } showColors />
 				<div className="editor-block-inspector__card-content block-editor-block-inspector__card-content">
 					<h2 className="editor-block-inspector__card-title block-editor-block-inspector__card-title">{ blockType.title }</h2>
-					<div className="editor-block-inspector__card-description block-editor-block-inspector__card-description">{ blockType.description }</div>
+					<span className="editor-block-inspector__card-description block-editor-block-inspector__card-description">{ blockType.description }</span>
 				</div>
 			</div>
 			{ hasBlockStyles && (
