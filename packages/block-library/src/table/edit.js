@@ -35,7 +35,7 @@ import {
 import {
 	createTable,
 	updateCellContent,
-	updateCellAttribute,
+	updateSelectionAttribute,
 	getCellAttribute,
 	insertRow,
 	deleteRow,
@@ -100,6 +100,7 @@ export class TableEdit extends Component {
 		this.onToggleHeaderSection = this.onToggleHeaderSection.bind( this );
 		this.onToggleFooterSection = this.onToggleFooterSection.bind( this );
 		this.getMultiSelectionClasses = this.getMultiSelectionClasses.bind( this );
+		this.onChangeSelectionAlignment = this.onChangeSelectionAlignment.bind( this );
 
 		this.state = {
 			initialRowCount: 2,
@@ -179,23 +180,15 @@ export class TableEdit extends Component {
 		} ) );
 	}
 
-	onChangeCellAlignment( value ) {
-		const { selectedCell } = this.state;
+	onChangeSelectionAlignment( value ) {
+		const { selection } = this.state;
 
-		if ( ! selectedCell ) {
+		if ( ! selection ) {
 			return;
 		}
 
 		const { attributes, setAttributes } = this.props;
-		const { section, rowIndex, columnIndex } = selectedCell;
-
-		setAttributes( updateCellAttribute( attributes, {
-			section,
-			rowIndex,
-			columnIndex,
-			attributeName: 'align',
-			value,
-		} ) );
+		setAttributes( updateSelectionAttribute( selection, attributes, 'align', value ) );
 	}
 
 	getCellAlignment() {
@@ -578,7 +571,7 @@ export class TableEdit extends Component {
 					</Toolbar>
 					<AlignmentToolbar
 						value={ this.getCellAlignment() }
-						onChange={ ( nextAlign ) => this.onChangeCellAlignment( nextAlign ) }
+						onChange={ ( nextAlign ) => this.onChangeSelectionAlignment( nextAlign ) }
 						isCollapsed
 					/>
 				</BlockControls>

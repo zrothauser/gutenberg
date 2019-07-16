@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { times, get, mapValues, every } from 'lodash';
+import { times, get, mapValues, every, pick, includes } from 'lodash';
 
 /**
  * Creates a table state.
@@ -23,6 +23,45 @@ export function createTable( {
 			} ) ),
 		} ) ),
 	};
+}
+
+export function updateSelectionAttribute( selection, attributes, attributeName, value ) {
+	if ( ! selection ) {
+		return attributes;
+	}
+
+	const tableSections = pick( attributes, [ 'head', 'body', 'foot' ] );
+	const isCellOrRowSelection = includes( [ 'row', 'cell' ], selection.type );
+
+	return mapValues( tableSections, ( section, sectionName ) => {
+		if ( isCellOrRowSelection && selection.section !== sectionName ) {
+			return section;
+		}
+
+		return section.map( ( row, rowIndex ) => {
+			if ( isCellOrRowSelection && selection.rowIndex !== rowIndex ) {
+				return row;
+			}
+
+			return {
+				cells: row.cells.map( ( cell, columnIndex ) => {
+					const cellLocation = {
+						section: sectionName,
+						columnIndex,
+						rowIndex,
+					};
+					if ( ! isCellSelected( cellLocation, selection ) ) {
+						return cell;
+					}
+
+					return {
+						...cell,
+						[ attributeName ]: value,
+					};
+				} ),
+			};
+		} );
+	} );
 }
 
 /**
@@ -271,16 +310,7 @@ export function isCellInMultiSelection( cellLocation, selection ) {
 		return false;
 	}
 
-	switch ( selection.type ) {
-		case 'table':
-			return true;
-		case 'row':
-			return isRowSelected( cellLocation, selection );
-		case 'column':
-			return isColumnSelected( cellLocation, selection );
-		case 'cell':
-			return false;
-	}
+	return includes( [ 'table', 'column', 'row' ], selection.type ) && isCellSelected( cellLocation, selection );
 }
 
 /**
@@ -311,6 +341,23 @@ export function isColumnSelected( cellLocation, selection ) {
 		return false;
 	}
 	return selection.type === 'column' && cellLocation.columnIndex === selection.columnIndex;
+}
+
+export function isCellSelected( cellLocation, selection ) {
+	if ( ! cellLocation || ! selection ) {
+		return false;
+	}
+
+	switch ( selection.type ) {
+		case 'table':
+			return true;
+		case 'row':
+			return isRowSelected( cellLocation, selection );
+		case 'column':
+			return isColumnSelected( cellLocation, selection );
+		case 'cell':
+			return selection.type === 'cell' && cellLocation.columnIndex === selection.columnIndex && cellLocation.rowIndex === selection.rowIndex;
+	}
 }
 
 /**
