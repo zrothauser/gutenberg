@@ -22,7 +22,6 @@ import { __ } from '@wordpress/i18n';
 function NavigationMenu( {
 	attributes,
 	clientId,
-	isSelected,
 	setAttributes,
 } ) {
 	return (
@@ -44,12 +43,11 @@ function NavigationMenu( {
 			<div className="wp-block-navigation-menu">
 				<InnerBlocks
 					allowedBlocks={ [ 'core/navigation-menu-item' ] }
+					horizontalMover={ true }
 				/>
-				{ isSelected && (
-					<MenuItemInserter
-						rootClientId={ clientId }
-					/>
-				) }
+				<MenuItemInserter
+					rootClientId={ clientId }
+				/>
 			</div>
 		</Fragment>
 	);

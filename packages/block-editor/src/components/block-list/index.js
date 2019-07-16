@@ -199,6 +199,7 @@ class BlockList extends Component {
 		const {
 			blockClientIds,
 			rootClientId,
+			horizontalMover,
 			isDraggable,
 			selectedBlockClientId,
 			multiSelectedBlockClientIds,
@@ -226,6 +227,7 @@ class BlockList extends Component {
 								blockRef={ this.setBlockRef }
 								onSelectionStart={ this.onSelectionStart }
 								isDraggable={ isDraggable }
+								horizontalMover={ horizontalMover }
 
 								// This prop is explicitely computed and passed down
 								// to avoid being impacted by the async mode

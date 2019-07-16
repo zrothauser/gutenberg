@@ -68,6 +68,7 @@ function BlockListBlock( {
 	mode,
 	isFocusMode,
 	hasFixedToolbar,
+	horizontalMover,
 	isLocked,
 	clientId,
 	rootClientId,
@@ -480,7 +481,10 @@ function BlockListBlock( {
 				rootClientId={ rootClientId }
 			/>
 			{ isFirstMultiSelected && (
-				<BlockMultiControls rootClientId={ rootClientId } />
+				<BlockMultiControls
+					rootClientId={ rootClientId }
+					horizontalMover={ horizontalMover }
+				/>
 			) }
 			<div className="editor-block-list__block-edit block-editor-block-list__block-edit">
 				{ shouldRenderMovers && (
@@ -494,6 +498,7 @@ function BlockListBlock( {
 						}
 						onDragStart={ onDragStart }
 						onDragEnd={ onDragEnd }
+						horizontalMover={ horizontalMover }
 					/>
 				) }
 				{ shouldShowBreadcrumb && (
