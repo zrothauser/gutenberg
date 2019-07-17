@@ -22,6 +22,7 @@ import { __ } from '@wordpress/i18n';
 function NavigationMenu( {
 	attributes,
 	clientId,
+	isSelected,
 	setAttributes,
 } ) {
 	return (
@@ -45,9 +46,9 @@ function NavigationMenu( {
 					allowedBlocks={ [ 'core/navigation-menu-item' ] }
 					horizontalMover={ true }
 				/>
-				<MenuItemInserter
+				{ isSelected && <MenuItemInserter
 					rootClientId={ clientId }
-				/>
+				/> }
 			</div>
 		</Fragment>
 	);
