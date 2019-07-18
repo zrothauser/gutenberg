@@ -28,7 +28,7 @@ export class PageAttributesParent extends Component {
 		this.suggestPage = this.suggestPage.bind( this );
 
 		this.requestResults = debounce( ( query, populateResults ) => {
-			const payload = '?search=' + encodeURIComponent( query );
+			const payload = '?search=' + encodeURIComponent( query ) + '&_fields=id,title,parent';
 			apiFetch( { path: `/wp/v2/pages${ payload }` } ).then( ( results ) => {
 				populateResults( this.resolveResults( results ) );
 				this.searchCache[ query ] = results;
@@ -48,7 +48,7 @@ export class PageAttributesParent extends Component {
 		if ( ! parentId ) {
 			return '';
 		}
-		const parentPost = await apiFetch( { path: `/wp/v2/pages/${ parentId }` } );
+		const parentPost = await apiFetch( { path: `/wp/v2/pages/${ parentId }?_fields=id,title,parent` } );
 		this.setState( {
 			parentPost,
 		} );
@@ -201,6 +201,7 @@ const applyWithSelect = withSelect( ( select ) => {
 	const isHierarchical = get( postType, [ 'hierarchical' ], false );
 	const query = {
 		per_page: 100,
+		_fields: 'id,title,parent',
 		exclude: postId,
 		parent_exclude: postId,
 		orderby: 'menu_order',
