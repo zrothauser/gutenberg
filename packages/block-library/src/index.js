@@ -63,6 +63,7 @@ import * as tagCloud from './tag-cloud';
 import * as classic from './classic';
 
 // Top-level template blocks.
+import * as templatePart from './template-part';
 import * as postTitle from './post-title';
 import * as postContent from './post-content';
 import * as postDate from './post-date';
@@ -134,6 +135,7 @@ export const registerCoreBlocks = () => {
 		postTitle,
 		postContent,
 		postDate,
+		templatePart,
 	].forEach( ( block ) => {
 		if ( ! block ) {
 			return;
