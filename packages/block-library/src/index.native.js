@@ -106,6 +106,7 @@ export const registerCoreBlocks = () => {
 		paragraph,
 		heading,
 		code,
+		gallery,
 		missing,
 		more,
 		image,
