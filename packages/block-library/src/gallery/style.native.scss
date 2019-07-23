@@ -1,0 +1,23 @@
+.wp-block-gallery {
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    align-content: stretch;
+	list-style-type: none;
+    padding: 0;
+    flex-direction: row;
+}
+
+.blocks-gallery-item {
+    // Add space between thumbnails, and unset right most thumbnails later.
+    margin: 0 $grid-size-large $grid-size-large 0;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: center;
+    position: relative;
+    background-color: pink;
+    width: 96;
+    height: 96;
+}

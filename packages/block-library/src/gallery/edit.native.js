@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
- import { Component } from '@wordpress/element';
+ import { Component, LI, UL } from '@wordpress/element';
  import { compose } from '@wordpress/compose';
  import { withNotices } from '@wordpress/components';
  import { __, sprintf } from '@wordpress/i18n';
@@ -9,7 +9,7 @@
  * External dependencies
  */
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ImageBackground } from 'react-native';
 
 /**
  * Internal dependencies
@@ -28,18 +28,25 @@ class GalleryEdit extends Component {
 		const { images, columns = defaultColumnsNumber( attributes ), align, imageCrop, linkTo } = attributes;
 
 		return (
-			<View classname={ className } style={ styles['wp-block-gallery'] }>
+			<UL classname={ className } style={ styles['wp-block-gallery'] }>
 
 				{ images.map( ( img, index ) => {
 						/* translators: %1$d is the order number of the image, %2$d is the total number of images. */
 						const ariaLabel = sprintf( __( 'image %1$d of %2$d in gallery' ), ( index + 1 ), images.length );
 						return (
-							<View style={ styles['blocks-gallery-item'] }>
-								<Text>{ ariaLabel }</Text>
-							</View>
+							<LI style={ styles['blocks-gallery-item'] } key={ img.id || img.url }>
+								<ImageBackground
+									style={ styles['blocks-gallery-item'] } key={ img.id || img.url }
+									resizeMethod="scale"
+									source={ { uri: img.url } }
+									key={ img.url }
+								>
+									<Text>{ ariaLabel }</Text>
+								</ImageBackground>	
+							</LI>
 						);
 					} ) }
-			</View>
+			</UL>
 		);
 	}
 }
