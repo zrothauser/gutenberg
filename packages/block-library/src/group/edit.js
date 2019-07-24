@@ -181,7 +181,7 @@ function GroupEdit( {
 						{ ! attributes.responsiveMargin && (
 							<DimensionControl
 								title={ __( 'Margin' ) }
-								property="padding"
+								property="margin"
 								clientId={ clientId }
 								onReset={ resetSpacingDimension }
 								onSpacingChange={ updateSpacing }
