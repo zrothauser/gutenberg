@@ -14,16 +14,12 @@ import {
 	InnerBlocks,
 	PanelColorSettings,
 	withColors,
+	DimensionControl,
 } from '@wordpress/block-editor';
 
 import {
 	PanelBody,
 } from '@wordpress/components';
-
-/**
- * Internal dependencies
- */
-import DimensionControl from './dimension-control';
 
 function GroupEdit( {
 	clientId,
@@ -36,18 +32,17 @@ function GroupEdit( {
 } ) {
 	const styles = {
 		backgroundColor: backgroundColor.color,
-		paddingTop: attributes.paddingTop,
-		paddingRight: attributes.paddingRight,
-		paddingBottom: attributes.paddingBottom,
-		paddingLeft: attributes.paddingLeft,
-		marginTop: attributes.marginTop,
-		marginRight: attributes.marginRight,
-		marginBottom: attributes.marginBottom,
-		marginLeft: attributes.marginLeft,
 	};
+
+	const hasPadding = attributes.paddingSize !== '';
+	const hasMargin = attributes.marginSize !== '';
 
 	const classes = classnames( className, backgroundColor.class, {
 		'has-background': !! backgroundColor.color,
+		'has-padding': hasPadding,
+		'has-margin': hasMargin,
+		[ `padding-${ attributes.paddingSize }` ]: hasPadding,
+		[ `margin-${ attributes.marginSize }` ]: hasMargin,
 	} );
 
 	return (

@@ -12,6 +12,7 @@ import edit from './edit';
 import icon from './icon';
 import metadata from './block.json';
 import save from './save';
+import attributes from './attributes';
 
 const { name } = metadata;
 
@@ -20,54 +21,13 @@ export { metadata, name };
 export const settings = {
 	title: __( 'Group' ),
 	icon,
+	attributes,
 	description: __( 'A block that groups other blocks.' ),
 	keywords: [ __( 'container' ), __( 'wrapper' ), __( 'row' ), __( 'section' ) ],
 	supports: {
 		align: [ 'wide', 'full' ],
 		anchor: true,
 		html: false,
-	},
-	attributes: {
-		paddingUnit: {
-			type: 'string',
-			default: 'px',
-		},
-		marginUnit: {
-			type: 'string',
-			default: 'px',
-		},
-		paddingTop: {
-			type: 'number',
-			default: 0,
-		},
-		paddingRight: {
-			type: 'number',
-			default: 0,
-		},
-		paddingBottom: {
-			type: 'number',
-			default: 0,
-		},
-		paddingLeft: {
-			type: 'number',
-			default: 0,
-		},
-		marginTop: {
-			type: 'number',
-			default: 0,
-		},
-		marginRight: {
-			type: 'number',
-			default: 0,
-		},
-		marginBottom: {
-			type: 'number',
-			default: 0,
-		},
-		marginLeft: {
-			type: 'number',
-			default: 0,
-		},
 	},
 	transforms: {
 		from: [
