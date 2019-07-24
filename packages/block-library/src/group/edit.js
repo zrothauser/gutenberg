@@ -16,14 +16,34 @@ import {
 	withColors,
 } from '@wordpress/block-editor';
 
+import {
+	PanelBody,
+} from '@wordpress/components';
+
+/**
+ * Internal dependencies
+ */
+import DimensionControl from './dimension-control';
+
 function GroupEdit( {
+	clientId,
 	className,
 	setBackgroundColor,
 	backgroundColor,
 	hasInnerBlocks,
+	attributes,
+	setAttributes,
 } ) {
 	const styles = {
 		backgroundColor: backgroundColor.color,
+		paddingTop: attributes.paddingTop,
+		paddingRight: attributes.paddingRight,
+		paddingBottom: attributes.paddingBottom,
+		paddingLeft: attributes.paddingLeft,
+		marginTop: attributes.marginTop,
+		marginRight: attributes.marginRight,
+		marginBottom: attributes.marginBottom,
+		marginLeft: attributes.marginLeft,
 	};
 
 	const classes = classnames( className, backgroundColor.class, {
@@ -43,6 +63,21 @@ function GroupEdit( {
 						},
 					] }
 				/>
+
+				<PanelBody title={ __( 'Spacing' ) }>
+					<DimensionControl
+						type="padding"
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						clientId={ clientId }
+					/>
+					<DimensionControl
+						type="margin"
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						clientId={ clientId }
+					/>
+				</PanelBody>
 			</InspectorControls>
 			<div className={ classes } style={ styles }>
 				<div className="wp-block-group__inner-container">
