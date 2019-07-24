@@ -61,13 +61,15 @@ function GroupEdit( {
 
 				<PanelBody title={ __( 'Spacing' ) }>
 					<DimensionControl
-						type="padding"
+						title={ __( 'Padding' ) }
+						property="padding"
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						clientId={ clientId }
 					/>
 					<DimensionControl
-						type="margin"
+						title={ __( 'Margin' ) }
+						property="margin"
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						clientId={ clientId }
