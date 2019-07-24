@@ -2,7 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { includes } from 'lodash';
+import { includes, some } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -23,11 +23,13 @@ import {
 	ToggleControl,
 	TextControl,
 	IconButton,
+	ToolbarButton,
 	Button,
 	Toolbar,
 	DropdownMenu,
 	Placeholder,
 } from '@wordpress/components';
+import { applyFormat, removeFormat, create, toHTMLString } from '@wordpress/rich-text';
 
 /**
  * Internal dependencies
@@ -35,7 +37,8 @@ import {
 import {
 	createTable,
 	updateCellContent,
-	updateSelectionAttribute,
+	updateSelectedCellAttributes,
+	checkSelectedCells,
 	getCellAttribute,
 	insertRow,
 	deleteRow,
@@ -101,6 +104,7 @@ export class TableEdit extends Component {
 		this.onToggleFooterSection = this.onToggleFooterSection.bind( this );
 		this.getMultiSelectionClasses = this.getMultiSelectionClasses.bind( this );
 		this.onChangeSelectionAlignment = this.onChangeSelectionAlignment.bind( this );
+		this.onChangeSelectionFormatting = this.onChangeSelectionFormatting.bind( this );
 
 		this.state = {
 			initialRowCount: 2,
@@ -188,7 +192,63 @@ export class TableEdit extends Component {
 		}
 
 		const { attributes, setAttributes } = this.props;
-		setAttributes( updateSelectionAttribute( selection, attributes, 'align', value ) );
+		const newAttributes = updateSelectedCellAttributes(
+			selection,
+			attributes,
+			( cellAttributes ) => ( { ...cellAttributes, align: value } ),
+		);
+		setAttributes( newAttributes );
+	}
+
+	onChangeSelectionFormatting( formatType, isRemove ) {
+		const { selection } = this.state;
+
+		if ( ! selection ) {
+			return;
+		}
+
+		const { attributes, setAttributes } = this.props;
+		const newAttributes = updateSelectedCellAttributes(
+			selection,
+			attributes,
+			( { content, ...cellAttributes } ) => {
+				const richTextValue = create( { html: content } );
+
+				let formattedRichTextValue;
+				if ( isRemove ) {
+					formattedRichTextValue = removeFormat( richTextValue, formatType, 0, richTextValue.text.length );
+				} else {
+					formattedRichTextValue = applyFormat( richTextValue, { type: formatType }, 0, richTextValue.text.length );
+				}
+
+				const formattedContent = toHTMLString( { value: formattedRichTextValue } );
+
+				return {
+					content: formattedContent,
+					...cellAttributes,
+				};
+			},
+		);
+		setAttributes( newAttributes );
+	}
+
+	hasFormattingInSelection( formatType ) {
+		const { selection } = this.state;
+
+		if ( ! selection ) {
+			return;
+		}
+
+		const { attributes } = this.props;
+
+		return checkSelectedCells(
+			selection,
+			attributes,
+			( { content } ) => {
+				const richTextValue = create( { html: content } );
+				return some( richTextValue.formats, ( formatList ) => some( formatList, { type: formatType } ) );
+			}
+		);
 	}
 
 	getCellAlignment() {
@@ -559,6 +619,9 @@ export class TableEdit extends Component {
 			'has-background': !! backgroundColor.color,
 		} );
 
+		const isSelectionBold = this.hasFormattingInSelection( 'core/bold' );
+		const isSelectionItalic = this.hasFormattingInSelection( 'core/italic' );
+
 		return (
 			<>
 				<BlockControls>
@@ -567,6 +630,18 @@ export class TableEdit extends Component {
 							icon="editor-table"
 							label={ __( 'Edit table' ) }
 							controls={ this.getTableControls() }
+						/>
+						<ToolbarButton
+							icon="editor-bold"
+							label={ __( 'Bold' ) }
+							onClick={ () => this.onChangeSelectionFormatting( 'core/bold', isSelectionBold ) }
+							isActive={ isSelectionBold }
+						/>
+						<ToolbarButton
+							icon="editor-italic"
+							label={ __( 'Italic' ) }
+							onClick={ () => this.onChangeSelectionFormatting( 'core/italic', isSelectionItalic ) }
+							isActive={ isSelectionItalic }
 						/>
 					</Toolbar>
 					<AlignmentToolbar

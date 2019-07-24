@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { times, get, mapValues, every, pick, includes } from 'lodash';
+import { times, get, mapValues, every, pick, includes, some } from 'lodash';
 
 /**
  * Creates a table state.
@@ -25,7 +25,7 @@ export function createTable( {
 	};
 }
 
-export function updateSelectionAttribute( selection, attributes, attributeName, value ) {
+export function updateSelectedCellAttributes( selection, attributes, func ) {
 	if ( ! selection ) {
 		return attributes;
 	}
@@ -54,14 +54,37 @@ export function updateSelectionAttribute( selection, attributes, attributeName, 
 						return cell;
 					}
 
-					return {
-						...cell,
-						[ attributeName ]: value,
-					};
+					return func( cell );
 				} ),
 			};
 		} );
 	} );
+}
+
+export function checkSelectedCells( selection, attributes, func ) {
+	if ( ! selection ) {
+		return false;
+	}
+
+	if ( selection.type === 'cell' ) {
+		const cell = get( attributes, [ selection.section, selection.rowIndex, 'cells', selection.columnIndex ] );
+		return cell ? func( cell ) : false;
+	}
+
+	if ( selection.type === 'row' ) {
+		const cells = get( attributes, [ selection.section, selection.rowIndex, 'cells' ] );
+		return some( cells, func );
+	}
+
+	const tableSections = pick( attributes, [ 'head', 'body', 'foot' ] );
+	return some( tableSections, ( rows ) => some( rows, ( { cells } ) => {
+		if ( selection.type === 'column' ) {
+			const cell = get( cells, selection.columnIndex );
+			return cell ? func( cell ) : false;
+		}
+
+		return some( cells, func );
+	} ) );
 }
 
 /**
