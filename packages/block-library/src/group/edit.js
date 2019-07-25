@@ -56,12 +56,24 @@ function GroupEdit( {
 		[ `margin-mobile-${ attributes.marginSizeMobile }` ]: hasMargin( 'Mobile' ),
 	} );
 
+	/**
+	 * Resets a single spacing attribute for a given dimension
+	 * (and optionally a given device)
+	 * @param  {string} dimension the dimension property (eg: `padding`)
+	 * @param  {string} device    the device which this dimension applies to (eg: `mobile`, `tablet`)
+	 * @return {void}
+	 */
 	const resetSpacingDimension = ( dimension, device = '' ) => {
 		setAttributes( {
 			[ `${ dimension }${ device }` ]: '',
 		} );
 	};
 
+	/**
+	 * Resets all the responsive attributes for a given dimension
+	 * @param  {string} dimension the dimension property (eg: `padding`)
+	 * @return {void}
+	 */
 	const resetResponsiveSpacingForDimension = ( dimension ) => {
 		dimension = dimension.toLowerCase();
 
@@ -71,12 +83,26 @@ function GroupEdit( {
 		} );
 	};
 
+	/**
+	 * Updates the spacing attribute for a given dimension
+	 * (and optionally a given device)
+	 * @param  {string} dimension the dimension property (eg: `padding`)
+	 * @param  {string} size      a slug representing a dimension size (eg: `medium`)
+	 * @param  {string} device    the device which this dimension applies to (eg: `mobile`, `tablet`)
+	 * @return {void}
+	 */
 	const updateSpacing = ( dimension, size, device = '' ) => {
 		setAttributes( {
 			[ `${ dimension }${ device }` ]: size,
 		} );
 	};
 
+	/**
+	 * Toggles the responsive spacing UI for a given dimension
+	 * and clears any responsive attribute
+	 * @param  {string} dimension the dimension property (eg: `padding`)
+	 * @return {void}
+	 */
 	const onToggleResponsiveSpacing = ( dimension ) => {
 		dimension = startCase( dimension );
 
