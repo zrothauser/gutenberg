@@ -85,3 +85,12 @@
 		width: calc(100% + 60px);
 	}
 }
+
+// Animation dimension spacing changes
+// Scope to apply transitions to the Editor only
+// conforms to: https://developer.wordpress.org/block-editor/designers/animation/
+.wp-block[data-type="core/group"] .wp-block-group {
+	transition: 0.1s ease-out;
+	transition-property: padding, margin;
+	@include reduce-motion("transition");
+}
