@@ -2,7 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { partialRight } from 'lodash';
+import { partialRight, startCase } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -62,18 +62,32 @@ function GroupEdit( {
 		} );
 	};
 
-	const resetResponsiveSpacing = () => {
+	const resetResponsiveSpacingForDimension = ( dimension ) => {
+		dimension = dimension.toLowerCase();
+
 		setAttributes( {
-			paddingSizeMobile: '',
-			paddingSizeTablet: '',
-			marginSizeMobile: '',
-			marginSizeTablet: '',
+			[ `${ dimension }SizeMobile` ]: '',
+			[ `${ dimension }SizeTablet` ]: '',
 		} );
 	};
 
 	const updateSpacing = ( dimension, size, device = '' ) => {
 		setAttributes( {
 			[ `${ dimension }${ device }` ]: size,
+		} );
+	};
+
+	const onToggleResponsiveSpacing = ( dimension ) => {
+		dimension = startCase( dimension );
+
+		const attr = `responsive${ dimension }`;
+		const responsiveDimensionState = ! attributes[ attr ];
+
+		if ( ! responsiveDimensionState ) {
+			resetResponsiveSpacingForDimension( dimension );
+		}
+		setAttributes( {
+			[ attr ]: responsiveDimensionState,
 		} );
 	};
 
@@ -98,16 +112,7 @@ function GroupEdit( {
 						<ToggleControl
 							label={ __( 'Manually adjust Padding based on screensize?' ) }
 							checked={ attributes.responsivePadding }
-							onChange={ () => {
-								const responsivePadding = ! attributes.responsivePadding;
-
-								if ( ! responsivePadding ) {
-									resetResponsiveSpacing();
-								}
-								setAttributes( {
-									responsivePadding,
-								} );
-							} }
+							onChange={ () => onToggleResponsiveSpacing( 'padding' ) }
 						/>
 
 						{ ! attributes.responsivePadding && (
@@ -166,16 +171,7 @@ function GroupEdit( {
 						<ToggleControl
 							label={ __( 'Manually adjust Margin based on screensize?' ) }
 							checked={ attributes.responsiveMargin }
-							onChange={ () => {
-								const responsiveMargin = ! attributes.responsiveMargin;
-
-								if ( ! responsiveMargin ) {
-									resetResponsiveSpacing();
-								}
-								setAttributes( {
-									responsiveMargin,
-								} );
-							} }
+							onChange={ () => onToggleResponsiveSpacing( 'margin' ) }
 						/>
 
 						{ ! attributes.responsiveMargin && (
