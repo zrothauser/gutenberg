@@ -62,7 +62,13 @@ export { default as ToolbarButton } from './toolbar-button';
 export { default as Tooltip } from './tooltip';
 export { default as TreeSelect } from './tree-select';
 export { default as IsolatedEventContainer } from './isolated-event-container';
-export { createSlotFill, Slot, Fill, Provider as SlotFillProvider } from './slot-fill';
+export {
+	createSlotFill,
+	Slot,
+	Fill,
+	Provider as SlotFillProvider,
+	Consumer as __experimentalSlotFillConsumer,
+} from './slot-fill';
 
 // Higher-Order Components
 export { default as navigateRegions } from './higher-order/navigate-regions';
