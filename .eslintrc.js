@@ -115,7 +115,6 @@ module.exports = {
 				'import/no-extraneous-dependencies': 'error',
 			},
 			excludedFiles: [
-				'**/*.@(android|ios|native).js',
 				'**/@(benchmark|test|__tests__)/**/*.js',
 			],
 		},
