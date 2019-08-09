@@ -14,6 +14,7 @@ import {
 	MultiSelectScrollIntoView,
 	__experimentalBlockSettingsMenuFirstItem,
 	__experimentalBlockSettingsMenuPluginsExtension,
+	HistoryHandler,
 } from '@wordpress/block-editor';
 
 /**
@@ -30,8 +31,10 @@ function VisualEditor() {
 			<WritingFlow>
 				<ObserveTyping>
 					<CopyHandler>
-						<PostTitle />
-						<BlockList />
+						<HistoryHandler>
+							<PostTitle />
+							<BlockList />
+						</HistoryHandler>
 					</CopyHandler>
 				</ObserveTyping>
 			</WritingFlow>
