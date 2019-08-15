@@ -52,7 +52,8 @@ class Dropdown extends Component {
 	 * case the correct behavior is to keep the dropdown closed.
 	 */
 	closeIfFocusOutside() {
-		if ( ! this.containerRef.current.contains( document.activeElement ) ) {
+		const { autoClose } = this.props;
+		if ( autoClose && ! this.containerRef.current.contains( document.activeElement ) ) {
 			this.close();
 		}
 	}
