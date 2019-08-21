@@ -155,6 +155,9 @@ describe( 'Links', () => {
 
 		// Click on the Apply button
 		await page.click( 'button[aria-label="Apply"]' );
+
+		// Reselect the link.
+		await pressKeyWithModifier( 'shiftAlt', 'ArrowLeft' );
 	};
 
 	it( 'can be edited', async () => {
@@ -512,9 +515,10 @@ describe( 'Links', () => {
 		//
 		// See: https://github.com/WordPress/gutenberg/pull/15573
 
-		// Collapse selection.
+		// Move caret back into the link.
 		await page.keyboard.press( 'ArrowLeft' );
-		await page.keyboard.press( 'ArrowRight' );
+		await page.keyboard.press( 'ArrowLeft' );
+
 		// Edit link.
 		await pressKeyWithModifier( 'primary', 'k' );
 		await waitForAutoFocus();
@@ -533,6 +537,10 @@ describe( 'Links', () => {
 		await page.keyboard.press( 'Tab' );
 		// Submit the form.
 		await page.keyboard.press( 'Enter' );
+
+		// Move caret back into the link.
+		await page.keyboard.press( 'ArrowLeft' );
+		await page.keyboard.press( 'ArrowLeft' );
 
 		// Navigate back to inputs to verify appears as changed.
 		await pressKeyWithModifier( 'primary', 'k' );
