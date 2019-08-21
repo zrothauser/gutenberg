@@ -151,7 +151,10 @@ class InlineLinkUI extends Component {
 			const toInsert = applyFormat( create( { text: url } ), format, 0, url.length );
 			onChange( insert( value, toInsert ) );
 		} else {
-			onChange( applyFormat( value, format ) );
+			const newValue = applyFormat( value, format );
+			newValue.start = newValue.end;
+			newValue.activeFormats = [];
+			onChange( newValue );
 		}
 
 		this.resetState();
