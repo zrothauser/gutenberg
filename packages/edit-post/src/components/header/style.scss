@@ -74,8 +74,9 @@
 				background: $dark-gray-600;
 			}
 			&::after {
-				display: inline-block;
 				content: attr(aria-label);
+				display: inline-block;
+				font-size: 12px;
 			}
 		}
 	}

@@ -24,8 +24,9 @@
 		button[aria-label] {
 			display: block;
 			&::after {
-				display: block;
 				content: attr(aria-label);
+				display: block;
+				font-size: 12px;
 			}
 		}
 	}
