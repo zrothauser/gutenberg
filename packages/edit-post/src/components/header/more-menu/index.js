@@ -18,14 +18,21 @@ import ToolsMoreMenuGroup from '../tools-more-menu-group';
 import OptionsMenuItem from '../options-menu-item';
 import WritingMenu from '../writing-menu';
 
-const MoreMenu = ( { showIconLabel } ) => (
+const POPOVER_PROPS = {
+	className: 'edit-post-more-menu__content',
+	position: 'bottom left',
+};
+const TOGGLE_PROPS = {
+	labelPosition: 'bottom',
+};
+
+const MoreMenu = ({ showIconLabel }) => (
 	<DropdownMenu
-		className={ classnames( 'edit-post-more-menu', { 'show-icon-label': showIconLabel } ) }
-		position="bottom left"
+	    className={ classnames( 'edit-post-more-menu', { 'show-icon-label': showIconLabel } ) }
 		icon="ellipsis"
 		label={ __( 'More tools & options' ) }
-		__unstableLabelPosition="bottom"
-		__unstablePopoverClassName="edit-post-more-menu__content"
+		popoverProps={ POPOVER_PROPS }
+		toggleProps={ TOGGLE_PROPS }
 	>
 		{ ( { onClose } ) => (
 			<>

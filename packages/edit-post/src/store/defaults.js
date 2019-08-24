@@ -9,6 +9,7 @@ export const PREFERENCES_DEFAULTS = {
 	features: {
 		fixedToolbar: false,
 		showIconLabels: false,
+		showInserterHelpPanel: true,
 	},
 	pinnedPluginItems: {},
 	hiddenBlockTypes: [],
