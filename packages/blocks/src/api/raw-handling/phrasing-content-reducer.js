@@ -10,7 +10,7 @@ export default function( node, doc ) {
 		const {
 			fontWeight,
 			fontStyle,
-			textDecorationLine,
+			textDecoration,
 			verticalAlign,
 		} = node.style;
 
@@ -22,7 +22,7 @@ export default function( node, doc ) {
 			wrap( doc.createElement( 'em' ), node );
 		}
 
-		if ( textDecorationLine === 'line-through' ) {
+		if ( textDecoration === 'line-through' ) {
 			wrap( doc.createElement( 's' ), node );
 		}
 
