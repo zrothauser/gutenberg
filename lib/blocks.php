@@ -78,6 +78,26 @@ function gutenberg_reregister_core_block_types() {
 }
 add_action( 'init', 'gutenberg_reregister_core_block_types' );
 
+/**
+ * Adds new block categories needed by the Gutenberg plugin.
+ *
+ * @param array $categories List of block categories.
+ *
+ * @return array List of block categories with the new categories added.
+ */
+function gutenberg_filter_block_categories( $categories ) {
+	return array_merge(
+		$categories,
+		array(
+			array(
+				'slug'  => 'theme',
+				'title' => __( 'Theme Blocks', 'gutenberg' ),
+			),
+		)
+	);
+}
+add_filter( 'block_categories', 'gutenberg_filter_block_categories' );
+
 if ( ! function_exists( 'register_block_style' ) ) {
 	/**
 	 * Registers a new block style.
