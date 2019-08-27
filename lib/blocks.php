@@ -30,6 +30,7 @@ function gutenberg_reregister_core_block_types() {
 		'search.php'          => 'core/search',
 		'social-link.php'     => 'core/social-link',
 		'tag-cloud.php'       => 'core/tag-cloud',
+		'site-title.php'      => 'core/site-title',
 	);
 
 	$registry = WP_Block_Type_Registry::get_instance();
