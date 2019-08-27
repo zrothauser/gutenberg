@@ -32,6 +32,7 @@ export const PREFERENCES_DEFAULTS = {
  *  __experimentalEnableLegacyWidgetBlock  boolean       Whether the user has enabled the Legacy Widget Block
  *  __experimentalEnableMenuBlock          boolean       Whether the user has enabled the Menu Block
  *  __experimentalBlockDirectory           boolean       Whether the user has enabled the Block Directory
+ *  __experimentalEnableFullSiteEditing    boolean       Whether the user has enabled Full Site Editing
  */
 export const SETTINGS_DEFAULTS = {
 	alignWide: false,
@@ -152,5 +153,5 @@ export const SETTINGS_DEFAULTS = {
 	__experimentalEnableLegacyWidgetBlock: false,
 	__experimentalEnableMenuBlock: false,
 	__experimentalBlockDirectory: false,
+	__experimentalEnableFullSiteEditing: false,
 };
-
