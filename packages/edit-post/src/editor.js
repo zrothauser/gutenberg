@@ -43,6 +43,8 @@ class Editor extends Component {
 		blockTypes,
 		preferredStyleVariations,
 		updatePreferredStyleVariations,
+		postId,
+		postType,
 	) {
 		settings = {
 			...settings,
@@ -53,6 +55,8 @@ class Editor extends Component {
 			hasFixedToolbar,
 			focusMode,
 			showInserterHelpPanel,
+			postId,
+			postType,
 		};
 
 		// Omit hidden block types if exists and non-empty.
@@ -82,7 +86,9 @@ class Editor extends Component {
 			hasFixedToolbar,
 			focusMode,
 			post,
+			template,
 			postId,
+			postType,
 			initialEdits,
 			onError,
 			hiddenBlockTypes,
@@ -92,7 +98,7 @@ class Editor extends Component {
 			...props
 		} = this.props;
 
-		if ( ! post ) {
+		if ( ! post || ( settings.templateId !== undefined && ! template ) ) {
 			return null;
 		}
 
@@ -105,6 +111,8 @@ class Editor extends Component {
 			blockTypes,
 			preferredStyleVariations,
 			updatePreferredStyleVariations,
+			postId,
+			postType
 		);
 
 		return (
@@ -115,6 +123,7 @@ class Editor extends Component {
 							<EditorProvider
 								settings={ editorSettings }
 								post={ post }
+								template={ template }
 								initialEdits={ initialEdits }
 								useSubRegistry={ false }
 								{ ...props }
@@ -135,7 +144,7 @@ class Editor extends Component {
 }
 
 export default compose( [
-	withSelect( ( select, { postId, postType } ) => {
+	withSelect( ( select, { postId, postType, settings } ) => {
 		const { isFeatureActive, getPreference } = select( 'core/edit-post' );
 		const { getEntityRecord } = select( 'core' );
 		const { getBlockTypes } = select( 'core/blocks' );
@@ -145,6 +154,10 @@ export default compose( [
 			hasFixedToolbar: isFeatureActive( 'fixedToolbar' ),
 			focusMode: isFeatureActive( 'focusMode' ),
 			post: getEntityRecord( 'postType', postType, postId ),
+			template:
+				settings.templateId === undefined ?
+					undefined :
+					getEntityRecord( 'postType', 'wp_template', settings.templateId ),
 			preferredStyleVariations: getPreference( 'preferredStyleVariations' ),
 			hiddenBlockTypes: getPreference( 'hiddenBlockTypes' ),
 			blockTypes: getBlockTypes(),
