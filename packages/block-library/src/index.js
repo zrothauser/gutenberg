@@ -64,6 +64,8 @@ import * as socialLink from './social-link';
 
 // Full Site Editing Blocks
 import * as siteTitle from './site-title';
+import * as postTitle from './post-title';
+import * as postContent from './post-content';
 
 /**
  * Function to register an individual block.
@@ -176,13 +178,15 @@ export const __experimentalRegisterExperimentalCoreBlocks =
 				__experimentalEnableFullSiteEditing,
 			} = settings
 
-			;[
+				;[
 				__experimentalEnableLegacyWidgetBlock ? legacyWidget : null,
 				__experimentalEnableMenuBlock ? navigationMenu : null,
 				__experimentalEnableMenuBlock ? navigationMenuItem : null,
 
 				// Register Full Site Editing Blocks.
-				...( __experimentalEnableFullSiteEditing ? [ siteTitle ] : [] ),
+				...( __experimentalEnableFullSiteEditing ?
+					[ siteTitle, postTitle, postContent ] :
+					[] ),
 			].forEach( registerBlock );
 		} :
 		undefined;
