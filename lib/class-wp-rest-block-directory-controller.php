@@ -71,10 +71,12 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|bool True if the request has permission, WP_Error object otherwise.
+	 *
+	 * This function is overloading a function defined in WP_REST_Controller so it should have the same parameters.
+	 * phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 	 */
-	public function permissions_check( $request ) {
+	public function permissions_check() {
 		if ( ! current_user_can( 'install_plugins' ) || ! current_user_can( 'activate_plugins' ) ) {
 			return new WP_Error(
 				'rest_user_cannot_view',
@@ -84,6 +86,7 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 
 		return true;
 	}
+	/* phpcs:enable */
 
 	/**
 	 * Installs and activates a plugin
@@ -221,8 +224,8 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 
 		include( ABSPATH . WPINC . '/version.php' );
 
-		$url      = 'http://api.wordpress.org/plugins/info/1.2/';
-		$url      = add_query_arg(
+		$url = 'http://api.wordpress.org/plugins/info/1.2/';
+		$url = add_query_arg(
 			array(
 				'action'              => 'query_plugins',
 				'request[block]'      => $search_string,
@@ -231,11 +234,12 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 			),
 			$url
 		);
-		$http_url = $url;
-		$ssl      = wp_http_supports( array( 'ssl' ) );
+		$ssl = wp_http_supports( array( 'ssl' ) );
 		if ( $ssl ) {
 			$url = set_url_scheme( $url, 'https' );
 		}
+
+		global $wp_version;
 		$http_args = array(
 			'timeout'    => 15,
 			'user-agent' => 'WordPress/' . $wp_version . '; ' . home_url( '/' ),
