@@ -10,6 +10,8 @@ import { __ } from '@wordpress/i18n';
 import {
 	Component,
 	useCallback,
+	useContext,
+	useState,
 } from '@wordpress/element';
 import {
 	compose,
@@ -24,6 +26,7 @@ import {
 	withFallbackStyles,
 } from '@wordpress/components';
 import {
+	URLPopover,
 	URLInput,
 	RichText,
 	ContrastChecker,
@@ -31,6 +34,11 @@ import {
 	withColors,
 	PanelColorSettings,
 } from '@wordpress/block-editor';
+
+/**
+ * Internal dependencies
+ */
+import { ButtonEditSettings } from './edit-settings';
 
 const { getComputedStyle } = window;
 
@@ -70,6 +78,79 @@ function BorderPanel( { borderRadius = '', setAttributes } ) {
 				onChange={ setBorderRadius }
 			/>
 		</PanelBody>
+	);
+}
+const InlineURLPicker = withInstanceId(
+	function( { instanceId, isSelected, url, onChange } ) {
+		const linkId = `wp-block-button__inline-link-${ instanceId }`;
+		return (
+			<BaseControl
+				label={ __( 'Link' ) }
+				className="wp-block-button__inline-link"
+				id={ linkId }>
+				<URLInput
+					className="wp-block-button__inline-link-input"
+					value={ url }
+					/* eslint-disable jsx-a11y/no-autofocus */
+					// Disable Reason: The rule is meant to prevent enabling auto-focus, not disabling it.
+					autoFocus={ false }
+					/* eslint-enable jsx-a11y/no-autofocus */
+					onChange={ onChange }
+					disableSuggestions={ ! isSelected }
+					id={ linkId }
+					isFullWidth
+					hasBorder
+				/>
+			</BaseControl>
+		);
+	}
+);
+
+function PopoverURLPicker( { url, onChange } ) {
+	const [ urlInput, setUrlInput ] = useState( url || '' );
+	const [ isPopoverEnable, setIsPopoverEnable ] = useState( true );
+	const onSubmit = useCallback(
+		() => {
+			onChange( urlInput );
+			setIsPopoverEnable( false );
+		},
+		[ urlInput, onChange ]
+	);
+	if ( ! isPopoverEnable ) {
+		return null;
+	}
+	return (
+		<URLPopover focusOnMount={ false }>
+			<URLPopover.LinkEditor
+				className="editor-format-toolbar__link-container-content block-editor-format-toolbar__link-container-content"
+				value={ urlInput }
+				onChangeInputValue={ setUrlInput }
+				onSubmit={ onSubmit }
+			/>
+		</URLPopover>
+	);
+}
+
+function URLPicker( { isSelected, url, setAttributes } ) {
+	const onChange = useCallback(
+		( value ) => setAttributes( { url: value } ),
+		[ setAttributes ]
+	);
+	const { urlInPopover } = useContext( ButtonEditSettings );
+	if ( urlInPopover ) {
+		return isSelected ? (
+			<PopoverURLPicker
+				url={ url }
+				onChange={ onChange }
+			/>
+		) : null;
+	}
+	return (
+		<InlineURLPicker
+			url={ url }
+			isSelected={ isSelected }
+			onChange={ onChange }
+		/>
 	);
 }
 
@@ -121,7 +202,6 @@ class ButtonEdit extends Component {
 			fallbackTextColor,
 			setAttributes,
 			className,
-			instanceId,
 			isSelected,
 		} = this.props;
 
@@ -134,8 +214,6 @@ class ButtonEdit extends Component {
 			title,
 			url,
 		} = attributes;
-
-		const linkId = `wp-block-button__inline-link-${ instanceId }`;
 
 		return (
 			<div className={ className } title={ title } ref={ this.bindRef }>
@@ -159,24 +237,11 @@ class ButtonEdit extends Component {
 						borderRadius: borderRadius ? borderRadius + 'px' : undefined,
 					} }
 				/>
-				<BaseControl
-					label={ __( 'Link' ) }
-					className="wp-block-button__inline-link"
-					id={ linkId }>
-					<URLInput
-						className="wp-block-button__inline-link-input"
-						value={ url }
-						/* eslint-disable jsx-a11y/no-autofocus */
-						// Disable Reason: The rule is meant to prevent enabling auto-focus, not disabling it.
-						autoFocus={ false }
-						/* eslint-enable jsx-a11y/no-autofocus */
-						onChange={ ( value ) => setAttributes( { url: value } ) }
-						disableSuggestions={ ! isSelected }
-						id={ linkId }
-						isFullWidth
-						hasBorder
-					/>
-				</BaseControl>
+				<URLPicker
+					url={ url }
+					setAttributes={ setAttributes }
+					isSelected={ isSelected }
+				/>
 				<InspectorControls>
 					<PanelColorSettings
 						title={ __( 'Color Settings' ) }
@@ -228,7 +293,6 @@ class ButtonEdit extends Component {
 }
 
 export default compose( [
-	withInstanceId,
 	withColors( 'backgroundColor', { textColor: 'color' } ),
 	applyFallbackStyles,
 ] )( ButtonEdit );
