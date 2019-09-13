@@ -43,7 +43,9 @@ class NativeEditorProvider extends Component {
 		super( ...arguments );
 
 		// Keep a local reference to `post` to detect changes
-		this.refreshPost();
+		this.post = this.props.post;
+		this.props.addEntities( postTypeEntities );
+		this.props.receiveEntityRecords( 'postType', this.post.type, this.post );
 
 		this.setTitleRef = this.setTitleRef.bind( this );
 	}
@@ -101,16 +103,6 @@ class NativeEditorProvider extends Component {
 			const unsupportedBlockNames = blocks.filter( isUnsupportedBlock ).map( ( block ) => block.attributes.originalName );
 			RNReactNativeGutenbergBridge.editorDidMount( unsupportedBlockNames );
 		}
-		if ( prevProps.post !== this.props.post ) {
-			// make sure Core Data Entities is filled with our past data
-			this.refreshPost();
-		}
-	}
-
-	refreshPost() {
-		this.post = this.props.post;
-		this.props.addEntities( postTypeEntities );
-		this.props.receiveEntityRecords( 'postType', this.post.type, this.post );
 	}
 
 	setTitleRef( titleRef ) {
