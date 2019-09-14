@@ -478,6 +478,11 @@ function BlockListBlock( {
 		blockEdit = <div style={ { display: 'none' } }>{ blockEdit }</div>;
 	}
 
+	const styles = {
+		display: 'flex',
+		'flex-direction': 'row',
+	};
+
 	return (
 		<IgnoreNestedEvents
 			id={ blockElementId }
@@ -519,19 +524,6 @@ function BlockListBlock( {
 				<BlockMultiControls rootClientId={ rootClientId } />
 			) }
 			<div className="editor-block-list__block-edit block-editor-block-list__block-edit">
-				{ shouldRenderMovers && (
-					<BlockMover
-						clientIds={ clientId }
-						blockElementId={ blockElementId }
-						isHidden={ ! ( isHovered || isSelected ) || hoverArea !== ( isRTL ? 'right' : 'left' ) }
-						isDraggable={
-							isDraggable !== false &&
-							( ! isPartOfMultiSelection && isMovable )
-						}
-						onDragStart={ onDragStart }
-						onDragEnd={ onDragEnd }
-					/>
-				) }
 				{ shouldShowBreadcrumb && (
 					<BlockBreadcrumb
 						clientId={ clientId }
@@ -567,7 +559,22 @@ function BlockListBlock( {
 					data-block={ clientId }
 				>
 					<BlockCrashBoundary onError={ onBlockError }>
-						{ isValid && blockEdit }
+						<div style={ styles }>
+							{ isValid && blockEdit }
+							{ shouldRenderMovers && (
+								<BlockMover
+									clientIds={ clientId }
+									blockElementId={ blockElementId }
+									isHidden={ ! ( isHovered || isSelected ) || hoverArea !== ( isRTL ? 'right' : 'left' ) }
+									isDraggable={
+										isDraggable !== false &&
+										( ! isPartOfMultiSelection && isMovable )
+									}
+									onDragStart={ onDragStart }
+									onDragEnd={ onDragEnd }
+								/>
+							) }
+						</div>
 						{ isValid && mode === 'html' && (
 							<BlockHtml clientId={ clientId } />
 						) }

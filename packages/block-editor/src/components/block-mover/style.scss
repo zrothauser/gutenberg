@@ -1,5 +1,6 @@
 .block-editor-block-mover {
-
+	display: inline-block;
+		
 	@include break-small() {
 		min-height: $empty-paragraph-height;
 		opacity: 0;
