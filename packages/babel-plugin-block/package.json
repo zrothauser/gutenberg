@@ -1,21 +1,20 @@
 {
-	"name": "@wordpress/babel-block.macro",
+	"name": "@wordpress/babel-plugin-block",
 	"version": "1.0.0-alpha.1",
-	"description": "Babel block macro.",
+	"description": "Babel plugin for transforming block's metadata.",
 	"author": "The WordPress Contributors",
 	"license": "GPL-2.0-or-later",
 	"keywords": [
 		"wordpress",
-		"block",
-		"babel",
+		"babel-plugin",
 		"babel-macros",
-		"babel-plugin-macros"
+		"block"
 	],
-	"homepage": "https://github.com/WordPress/gutenberg/tree/master/packages/babel-block.macro/README.md",
+	"homepage": "https://github.com/WordPress/gutenberg/tree/master/packages/babel-plugin-block/README.md",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/WordPress/gutenberg.git",
-		"directory": "packages/babel-block.macro"
+		"directory": "packages/babel-plugin-block"
 	},
 	"bugs": {
 		"url": "https://github.com/WordPress/gutenberg/issues"
@@ -26,7 +25,6 @@
 	"files": [
 		"macro.js"
 	],
-	"main": "macro.js",
 	"dependencies": {
 		"babel-plugin-macros": "^2.6.1",
 		"lodash": "^4.17.14"

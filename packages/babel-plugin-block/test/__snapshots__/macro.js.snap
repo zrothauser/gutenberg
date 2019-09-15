@@ -2,8 +2,8 @@
 
 exports[`macros valid metadata file with i18n support and default text domain: valid metadata file with i18n support and default text domain 1`] = `
 "
-import blockMetadata from '../macro';
-const metadata = blockMetadata( './fixtures/block-i18n-default.json' );
+import getBlockData from '../macro';
+const metadata = getBlockData( './fixtures/block-i18n-default.json' );
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -32,8 +32,8 @@ const metadata = {
 
 exports[`macros valid metadata file with i18n support: valid metadata file with i18n support 1`] = `
 "
-import blockMetadata from '../macro';
-const metadata = blockMetadata( './fixtures/block-i18n.json' );
+import getBlockData from '../macro';
+const metadata = getBlockData( './fixtures/block-i18n.json' );
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -62,8 +62,8 @@ const metadata = {
 
 exports[`macros valid metadata file: valid metadata file 1`] = `
 "
-import blockMetadata from '../macro';
-const metadata = blockMetadata( './fixtures/block.json' );
+import getBlockData from '../macro';
+const metadata = getBlockData( './fixtures/block.json' );
 
       ↓ ↓ ↓ ↓ ↓ ↓
 

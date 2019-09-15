@@ -14,43 +14,43 @@ pluginTester( {
 	tests: {
 		'valid metadata file': {
 			code: `
-				import blockMetadata from '../macro';
-				const metadata = blockMetadata( './fixtures/block.json' );
+				import getBlockData from '../macro';
+				const metadata = getBlockData( './fixtures/block.json' );
 			`,
 			snapshot: true,
 		},
 		'valid metadata file with i18n support': {
 			code: `
-				import blockMetadata from '../macro';
-				const metadata = blockMetadata( './fixtures/block-i18n.json' );
+				import getBlockData from '../macro';
+				const metadata = getBlockData( './fixtures/block-i18n.json' );
 			`,
 			snapshot: true,
 		},
 		'valid metadata file with i18n support and default text domain': {
 			code: `
-				import blockMetadata from '../macro';
-				const metadata = blockMetadata( './fixtures/block-i18n-default.json' );
+				import getBlockData from '../macro';
+				const metadata = getBlockData( './fixtures/block-i18n-default.json' );
 			`,
 			snapshot: true,
 		},
 		'invalid metadata file name': {
 			code: `
-				import blockMetadata from '../macro';
-				const metadata = blockMetadata( './invalid-file.json' );
+				import getBlockData from '../macro';
+				const metadata = getBlockData( './invalid-file.json' );
 			`,
-			error: 'Invalid file name provided: packages/babel-block.macro/test/invalid-file.json.',
+			error: 'Invalid file name provided: packages/babel-plugin-block/test/invalid-file.json.',
 		},
 		'invalid usage: as function argument': {
 			code: `
-				import blockMetadata from '../macro';
-        		const metadata = doSomething( blockMetadata );
+				import getBlockData from '../macro';
+        		const metadata = doSomething( getBlockData );
       		`,
 			error: true,
 		},
 		'invalid usage: missing file path': {
 			code: `
-				import blockMetadata from '../macro';
-				const metadata = blockMetadata;
+				import getBlockData from '../macro';
+				const metadata = getBlockData;
 			`,
 			error: true,
 		},

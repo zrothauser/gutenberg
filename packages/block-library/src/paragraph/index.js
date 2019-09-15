@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import blockMetadata from '@wordpress/babel-block.macro';
+import getBlockData from '@wordpress/blocks/macro';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -13,7 +13,7 @@ import icon from './icon';
 import save from './save';
 import transforms from './transforms';
 
-const { name, ...metadata } = blockMetadata( './block.json' );
+const { name, ...metadata } = getBlockData( './block.json' );
 
 export { metadata, name };
 

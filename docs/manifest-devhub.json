@@ -1062,9 +1062,9 @@
 		"parent": "packages"
 	},
 	{
-		"title": "@wordpress/babel-block.macro",
-		"slug": "packages-babel-block.macro",
-		"markdown_source": "../packages/babel-block.macro/README.md",
+		"title": "@wordpress/babel-plugin-block",
+		"slug": "packages-babel-plugin-block",
+		"markdown_source": "../packages/babel-plugin-block/README.md",
 		"parent": "packages"
 	},
 	{

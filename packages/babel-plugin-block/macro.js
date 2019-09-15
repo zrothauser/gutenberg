@@ -131,7 +131,7 @@ function babelBlockMacro( { references, state, babel } ) {
 			}
 		} else {
 			throw new Error(
-				`@wordpress/babel-block.macro can only be used as function call. You tried ${ referencePath.parentPath.type }.`,
+				`@wordpress/babel-plugin-block/macro only be used as function call. You tried ${ referencePath.parentPath.type }.`,
 			);
 		}
 	} );
