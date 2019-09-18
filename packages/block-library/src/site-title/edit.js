@@ -17,7 +17,7 @@ function TitleInput() {
 		<>
 			<Button
 				isPrimary
-				className="wp-block-site-title__save-button"
+				className="wp-block-custom-entity__save-button"
 				disabled={ ! isDirty || ! title }
 				isBusy={ isSaving }
 				onClick={ save }
