@@ -483,6 +483,8 @@ _Related_
 
 <a name="getReferenceByDistinctEdits" href="#getReferenceByDistinctEdits">#</a> **getReferenceByDistinctEdits**
 
+> **Deprecated** since Gutenberg 6.5.0.
+
 Returns a new reference when edited values have changed. This is useful in
 inferring where an edit has been made between states by comparison of the
 return values using strict equality.
