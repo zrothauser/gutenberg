@@ -29,6 +29,7 @@ export default function PostTitleEdit() {
 			</Button>
 			<RichText
 				tagName="h1"
+				className="entry-title"
 				formattingControls={ [] }
 				placeholder={ __( 'Title' ) }
 				value={ title }

@@ -25,7 +25,7 @@ function render_block_core_post_title() {
 		return '';
 	}
 
-	return the_title( '<h1>', '</h1>', false );
+	return the_title( '<h1 class="entry-title">', '</h1>', false );
 }
 
 /**
