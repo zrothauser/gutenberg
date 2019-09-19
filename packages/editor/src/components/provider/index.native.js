@@ -178,10 +178,8 @@ export default compose( [
 	} ),
 	withDispatch( ( dispatch ) => {
 		const {
-			addEntities,
 			editPost,
 			resetEditorBlocks,
-			receiveEntityRecords,
 		} = dispatch( 'core/editor' );
 		const {
 			clearSelectedBlock,
@@ -189,6 +187,10 @@ export default compose( [
 		const {
 			switchEditorMode,
 		} = dispatch( 'core/edit-post' );
+		const {
+			addEntities,
+			receiveEntityRecords,
+		} = dispatch( 'core' );
 
 		return {
 			addEntities,
