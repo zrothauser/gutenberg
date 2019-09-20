@@ -40,6 +40,7 @@ function PostFeaturedImage( {
 	onRemoveImage,
 	media,
 	postType,
+	noticeUI,
 } ) {
 	const postLabel = get( postType, [ 'labels' ], {} );
 	const instructions = <p>{ __( 'To edit the featured image, you need permission to upload media.' ) }</p>;
@@ -60,6 +61,7 @@ function PostFeaturedImage( {
 
 	return (
 		<PostFeaturedImageCheck>
+			{ noticeUI }
 			<div className="editor-post-featured-image">
 				<MediaUploadCheck fallback={ instructions }>
 					<MediaUpload
