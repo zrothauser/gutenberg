@@ -15,6 +15,7 @@ import { withInstanceId, compose } from '@wordpress/compose';
 /**
  * Internal dependencies
  */
+import { withTheme } from '../dark-mode';
 import HTMLInputContainer from './container';
 import styles from './style.scss';
 
@@ -60,6 +61,9 @@ export class HTMLTextInput extends Component {
 	}
 
 	render() {
+		const { useStyle } = this.props;
+		const htmlStyle = useStyle( styles.htmlView, styles.htmlViewDark );
+		const placeholderStyle = useStyle( styles.placeholder, styles.placeholderDark );
 		return (
 			<HTMLInputContainer parentHeight={ this.props.parentHeight }>
 				<TextInput
@@ -70,6 +74,7 @@ export class HTMLTextInput extends Component {
 					style={ styles.htmlViewTitle }
 					value={ this.props.title }
 					placeholder={ __( 'Add title' ) }
+					placeholderTextColor={ placeholderStyle.color }
 					onChangeText={ this.props.editTitle }
 				/>
 				<TextInput
@@ -77,11 +82,12 @@ export class HTMLTextInput extends Component {
 					accessibilityLabel="html-view-content"
 					textAlignVertical="top"
 					multiline
-					style={ styles.htmlView }
+					style={ htmlStyle }
 					value={ this.state.value }
 					onChangeText={ this.edit }
 					onBlur={ this.stopEditing }
 					placeholder={ __( 'Start writing…' ) }
+					placeholderTextColor={ placeholderStyle.color }
 					scrollEnabled={ HTMLInputContainer.scrollEnabled }
 				/>
 			</HTMLInputContainer>
@@ -117,4 +123,5 @@ export default compose( [
 		};
 	} ),
 	withInstanceId,
+	withTheme,
 ] )( HTMLTextInput );
