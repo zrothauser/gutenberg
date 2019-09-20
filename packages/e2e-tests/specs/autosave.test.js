@@ -6,6 +6,7 @@ import {
 	createNewPost,
 	getEditedPostContent,
 	pressKeyWithModifier,
+	publishPost,
 } from '@wordpress/e2e-test-utils';
 
 // Constant to override editor preference
@@ -99,6 +100,27 @@ describe( 'autosave', () => {
 		expect( await getEditedPostContent() ).toEqual( wrapParagraph( 'before save' ) );
 		await page.click( '.components-notice__action' );
 		expect( await getEditedPostContent() ).toEqual( wrapParagraph( 'before save after save' ) );
+	} );
+
+	it( 'shouldn\'t conflict with server-side autosave', async () => {
+		await clickBlockAppender();
+		await page.keyboard.type( 'before publish' );
+		await publishPost();
+
+		await page.type( '.wp-block-paragraph', ' after publish' );
+
+		await Promise.all( [
+			// Force remote autosave to occur immediately
+			await page.evaluate( () => window.wp.data.dispatch( 'core/editor' ).autosave() ),
+			// Meanwhile, wait for local autosave
+			await sleep( AUTOSAVE_INTERVAL_SECONDS + 1 ),
+		] );
+
+		await page.reload();
+
+		// Only one autosave notice should be displayed.
+		const notices = await page.$$( '.components-notice' );
+		expect( notices.length ).toBe( 1 );
 	} );
 
 	afterAll( async () => {
