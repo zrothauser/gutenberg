@@ -3,7 +3,7 @@
  */
 import RNReactNativeGutenbergBridge from 'react-native-gutenberg-bridge';
 import { mount } from 'enzyme';
-import { act } from "react-dom/test-utils";
+import { act } from 'react-dom/test-utils';
 
 /**
  * WordPress dependencies
@@ -34,7 +34,7 @@ describe( 'Editor', () => {
 
 		const appContainer = renderEditorWith( unsupportedBlock );
 		// for some reason resetEditorBlocks() is asynchronous when dispatching editEntityRecord
-		act ( () => {
+		act( () => {
 			jest.runAllTicks();
 		} );
 		appContainer.unmount();
