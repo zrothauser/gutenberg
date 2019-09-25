@@ -69,7 +69,7 @@ describe( 'cpt locking', () => {
 			expect( await getEditedPostContent() ).toMatchSnapshot();
 		} );
 
-		it( 'should show invalid template notice if the blocks do not match the templte', async () => {
+		it( 'should show invalid template notice if the blocks do not match the template', async () => {
 			const content = await getEditedPostContent();
 			const [ , contentWithoutImage ] = content.split( '<!-- /wp:image -->' );
 			await setPostContent( contentWithoutImage );
@@ -83,6 +83,41 @@ describe( 'cpt locking', () => {
 			).toEqual( 'The content of your post doesn’t match the template assigned to your post type.' );
 		} );
 	} );
+
+	/* describe( 'template_lock all with block override', () => {
+		it( 'should not show invalid template notice if the blocks override the post template lock option', async () => {
+			await activatePlugin( 'gutenberg-test-inner-blocks-templates' );
+
+			// Create a post from the post type with a locked template, that
+			// has the block with InnerBlocks and templateLock disabled in the
+			// template.
+			await createNewPost( { postType: 'locked-with-unlocked' } );
+
+			// Add blocks to the innerblocks area.
+			const parentBlockSelector = '[data-type="test/test-inner-blocks-disable-locking"]';
+			const blockAppender = '.block-list-appender button';
+			const appenderSelector = `${ parentBlockSelector } ${ blockAppender }`;
+			await page.waitForSelector( appenderSelector );
+			await page.click( appenderSelector );
+			await openAllBlockInserterCategories();
+			const insertButton = ( await page.$x(
+				`//button//span[contains(text(), 'List')]`
+			) )[ 0 ];
+			await insertButton.click();
+			await insertBlock( 'Image' );
+
+			// Check that the blocks are still valid.
+			// @todo this is the opposite of what we want.
+			const VALIDATION_PARAGRAPH_SELECTOR = '.editor-template-validation-notice .components-notice__content p';
+
+			expect(
+				await page.evaluate(
+					( element ) => element.textContent,
+					await page.$( VALIDATION_PARAGRAPH_SELECTOR )
+				)
+			).toEqual( 'The content of your post doesn’t match the template assigned to your post type.' );
+		} );
+	} ); */
 
 	describe( 'template_lock insert', () => {
 		beforeEach( async () => {

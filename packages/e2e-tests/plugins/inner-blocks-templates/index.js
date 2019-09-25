@@ -39,6 +39,24 @@
 		save,
 	} );
 
+	registerBlockType('test/test-inner-blocks-disable-locking', {
+		title: 'Test Inner Blocks disable locking',
+		icon: 'cart',
+		category: 'common',
+
+		edit: function (props) {
+			return el(
+				InnerBlocks,
+				{
+					template: TEMPLATE,
+					templateLock: false,
+				}
+			);
+		},
+
+		save,
+	});
+
 	registerBlockType( 'test/test-inner-blocks-locking-all', {
 		title: 'Test InnerBlocks locking all',
 		icon: 'cart',
