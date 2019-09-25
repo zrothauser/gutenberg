@@ -23,8 +23,16 @@ import { getBlockType } from './registration';
  * @return {boolean}        Whether the list of blocks matches a templates
  */
 export function doBlocksMatchTemplate( blocks = [], template = [] ) {
-	return (
-		blocks.length === template.length &&
+	// eslint-disable-next-line no-console
+	console.log( 'doBlocksMatchTemplate' );
+	if ( blocks.length !== template.length ) {
+		return false;
+	}
+
+	// eslint-disable-next-line no-console
+	console.log( 'comparing', blocks, template );
+
+	const areMatching = (
 		every( template, ( [ name, , innerBlocksTemplate ], index ) => {
 			const block = blocks[ index ];
 			return (
@@ -33,6 +41,11 @@ export function doBlocksMatchTemplate( blocks = [], template = [] ) {
 			);
 		} )
 	);
+
+	// eslint-disable-next-line no-console
+	console.log( `  are matching? ${ areMatching }` );
+
+	return areMatching;
 }
 
 /**
