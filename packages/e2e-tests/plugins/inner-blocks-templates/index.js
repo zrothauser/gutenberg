@@ -50,6 +50,7 @@
 				{
 					template: TEMPLATE,
 					templateLock: false,
+					renderAppender: InnerBlocks.ButtonBlockAppender,
 				}
 			);
 		},

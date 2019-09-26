@@ -60,7 +60,7 @@ describe( 'Allowed Blocks Setting on InnerBlocks ', () => {
 	it( 'correctly applies dynamic allowed blocks restrictions', async () => {
 		await insertBlock( 'Allowed Blocks Dynamic' );
 		const parentBlockSelector = '[data-type="test/allowed-blocks-dynamic"]';
-		const blockAppender = '.block-list-appender button';
+		const blockAppender = '.block-editor-inserter button';
 		const appenderSelector = `${ parentBlockSelector } ${ blockAppender }`;
 		await page.waitForSelector( appenderSelector );
 		await page.click( appenderSelector );
