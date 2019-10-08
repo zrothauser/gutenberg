@@ -7,6 +7,7 @@ import { every, map, get, mapValues, isArray } from 'lodash';
  * WordPress dependencies
  */
 import { renderToString } from '@wordpress/element';
+import { select } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -17,24 +18,53 @@ import { getBlockType } from './registration';
 /**
  * Checks whether a list of blocks matches a template by comparing the block names.
  *
- * @param {Array} blocks    Block list.
- * @param {Array} template  Block template.
+ * @param {Array} blocks                Block list.
+ * @param {Array} template              Block template.
+ * @param {boolean|string} templateLock Locking option.
  *
  * @return {boolean}        Whether the list of blocks matches a templates
  */
-export function doBlocksMatchTemplate( blocks = [], template = [] ) {
+export function doBlocksMatchTemplate( blocks = [], template = [], templateLock = false ) {
 	// eslint-disable-next-line no-console
 	console.log( 'doBlocksMatchTemplate' );
+
+	switch ( templateLock ) {
+		case 'all':
+		case 'insert':
+			// @todo normal comparison of InnerBlocks
+			break;
+		case false:
+			// @todo don't compare InnerBlocks
+			break;
+		default:
+			// @todo check parent?
+			break;
+	}
+
 	if ( blocks.length !== template.length ) {
 		return false;
 	}
 
 	// eslint-disable-next-line no-console
-	console.log( 'comparing', blocks, template );
+	console.log( 'comparing blocks to template', blocks, template, templateLock );
 
 	const areMatching = (
 		every( template, ( [ name, , innerBlocksTemplate ], index ) => {
 			const block = blocks[ index ];
+
+			// eslint-disable-next-line no-console
+			console.log( select( 'core/block-editor' ) );
+
+			const blockListSettings = select( 'core/block-editor' )
+				.getBlockListSettings( block.clientId );
+
+			// eslint-disable-next-line no-console
+			console.log(
+				'comparing block with settings',
+				{ ...block },
+				blockListSettings
+			);
+
 			return (
 				name === block.name &&
 				doBlocksMatchTemplate( block.innerBlocks, innerBlocksTemplate )
